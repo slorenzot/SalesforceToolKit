@@ -85,6 +85,7 @@ struct SalesforceToolKitApp: App {
                 openPreferences()
             }
             .keyboardShortcut("p")
+            .disabled(true)
             
             Divider()
             Button("Credits (version \(version))") {
