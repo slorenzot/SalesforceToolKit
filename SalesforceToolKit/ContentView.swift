@@ -16,6 +16,13 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        
+//        super.init(contentRect: NSRect(x: 0, y: 0, width: 480, height: 300), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
+//        makeKeyAndOrderFront(nil)
+//        isReleasedWhenClosed = false
+//        styleMask.insert(NSWindow.StyleMask.fullSizeContentView)
+//        title = "title placeholder"
+//        contentView = NSHostingView(rootView: ContentView())
     }
 }
 
