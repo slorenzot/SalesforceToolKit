@@ -35,7 +35,7 @@ func openUrl(url: String) {
 }
 
 func openPreferences() {
-    AppPreferencesView()
+    CreditsView()
 }
 
 func confirmQuit() {
@@ -53,15 +53,16 @@ func confirmQuit() {
 
 @main
 struct SalesforceToolKitApp: App {
+    @AppStorage("relaunchOnLogin") var relaunchOnLogin: Bool = false
+    @AppStorage("settings") var settings: String = ""
+    
     @State var credentialManager = OrgManager()
     @State var currentOption: String  = "1"
-    @State var launchOnLogin: Bool = false
     
     var version = "1.0.1"
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
-            
             Button("Open Salesforce Org Manager"){}
                 .keyboardShortcut("o")
                 .disabled(true)
@@ -78,11 +79,8 @@ struct SalesforceToolKitApp: App {
             }
             
             Divider()
-            Toggle(isOn: $launchOnLogin) {
-                Text("Launch at Startup")
-                //                toggleLaunchOnLogin()
-            }
-            .toggleStyle(.checkbox)
+            Toggle("Launch at Startup", isOn: $relaunchOnLogin)
+                .toggleStyle(.checkbox)
             Button("Preferences") {
                 openPreferences()
             }
@@ -99,5 +97,6 @@ struct SalesforceToolKitApp: App {
             }
             .keyboardShortcut("q")
         }
+        
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum OrgType {
+enum OrgType: Encodable, Decodable {
     case Production, Sandbox, Other
 }
 
@@ -51,12 +51,29 @@ class OrgManager: ObservableObject {
                 shortcut: "2"))
         self.add(
             credencial: OrgCredencial(
+                label: "Salesforce Help",
+                url: "https://help.salesforce.com/s/",
+                username: "user",
+                password: "pass",
+                type: OrgType.Sandbox,
+                shortcut: "7"))
+        self.add(
+            credencial: OrgCredencial(
+                label: "Salesforce Trailhead website",
+                url: "https://trailhead.salesforce.com",
+                username: "user",
+                password: "pass",
+                type: OrgType.Sandbox,
+                shortcut: "5"))
+        
+        self.add(
+            credencial: OrgCredencial(
                 label: "Workbench Tool",
                 url: "https://workbench.developerforce.com/login.php",
                 username: "user",
                 password: "pass",
                 type: OrgType.Sandbox,
-                shortcut: "2"))
+                shortcut: "3"))
         self.add(
             credencial: OrgCredencial(
                 label: "JSON2Apex Tool",
@@ -65,6 +82,16 @@ class OrgManager: ObservableObject {
                 password: "pass",
                 type: OrgType.Sandbox,
                 shortcut: "4"))
+        
+        self.add(
+            credencial: OrgCredencial(
+                label: "Online JSON Viewer",
+                url: "https://jsonviewer.stack.hu",
+                username: "user",
+                password: "pass",
+                type: OrgType.Sandbox,
+                shortcut: "6"))
+    
     }
     
     func add(credencial: OrgCredencial) {
