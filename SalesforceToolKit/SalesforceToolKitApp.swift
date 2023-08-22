@@ -40,10 +40,10 @@ func openPreferences() {
 
 func confirmQuit() {
     let alert = NSAlert()
-    alert.messageText = "Confirm exit"
-    alert.informativeText = "Sure?"
-    alert.addButton(withTitle: "Quit")
-    alert.addButton(withTitle: "Cancel")
+    alert.messageText = NSLocalizedString("Confirm exit", comment: "")
+    alert.informativeText = NSLocalizedString("Sure?", comment: "")
+    alert.addButton(withTitle: NSLocalizedString("Quit", comment: ""))
+    alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
     alert.alertStyle = .warning
     
     if (alert.runModal() == .alertFirstButtonReturn) {
@@ -63,37 +63,36 @@ struct SalesforceToolKitApp: App {
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
-            Button("Open Salesforce Org Manager"){}
-                .keyboardShortcut("o")
+            Button("Salesforce ToolKit (version \(version))"){}
                 .disabled(true)
             Divider()
             
             if (credentialManager.storedOrgs.isEmpty) {
-                Button("No stored credentials..."){}.disabled(true)
+                Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
             } else {
                 ForEach(credentialManager.storedOrgs) { credencial in
-                    Button("Open \(credencial.label)"){
+                    Button(NSLocalizedString("Open", comment: "") + " \(credencial.label)"){
                         openUrl(url: credencial.url)
                     }
                 }
             }
             
             Divider()
-            Toggle("Launch at Startup", isOn: $relaunchOnLogin)
+            Toggle(NSLocalizedString("Launch at Startup", comment: ""), isOn: $relaunchOnLogin)
                 .toggleStyle(.checkbox)
-            Button("Preferences") {
+            Button(NSLocalizedString("Preferences", comment: "")) {
                 openPreferences()
             }
             .keyboardShortcut("p")
             .disabled(true)
             
-            Divider()
-            Button("Credits (version \(version))") {
-                openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
-            }
+            //            Divider()
+            //            Button("Credits (version \(version))") {
+            //                openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
+            //            }
             
             Divider()
-            Button("Quit") {
+            Button(NSLocalizedString("Quit", comment: "")) {
                 confirmQuit()
             }
             .keyboardShortcut("q")

@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  SalesforceToolKit
+
+  Created by Soulberto Lorenzo on 21/08/23.
+  
+*/
+"comment" = "Hola a todos";
+"Open" = "Abrir";
+"Launch at Startup" = "Correr al iniciar";
+"Preferences" = "Preferencias";
+"Quit" = "Salir";
+"Confirm exit" = "Confirmar salir";
+"Sure?" = "Seguro?";
+"Cancel" = "Cancelar";

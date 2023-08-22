@@ -13,6 +13,7 @@
 		827E4AE52A66C7110062977D /* SalesforceToolKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AE42A66C7110062977D /* SalesforceToolKitTests.swift */; };
 		827E4AEF2A66C7110062977D /* SalesforceToolKitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AEE2A66C7110062977D /* SalesforceToolKitUITests.swift */; };
 		827E4AF12A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AF02A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift */; };
+		BC8821142A94595200B75DDA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC8821162A94595200B75DDA /* Localizable.strings */; };
 		BCA99A4C2A925340001F1DB4 /* AppPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA99A4B2A925340001F1DB4 /* AppPreferencesView.swift */; };
 		BCA99A4E2A925467001F1DB4 /* CredencialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA99A4D2A925467001F1DB4 /* CredencialManager.swift */; };
 		BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */; };
@@ -47,6 +48,7 @@
 		827E4AEA2A66C7110062977D /* SalesforceToolKitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SalesforceToolKitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		827E4AEE2A66C7110062977D /* SalesforceToolKitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesforceToolKitUITests.swift; sourceTree = "<group>"; };
 		827E4AF02A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesforceToolKitUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		BC8821152A94595200B75DDA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BCA99A4B2A925340001F1DB4 /* AppPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferencesView.swift; sourceTree = "<group>"; };
 		BCA99A4D2A925467001F1DB4 /* CredencialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredencialManager.swift; sourceTree = "<group>"; };
 		BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Salesforce-logo.jpg"; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 		827E4AD12A66C70D0062977D /* SalesforceToolKit */ = {
 			isa = PBXGroup;
 			children = (
+				BCE27F4C2A944B000004DB9C /* Localizables */,
 				BC2FE0852A93B5D800A22137 /* Main Window */,
 				827E4AD22A66C70D0062977D /* SalesforceToolKitApp.swift */,
 				827E4AD62A66C7110062977D /* Assets.xcassets */,
@@ -144,6 +147,14 @@
 				BCA99A4D2A925467001F1DB4 /* CredencialManager.swift */,
 			);
 			name = "Main Window";
+			sourceTree = "<group>";
+		};
+		BCE27F4C2A944B000004DB9C /* Localizables */ = {
+			isa = PBXGroup;
+			children = (
+				BC8821162A94595200B75DDA /* Localizable.strings */,
+			);
+			path = Localizables;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -252,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				827E4ADA2A66C7110062977D /* Preview Assets.xcassets in Resources */,
+				BC8821142A94595200B75DDA /* Localizable.strings in Resources */,
 				BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */,
 				827E4AD72A66C7110062977D /* Assets.xcassets in Resources */,
 			);
@@ -316,6 +328,17 @@
 			targetProxy = 827E4AEB2A66C7110062977D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BC8821162A94595200B75DDA /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC8821152A94595200B75DDA /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		827E4AF22A66C7110062977D /* Debug */ = {
