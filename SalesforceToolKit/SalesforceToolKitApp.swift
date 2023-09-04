@@ -56,7 +56,7 @@ struct SalesforceToolKitApp: App {
     @AppStorage("relaunchOnLogin") var relaunchOnLogin: Bool = false
     @AppStorage("settings") var settings: String = ""
     
-    @State var credentialManager = OrgManager()
+    @State var credentialManager = LinkManager()
     @State var currentOption: String  = "1"
     
     var version = "1.0.1"
@@ -67,13 +67,32 @@ struct SalesforceToolKitApp: App {
                 .disabled(true)
             Divider()
             
-            if (credentialManager.storedOrgs.isEmpty) {
+            if (credentialManager.storedLinks.isEmpty) {
                 Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
             } else {
-                ForEach(credentialManager.storedOrgs) { credencial in
-                    Button(NSLocalizedString("Open", comment: "") + " \(credencial.label)"){
-                        openUrl(url: credencial.url)
+                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Org}) { link in
+                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                        openUrl(url: link.url)
                     }
+                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
+                }
+                
+                Divider()
+                
+                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
+                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                        openUrl(url: link.url)
+                    }
+                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
+                }
+                
+                Divider()
+                
+                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Other}) { link in
+                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                        openUrl(url: link.url)
+                    }
+                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
                 }
             }
             
