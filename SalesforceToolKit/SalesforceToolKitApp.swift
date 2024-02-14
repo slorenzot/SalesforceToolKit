@@ -59,7 +59,7 @@ struct SalesforceToolKitApp: App {
     @State var credentialManager = LinkManager()
     @State var currentOption: String  = "1"
     
-    var version = "1.0.1"
+    var version = "2.1.1"
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
@@ -80,6 +80,15 @@ struct SalesforceToolKitApp: App {
                 Divider()
                 
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
+                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                        openUrl(url: link.url)
+                    }
+                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
+                }
+                
+                Divider()
+                
+                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
                     Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
                         openUrl(url: link.url)
                     }

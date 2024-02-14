@@ -8,7 +8,7 @@
 import Foundation
 
 enum LinkType: Encodable, Decodable {
-    case Org, Toolbox, Other
+    case Org, Toolbox, DevOp, Other
 }
 
 final class Link: Identifiable {
@@ -35,7 +35,7 @@ class LinkManager: ObservableObject {
     init() {
         self.add(
             credencial: Link(
-                label: "Salesforce login (Sandbox)",
+                label: "Salesforce Login (Sandbox)",
                 url: "https://test.salesforce.com",
                 username: "user",
                 password: "pass",
@@ -43,7 +43,7 @@ class LinkManager: ObservableObject {
                 shortcut: "1"))
         self.add(
             credencial: Link(
-                label: "Salesforce login (Production)",
+                label: "Salesforce Login (Production)",
                 url: "https://login.salesforce.com",
                 username: "user",
                 password: "pass",
@@ -82,10 +82,18 @@ class LinkManager: ObservableObject {
                 password: "pass",
                 type: LinkType.Toolbox,
                 shortcut: "4"))
+        self.add(
+            credencial: Link(
+                label: "JSONDiff Tool",
+                url: "https://jsonviewer.stack.hu",
+                username: "user",
+                password: "pass",
+                type: LinkType.Toolbox,
+                shortcut: "5"))
         
         self.add(
             credencial: Link(
-                label: "Online JSON Viewer",
+                label: "JSON Viewer Tool",
                 url: "https://jsonviewer.stack.hu",
                 username: "user",
                 password: "pass",
@@ -94,13 +102,48 @@ class LinkManager: ObservableObject {
         
         self.add(
             credencial: Link(
-                label: "Online Mockaroo",
+                label: "Mockaroo Tool",
                 url: "https://mockaroo.com",
                 username: "user",
                 password: "pass",
                 type: LinkType.Toolbox,
                 shortcut: "7"))
         
+        self.add(
+            credencial: Link(
+                label: "Password generator Tool",
+                url: "https://passwordsgenerator.net/",
+                username: "user",
+                password: "pass",
+                type: LinkType.Toolbox,
+                shortcut: "7"))
+        
+        self.add(
+            credencial: Link(
+                label: "Mocky Tool",
+                url: "https://designer.mocky.io/design",
+                username: "user",
+                password: "pass",
+                type: LinkType.Toolbox,
+                shortcut: "8"))
+        
+        self.add(
+            credencial: Link(
+                label: "Happy Soup Tool",
+                url: "https://happysoup.io",
+                username: "user",
+                password: "pass",
+                type: LinkType.Toolbox,
+                shortcut: "9"))
+        
+        self.add(
+            credencial: Link(
+                label: "Gearset Tool",
+                url: "https://app.gearset.com",
+                username: "user",
+                password: "pass",
+                type: LinkType.DevOp,
+                shortcut: "9"))
     }
     
     func add(credencial: Link) {
