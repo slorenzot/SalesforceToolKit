@@ -7,9 +7,16 @@
 */
 "comment" = "Hola a todos";
 "Open" = "Abrir";
+"Request" = "Solicitar";
 "Launch at Startup" = "Lanzar al iniciar sesión";
 "Preferences" = "Preferencias";
 "Quit" = "Salir";
 "Confirm exit" = "Confirmar salir";
 "Sure?" = "Seguro?";
 "Cancel" = "Cancelar";
+"Request new org" = "Solicitar una nueva organización";
+"Tools" = "Herramientas";
+"DevOp Tools" = "Herramientas de DevOp";
+"Others" = "Otros";
+"About" = "Acerca de";
+"Help" = "Ayuda";

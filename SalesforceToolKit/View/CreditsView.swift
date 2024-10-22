@@ -11,14 +11,18 @@ struct CreditsView: View {
     var body: some View {
         VStack {
             Text("Credits to:")
-                .font(.largeTitle)
+                .font(.title2)
             Text("Some of this websites or online tools are  from theirs owner and ths credits are for themselves")
+                .padding()
             Text("Salesforce")
-                .font(.largeTitle)
+                .font(.title2)
+                .padding()
             Text("Workbench")
-                .font(.largeTitle)
+                .font(.title2)
+                .padding()
             Text("JSON2Apex")
-                .font(.largeTitle)
+                .font(.title2)
+                .padding()
         }
     }
 }

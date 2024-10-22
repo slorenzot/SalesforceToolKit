@@ -7,8 +7,13 @@
 
 import Foundation
 
+enum EncryptionMethod: String, Encodable, Decodable {
+    case AES256 = "AES256"
+    case SHA256 = "SHA256"
+}
+
 enum LinkType: Encodable, Decodable {
-    case Org, Toolbox, DevOp, Other
+    case Org, Specialized, Toolbox, DevOp, Help, Other
 }
 
 final class Link: Identifiable {
@@ -35,7 +40,7 @@ class LinkManager: ObservableObject {
     init() {
         self.add(
             credencial: Link(
-                label: "Salesforce Login (Sandbox)",
+                label: "Salesforce (Sandbox)",
                 url: "https://test.salesforce.com",
                 username: "user",
                 password: "pass",
@@ -43,7 +48,7 @@ class LinkManager: ObservableObject {
                 shortcut: "1"))
         self.add(
             credencial: Link(
-                label: "Salesforce Login (Production)",
+                label: "Salesforce (Production)",
                 url: "https://login.salesforce.com",
                 username: "user",
                 password: "pass",
@@ -55,20 +60,20 @@ class LinkManager: ObservableObject {
                 url: "https://help.salesforce.com/s/",
                 username: "user",
                 password: "pass",
-                type: LinkType.Other,
+                type: LinkType.Help,
                 shortcut: "7"))
         self.add(
             credencial: Link(
-                label: "Salesforce Trailhead website",
+                label: "Salesforce Trailhead",
                 url: "https://trailhead.salesforce.com",
                 username: "user",
                 password: "pass",
-                type: LinkType.Other,
+                type: LinkType.Help,
                 shortcut: "5"))
         
         self.add(
             credencial: Link(
-                label: "Workbench Tool",
+                label: "Workbench",
                 url: "https://workbench.developerforce.com/login.php",
                 username: "user",
                 password: "pass",
@@ -76,7 +81,7 @@ class LinkManager: ObservableObject {
                 shortcut: "3"))
         self.add(
             credencial: Link(
-                label: "JSON2Apex Tool",
+                label: "JSON2Apex",
                 url: "https://json2apex.herokuapp.com",
                 username: "user",
                 password: "pass",
@@ -84,7 +89,7 @@ class LinkManager: ObservableObject {
                 shortcut: "4"))
         self.add(
             credencial: Link(
-                label: "JSONDiff Tool",
+                label: "JSONDiff",
                 url: "https://jsonviewer.stack.hu",
                 username: "user",
                 password: "pass",
@@ -93,7 +98,7 @@ class LinkManager: ObservableObject {
         
         self.add(
             credencial: Link(
-                label: "JSON Viewer Tool",
+                label: "JSON Viewer",
                 url: "https://jsonviewer.stack.hu",
                 username: "user",
                 password: "pass",
@@ -102,7 +107,7 @@ class LinkManager: ObservableObject {
         
         self.add(
             credencial: Link(
-                label: "Mockaroo Tool",
+                label: "Mockaroo",
                 url: "https://mockaroo.com",
                 username: "user",
                 password: "pass",
@@ -111,7 +116,7 @@ class LinkManager: ObservableObject {
         
         self.add(
             credencial: Link(
-                label: "Password generator Tool",
+                label: "Password generator",
                 url: "https://passwordsgenerator.net/",
                 username: "user",
                 password: "pass",
@@ -120,7 +125,7 @@ class LinkManager: ObservableObject {
         
         self.add(
             credencial: Link(
-                label: "Mocky Tool",
+                label: "Mocky",
                 url: "https://designer.mocky.io/design",
                 username: "user",
                 password: "pass",
@@ -129,7 +134,7 @@ class LinkManager: ObservableObject {
         
         self.add(
             credencial: Link(
-                label: "Happy Soup Tool",
+                label: "Happy Soup",
                 url: "https://happysoup.io",
                 username: "user",
                 password: "pass",
@@ -138,12 +143,73 @@ class LinkManager: ObservableObject {
         
         self.add(
             credencial: Link(
-                label: "Gearset Tool",
+                label: "Gearset",
                 url: "https://app.gearset.com",
                 username: "user",
                 password: "pass",
                 type: LinkType.DevOp,
                 shortcut: "9"))
+        self.add(
+            credencial: Link(
+                label: "Copado",
+                url: "https://www.copado.com",
+                username: "user",
+                password: "pass",
+                type: LinkType.DevOp,
+                shortcut: "9"))
+        
+        self.add(
+            credencial: Link(
+                label: "Developer Edition Org",
+                url: "https://developer.salesforce.com/signup",
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+        
+        self.add(
+            credencial: Link(
+                label: "Financial Services Cloud Org (Trial)",
+                url: "https://www.salesforce.com/form/signup/financial-services-cloud-trial/",
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+        
+        self.add(
+            credencial: Link(
+                label: "Health Cloud Org (Trial)",
+                url: "https://www.salesforce.com/form/signup/health-cloud-trial/",
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+        
+        self.add(
+            credencial: Link(
+                label: "Communications Cloud Org (Trial)",
+                url: "https://www.salesforce.com/form/signup/comms-cloud-learning-trial/",
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+        
+        self.add(
+            credencial: Link(
+                label: "Energy & Utilities Cloud Org (Trial)",
+                url: "https://www.salesforce.com/form/industries/energy/energy-utilities-cloud-learning-free-trial/",
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+        
+        self.add(credencial: Link(
+            label: "Partner Org (Using PLC - Require login)",
+            url: "https://partnerlearningcamp.salesforce.com/s/demo-org",
+            username: "user",
+            password: "pass",
+            type: LinkType.Specialized,
+            shortcut: "p"))
     }
     
     func add(credencial: Link) {

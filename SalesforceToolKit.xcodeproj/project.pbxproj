@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,11 +13,11 @@
 		827E4AE52A66C7110062977D /* SalesforceToolKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AE42A66C7110062977D /* SalesforceToolKitTests.swift */; };
 		827E4AEF2A66C7110062977D /* SalesforceToolKitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AEE2A66C7110062977D /* SalesforceToolKitUITests.swift */; };
 		827E4AF12A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AF02A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift */; };
+		BC2B3BB92CBF0A8900C65391 /* ObjectSavable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */; };
+		BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */ = {isa = PBXBuildFile; fileRef = BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */; };
+		BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */; };
 		BC8821142A94595200B75DDA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC8821162A94595200B75DDA /* Localizable.strings */; };
-		BCA99A4C2A925340001F1DB4 /* AppPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA99A4B2A925340001F1DB4 /* AppPreferencesView.swift */; };
-		BCA99A4E2A925467001F1DB4 /* CredencialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA99A4D2A925467001F1DB4 /* CredencialManager.swift */; };
 		BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */; };
-		BCA99A522A926E15001F1DB4 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA99A512A926E15001F1DB4 /* CreditsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,12 +48,18 @@
 		827E4AEA2A66C7110062977D /* SalesforceToolKitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SalesforceToolKitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		827E4AEE2A66C7110062977D /* SalesforceToolKitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesforceToolKitUITests.swift; sourceTree = "<group>"; };
 		827E4AF02A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesforceToolKitUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSavable.swift; sourceTree = "<group>"; };
+		BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSavableError.swift; sourceTree = "<group>"; };
 		BC8821152A94595200B75DDA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		BCA99A4B2A925340001F1DB4 /* AppPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferencesView.swift; sourceTree = "<group>"; };
-		BCA99A4D2A925467001F1DB4 /* CredencialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredencialManager.swift; sourceTree = "<group>"; };
 		BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Salesforce-logo.jpg"; sourceTree = "<group>"; };
-		BCA99A512A926E15001F1DB4 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		BC2B3BC42CBF0F7E00C65391 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
+		BC2B3BCB2CBF0F9400C65391 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
+		BC2B3BCD2CBF123A00C65391 /* Controller */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Controller; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		827E4ACC2A66C70D0062977D /* Frameworks */ = {
@@ -142,9 +148,12 @@
 		BC2FE0852A93B5D800A22137 /* Main Window */ = {
 			isa = PBXGroup;
 			children = (
-				BCA99A512A926E15001F1DB4 /* CreditsView.swift */,
-				BCA99A4B2A925340001F1DB4 /* AppPreferencesView.swift */,
-				BCA99A4D2A925467001F1DB4 /* CredencialManager.swift */,
+				BC2B3BCD2CBF123A00C65391 /* Controller */,
+				BC2B3BC42CBF0F7E00C65391 /* View */,
+				BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */,
+				BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */,
+				BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */,
+				BC2B3BCB2CBF0F9400C65391 /* Model */,
 			);
 			name = "Main Window";
 			sourceTree = "<group>";
@@ -171,6 +180,11 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BC2B3BC42CBF0F7E00C65391 /* View */,
+				BC2B3BCB2CBF0F9400C65391 /* Model */,
+				BC2B3BCD2CBF123A00C65391 /* Controller */,
 			);
 			name = SalesforceToolKit;
 			productName = SalesforceToolKit;
@@ -266,6 +280,7 @@
 				BC8821142A94595200B75DDA /* Localizable.strings in Resources */,
 				BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */,
 				827E4AD72A66C7110062977D /* Assets.xcassets in Resources */,
+				BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,10 +305,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCA99A4C2A925340001F1DB4 /* AppPreferencesView.swift in Sources */,
+				BC2B3BB92CBF0A8900C65391 /* ObjectSavable.swift in Sources */,
 				827E4AD32A66C70D0062977D /* SalesforceToolKitApp.swift in Sources */,
-				BCA99A522A926E15001F1DB4 /* CreditsView.swift in Sources */,
-				BCA99A4E2A925467001F1DB4 /* CredencialManager.swift in Sources */,
+				BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

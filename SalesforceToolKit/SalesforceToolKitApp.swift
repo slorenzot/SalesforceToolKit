@@ -19,6 +19,7 @@ import ServiceManagement
 //    }
 //}
 
+// https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
 func toggleLaunchOnLogin() {
     NSApplication.shared.enableRelaunchOnLogin()
 }
@@ -37,6 +38,23 @@ func openUrl(url: String) {
 func openPreferences() {
     CreditsView()
 }
+
+//func retrieveConfig() {
+//    let userDefaults = UserDefaults.standard
+//    do {
+//        let bookmark = try userDefaults.getObject(forKey: "MyFavouriteBook", castTo: BookMark.self)
+//        print(bookmark)
+//    } catch {
+//        print(error.localizedDescription)
+//    }
+//}
+//
+//func saveConfig() {
+//    let bookmark = BookMark(label: "asdfs", url: "sdfsd", username: "asdasd", password: "asdasd", shortcut: "asdas")
+//    let userDefaults = UserDefaults.standard
+//
+//    userDefaults.set(bookmark, forKey: "BookMark")
+//}
 
 func confirmQuit() {
     let alert = NSAlert()
@@ -59,10 +77,16 @@ struct SalesforceToolKitApp: App {
     @State var credentialManager = LinkManager()
     @State var currentOption: String  = "1"
     
-    var version = "2.1.1"
+    var version = "2.3.0"
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
+            
+            Image("Banner")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(height:500)
+            
             Button("Salesforce ToolKit (version \(version))"){}
                 .disabled(true)
             Divider()
@@ -79,29 +103,46 @@ struct SalesforceToolKitApp: App {
                 
                 Divider()
                 
-                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
-                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
+                Menu("Request new org") {
+                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Specialized}) { link in
+                        Button(NSLocalizedString("Request", comment: "") + " \(link.label)"){
+                            openUrl(url: link.url)
+                        }
+                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
                     }
-                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
                 }
                 
                 Divider()
                 
-                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
-                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
+                Menu("Tools"){
+                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
+                        Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                            openUrl(url: link.url)
+                        }
+                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
                     }
-                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
                 }
                 
                 Divider()
                 
-                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Other}) { link in
-                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
+                Menu("DevOp Tools") {
+                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
+                        Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                            openUrl(url: link.url)
+                        }
+                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
                     }
-                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
+                }
+                
+                Divider()
+                
+                Menu("Help") {
+                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Help}) { link in
+                        Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                            openUrl(url: link.url)
+                        }
+                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
+                    }
                 }
             }
             
@@ -114,10 +155,10 @@ struct SalesforceToolKitApp: App {
             .keyboardShortcut("p")
             .disabled(true)
             
-            //            Divider()
-            //            Button("Credits (version \(version))") {
-            //                openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
-            //            }
+            Divider()
+            Button(NSLocalizedString("About", comment: "")) {
+                openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
+            }
             
             Divider()
             Button(NSLocalizedString("Quit", comment: "")) {
