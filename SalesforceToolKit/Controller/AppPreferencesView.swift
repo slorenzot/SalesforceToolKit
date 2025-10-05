@@ -5,8 +5,10 @@ struct AppPreferencesView: View {
 
     var body: some View {
         Form {
-            TextField("Salesforce CLI Path", text: $sfPath)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            VStack {
+                TextField("Salesforce CLI Path", text: $sfPath)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
         }
         .padding()
         .frame(width: 400, height: 100)

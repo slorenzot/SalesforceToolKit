@@ -9,6 +9,7 @@ import SwiftUI
 import ServiceManagement
 
 var preferencesWindow: NSWindow?
+var authenticationWindow: NSWindow?
 
 func openPreferences() {
     if preferencesWindow == nil {
@@ -23,6 +24,22 @@ func openPreferences() {
         preferencesWindow = window
     }
     preferencesWindow?.makeKeyAndOrderFront(nil)
+    NSApp.activate(ignoringOtherApps: true)
+}
+
+func openAuthenticationWindow() {
+    if authenticationWindow == nil {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false)
+        window.center()
+        window.title = "Authenticate & Open Org"
+        window.contentView = NSHostingView(rootView: AuthenticationView())
+        authenticationWindow = window
+    }
+    authenticationWindow?.makeKeyAndOrderFront(nil)
     NSApp.activate(ignoringOtherApps: true)
 }
 
@@ -79,12 +96,18 @@ struct SalesforceToolKitApp: App {
     @AppStorage("settings") var settings: String = ""
     
     @State var credentialManager = LinkManager()
+    @StateObject var authenticatedOrgManager = AuthenticatedOrgManager()
     @State var currentOption: String  = "1"
     
     var version = "2.3.0"
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
+            
+            Image("Banner")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(height:500)
             
             Button("Salesforce ToolKit (version \(version))"){}
                 .disabled(true)
@@ -95,7 +118,20 @@ struct SalesforceToolKitApp: App {
             } else {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.CLI}) { link in
                     Button(link.label){
-                        credentialManager.authenticateAndOpenOrg()
+                        openAuthenticationWindow()
+                    }
+                }
+                
+                Menu("Authenticated Orgs") {
+                    if authenticatedOrgManager.authenticatedOrgs.isEmpty {
+                        Button("No authenticated orgs"){}.disabled(true)
+                    } else {
+                        ForEach(authenticatedOrgManager.authenticatedOrgs) { org in
+                            Button("Open \(org.alias)") {
+                                let cli = SalesforceCLI()
+                                cli.open(alias: org.alias)
+                            }
+                        }
                     }
                 }
                 

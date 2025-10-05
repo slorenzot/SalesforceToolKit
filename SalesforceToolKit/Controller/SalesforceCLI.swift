@@ -30,12 +30,18 @@ class SalesforceCLI {
         return (output, task.terminationStatus)
     }
     
-    func auth(alias: String) {
+    func auth(alias: String, instanceUrl: String? = nil, orgType: String) {
         let sfPath = getSfPath()
-        let (output, status) = execute(launchPath: sfPath, arguments: ["org", "login", "web", "--alias", alias])
+        var arguments = ["org", "login", "web", "--alias", alias]
+        if let instanceUrl = instanceUrl {
+            arguments.append(contentsOf: ["--instance-url", instanceUrl])
+        }
+        
+        let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
         if status == 0 {
             print("Successfully authenticated to org with alias: \(alias)")
+            NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgType": orgType])
         } else {
             print("Error authenticating to org: \(output ?? "")")
         }

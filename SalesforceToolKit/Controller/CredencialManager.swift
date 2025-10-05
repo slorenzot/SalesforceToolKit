@@ -226,9 +226,4 @@ class LinkManager: ObservableObject {
         self.storedLinks.append(credencial)
     }
     
-    func authenticateAndOpenOrg() {
-        let alias = "my-org"
-        salesforceCLI.auth(alias: alias)
-        salesforceCLI.open(alias: alias)
-    }
 }
