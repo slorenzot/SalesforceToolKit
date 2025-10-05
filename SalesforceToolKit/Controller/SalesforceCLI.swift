@@ -19,7 +19,7 @@ class SalesforceCLI {
         do {
             try task.run()
         } catch {
-            return("\(error.localizedDescription): \(launchPath)", 1)
+            return ("\(error.localizedDescription): \(launchPath)", 1)
         }
         
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
@@ -30,7 +30,28 @@ class SalesforceCLI {
         return (output, task.terminationStatus)
     }
     
+    private func killProcessUsingPort1717() {
+        let (lsofOutput, _) = execute(launchPath: "/usr/sbin/lsof", arguments: ["-i", ":1717"])
+        
+        guard let output = lsofOutput else {
+            return
+        }
+        
+        let lines = output.split(separator: "\n")
+        if lines.count > 1 {
+            let line = lines[1]
+            let components = line.split(whereSeparator: { $0.isWhitespace })
+            if components.count > 1 {
+                let pid = String(components[1])
+                let (killOutput, _) = execute(launchPath: "/bin/kill", arguments: ["-9", pid])
+                print("Killed process with PID \(pid) using port 1717. Output: \(killOutput ?? "")")
+            }
+        }
+    }
+    
     func auth(alias: String, instanceUrl: String? = nil, orgType: String) {
+        killProcessUsingPort1717()
+        
         let sfPath = getSfPath()
         var arguments = ["org", "login", "web", "--alias", alias]
         if let instanceUrl = instanceUrl {

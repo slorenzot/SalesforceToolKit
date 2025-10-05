@@ -29,10 +29,11 @@ class AuthenticatedOrgManager: ObservableObject {
         }
     }
     
-    func updateOrg(org: AuthenticatedOrg) {
+    func updateOrg(org: AuthenticatedOrg, completion: (() -> Void)? = nil) {
         if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
             authenticatedOrgs[index] = org
             saveOrgs()
+            completion?()
         }
     }
     

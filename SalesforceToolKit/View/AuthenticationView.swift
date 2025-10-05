@@ -4,9 +4,6 @@ struct AuthenticationView: View {
     @State private var orgType = "Producción"
     @State private var alias = ""
     
-    let PRO_LOGIN_URL = "https://login.salesforce.com"
-    let DEV_LOGIN_URL = "https://test.salesforce.com"
-    
     let orgTypes = ["Producción", "Desarrollo"]
 
     var body: some View {
@@ -22,14 +19,16 @@ struct AuthenticationView: View {
             }
             
             Button("Acceder") {
+                print("Acceder button clicked")
                 let cli = SalesforceCLI()
-                let instanceUrl = orgType == "Producción" ? PRO_LOGIN_URL : DEV_LOGIN_URL
+                let instanceUrl = orgType == "Producción" ? "https://login.salesforce.com" : "https://test.salesforce.com"
+                print("Calling cli.auth with alias: \(alias), instanceUrl: \(instanceUrl), orgType: \(orgType)")
                 cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
             }
             .padding()
         }
         .padding()
-        .frame(width: 400, height: 450)
+        .frame(width: 300, height: 150)
     }
 }
 

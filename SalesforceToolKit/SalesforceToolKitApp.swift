@@ -8,41 +8,6 @@
 import SwiftUI
 import ServiceManagement
 
-var preferencesWindow: NSWindow?
-var authenticationWindow: NSWindow?
-
-func openPreferences() {
-    if preferencesWindow == nil {
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 480, height: 120),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false)
-        window.center()
-        window.title = NSLocalizedString("Preferences", comment: "")
-        window.contentView = NSHostingView(rootView: AppPreferencesView())
-        preferencesWindow = window
-    }
-    preferencesWindow?.makeKeyAndOrderFront(nil)
-    NSApp.activate(ignoringOtherApps: true)
-}
-
-func openAuthenticationWindow() {
-    if authenticationWindow == nil {
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false)
-        window.center()
-        window.title = "Authenticate & Open Org"
-        window.contentView = NSHostingView(rootView: AuthenticationView())
-        authenticationWindow = window
-    }
-    authenticationWindow?.makeKeyAndOrderFront(nil)
-    NSApp.activate(ignoringOtherApps: true)
-}
-
 
 // https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
 func toggleLaunchOnLogin() {
@@ -59,23 +24,6 @@ func openUrl(url: String) {
         NSWorkspace.shared.open(url)
     }
 }
-
-//func retrieveConfig() {
-//    let userDefaults = UserDefaults.standard
-//    do {
-//        let bookmark = try userDefaults.getObject(forKey: "MyFavouriteBook", castTo: BookMark.self)
-//        print(bookmark)
-//    } catch {
-//        print(error.localizedDescription)
-//    }
-//}
-//
-//func saveConfig() {
-//    let bookmark = BookMark(label: "asdfs", url: "sdfsd", username: "asdasd", password: "asdasd", shortcut: "asdas")
-//    let userDefaults = UserDefaults.standard
-//
-//    userDefaults.set(bookmark, forKey: "BookMark")
-//}
 
 func confirmQuit() {
     let alert = NSAlert()
@@ -99,7 +47,56 @@ struct SalesforceToolKitApp: App {
     @StateObject var authenticatedOrgManager = AuthenticatedOrgManager()
     @State var currentOption: String  = "1"
     
+    @State var preferencesWindow: NSWindow?
+    @State var authenticationWindow: NSWindow?
+    
     var version = "2.3.0"
+    
+    func openPreferences() {
+        if preferencesWindow == nil {
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 480, height: 120),
+                styleMask: [.titled, .closable],
+                backing: .buffered,
+                defer: false)
+            window.center()
+            window.title = NSLocalizedString("Preferences", comment: "")
+            window.contentView = NSHostingView(rootView: AppPreferencesView())
+            preferencesWindow = window
+        }
+        preferencesWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func openAuthenticationWindow() {
+        if authenticationWindow == nil {
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+                styleMask: [.titled, .closable],
+                backing: .buffered,
+                defer: false)
+            window.center()
+            window.title = "Authenticate & Open Org"
+            window.contentView = NSHostingView(rootView: AuthenticationView())
+            authenticationWindow = window
+        }
+        authenticationWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func openEditAuthenticationWindow(org: AuthenticatedOrg) {
+        let editView = EditAuthenticationView(org: org, manager: authenticatedOrgManager)
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false)
+        window.center()
+        window.title = "Edit Org"
+        window.contentView = NSHostingView(rootView: editView)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
@@ -133,7 +130,7 @@ struct SalesforceToolKitApp: App {
                                     cli.open(alias: org.alias)
                                 }
                                 Button("Edit") {
-                                    // TODO: Implement edit functionality
+                                    openEditAuthenticationWindow(org: org)
                                 }
                                 Button("Delete") {
                                     authenticatedOrgManager.deleteOrg(org: org)
