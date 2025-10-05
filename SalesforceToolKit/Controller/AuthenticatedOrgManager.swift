@@ -22,6 +22,20 @@ class AuthenticatedOrgManager: ObservableObject {
         }
     }
     
+    func deleteOrg(org: AuthenticatedOrg) {
+        if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
+            authenticatedOrgs.remove(at: index)
+            saveOrgs()
+        }
+    }
+    
+    func updateOrg(org: AuthenticatedOrg) {
+        if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
+            authenticatedOrgs[index] = org
+            saveOrgs()
+        }
+    }
+    
     private func saveOrgs() {
         if let encoded = try? JSONEncoder().encode(authenticatedOrgs) {
             UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
