@@ -101,11 +101,6 @@ struct SalesforceToolKitApp: App {
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
             
-            Image("Banner")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(height:500)
-            
             Button("Salesforce ToolKit (version \(version))"){}
                 .disabled(true)
             Divider()
