@@ -1,18 +1,15 @@
-//
-//  AppPreferencesView.swift
-//  SalesforceToolKit
-//
-//  Created by Soulberto Lorenzo on 20/08/23.
-//
-
 import SwiftUI
 
 struct AppPreferencesView: View {
+    @AppStorage("sfPath") private var sfPath: String = "/usr/local/bin/sf"
+
     var body: some View {
-        NavigationView {
-            Text("Panel 1")
-            Text("Panel 2")
+        Form {
+            TextField("Salesforce CLI Path", text: $sfPath)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
         }
+        .padding()
+        .frame(width: 400, height: 100)
     }
 }
 

@@ -8,16 +8,24 @@
 import SwiftUI
 import ServiceManagement
 
-//class AppPreferences: NSWindow {
-//    init() {
-//        super.init(contentRect: NSRect(x: 0, y: 0, width: 480, height: 300), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
-//        makeKeyAndOrderFront(nil)
-//        isReleasedWhenClosed = false
-//        styleMask.insert(NSWindow.StyleMask.fullSizeContentView)
-//        title = "title placeholder"
-//        contentView = NSHostingView(rootView: ContentView())
-//    }
-//}
+var preferencesWindow: NSWindow?
+
+func openPreferences() {
+    if preferencesWindow == nil {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 120),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false)
+        window.center()
+        window.title = NSLocalizedString("Preferences", comment: "")
+        window.contentView = NSHostingView(rootView: AppPreferencesView())
+        preferencesWindow = window
+    }
+    preferencesWindow?.makeKeyAndOrderFront(nil)
+    NSApp.activate(ignoringOtherApps: true)
+}
+
 
 // https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
 func toggleLaunchOnLogin() {
@@ -33,10 +41,6 @@ func openUrl(url: String) {
     if let url = URL(string: url) {
         NSWorkspace.shared.open(url)
     }
-}
-
-func openPreferences() {
-    CreditsView()
 }
 
 //func retrieveConfig() {
@@ -81,11 +85,6 @@ struct SalesforceToolKitApp: App {
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
-            
-            Image("Banner")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(height:500)
             
             Button("Salesforce ToolKit (version \(version))"){}
                 .disabled(true)
@@ -161,7 +160,6 @@ struct SalesforceToolKitApp: App {
                 openPreferences()
             }
             .keyboardShortcut("p")
-            .disabled(true)
             
             Divider()
             Button(NSLocalizedString("About", comment: "")) {
