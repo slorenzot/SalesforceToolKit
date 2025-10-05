@@ -104,11 +104,6 @@ struct SalesforceToolKitApp: App {
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
             
-            Image("Banner")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(height:500)
-            
             Button("Salesforce ToolKit (version \(version))"){}
                 .disabled(true)
             Divider()
@@ -127,7 +122,7 @@ struct SalesforceToolKitApp: App {
                         Button("No authenticated orgs"){}.disabled(true)
                     } else {
                         ForEach(authenticatedOrgManager.authenticatedOrgs) { org in
-                            Button("Open \(org.alias)") {
+                            Button("Open \(org.alias) (\(org.orgType))") {
                                 let cli = SalesforceCLI()
                                 cli.open(alias: org.alias)
                             }
