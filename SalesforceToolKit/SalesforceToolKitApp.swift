@@ -94,6 +94,14 @@ struct SalesforceToolKitApp: App {
             if (credentialManager.storedLinks.isEmpty) {
                 Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
             } else {
+                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.CLI}) { link in
+                    Button(link.label){
+                        credentialManager.authenticateAndOpenOrg()
+                    }
+                }
+                
+                Divider()
+                
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Org}) { link in
                     Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
                         openUrl(url: link.url)

@@ -13,7 +13,7 @@ enum EncryptionMethod: String, Encodable, Decodable {
 }
 
 enum LinkType: Encodable, Decodable {
-    case Org, Specialized, Toolbox, DevOp, Help, Other
+    case Org, Specialized, Toolbox, DevOp, Help, Other, CLI
 }
 
 final class Link: Identifiable {
@@ -37,7 +37,17 @@ final class Link: Identifiable {
 class LinkManager: ObservableObject {
     @Published var storedLinks : [Link] = []
     
+    let salesforceCLI = SalesforceCLI()
+    
     init() {
+        self.add(
+            credencial: Link(
+                label: "Authenticate & Open Org",
+                url: "",
+                username: "",
+                password: "",
+                type: LinkType.CLI,
+                shortcut: "a"))
         self.add(
             credencial: Link(
                 label: "Salesforce (Sandbox)",
@@ -214,5 +224,11 @@ class LinkManager: ObservableObject {
     
     func add(credencial: Link) {
         self.storedLinks.append(credencial)
+    }
+    
+    func authenticateAndOpenOrg() {
+        let alias = "my-org"
+        salesforceCLI.auth(alias: alias)
+        salesforceCLI.open(alias: alias)
     }
 }
