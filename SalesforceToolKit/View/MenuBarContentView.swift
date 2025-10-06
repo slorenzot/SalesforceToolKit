@@ -69,14 +69,12 @@ struct MenuBarContentView: View {
                             }
                             
                             Menu {
-                                
-                                
                                 Button() {
                                     let cli = SalesforceCLI()
                                     let _ = cli.open(alias: org.alias, path: SCHBUILDER_PATH)
                                 } label: {
                                     Image(systemName: "map.fill")
-                                    Text("Abrir generador de esquemas")
+                                    Text("Generador de esquemas")
                                 }
                                 
                                 Button() {
@@ -84,21 +82,19 @@ struct MenuBarContentView: View {
                                     let _ = cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
                                 } label: {
                                     Image(systemName: "terminal.fill")
-                                    Text("Abrir consola de desarrollador")
-                                }
-                                
-                                Divider()
-                                
-                                Button() {
-                                    let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: SETUP_PATH)
-                                } label: {
-                                    Image(systemName: "gearshape")
-                                    Text("Abrir configuración...")
+                                    Text("Consola de desarrollador")
                                 }
                                 
                             } label: {
-                                Text("Desarrollador")
+                                Text("Herramientas de Desarrollo")
+                            }
+                            
+                            Button() {
+                                let cli = SalesforceCLI()
+                                let _ = cli.open(alias: org.alias, path: SETUP_PATH)
+                            } label: {
+                                Image(systemName: "gearshape")
+                                Text("Configuración...")
                             }
                             
                             Divider()

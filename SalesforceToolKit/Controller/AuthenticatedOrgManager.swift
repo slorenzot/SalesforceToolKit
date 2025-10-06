@@ -18,6 +18,7 @@ class AuthenticatedOrgManager: ObservableObject {
         let newOrg = AuthenticatedOrg(orgId: orgId, alias: alias, label: label, orgType: orgType)
         if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
             authenticatedOrgs.append(newOrg)
+            authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
             saveOrgs()
         }
     }
@@ -54,6 +55,7 @@ class AuthenticatedOrgManager: ObservableObject {
     func updateOrg(org: AuthenticatedOrg, completion: (() -> Void)? = nil) {
         if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
             authenticatedOrgs[index] = org
+            authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
             saveOrgs()
             completion?()
         }
@@ -69,16 +71,18 @@ class AuthenticatedOrgManager: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: userDefaultsKey) {
             if let decoded = try? JSONDecoder().decode([AuthenticatedOrg].self, from: data) {
                 authenticatedOrgs = decoded
+                authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
             }
         }
     }
     
     @objc private func handleSuccessfulAuth(notification: Notification) {
         if let userInfo = notification.userInfo,
+           let label = userInfo["label"] as? String,
            let alias = userInfo["alias"] as? String,
            let orgType = userInfo["orgType"] as? String,
            let orgId = userInfo["orgId"] as? String {
-            addOrg(label: alias, alias: alias, orgType: orgType, orgId: orgId)
+            addOrg(label: label, alias: alias, orgType: orgType, orgId: orgId)
         }
     }
 }

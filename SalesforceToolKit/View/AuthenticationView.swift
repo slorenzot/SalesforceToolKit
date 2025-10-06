@@ -11,6 +11,14 @@ struct AuthenticationView: View {
     
     let orgTypes = ["Producción", "Desarrollo"]
 
+    private func generateAlias(from label: String) -> String {
+        let newLabel = label.replacingOccurrences(of: " ", with: "-")
+        let allowedCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-"))
+        return newLabel.lowercased()
+            .components(separatedBy: allowedCharacters.inverted)
+            .joined()
+    }
+
     var body: some View {
         VStack {
             Form {
@@ -20,7 +28,11 @@ struct AuthenticationView: View {
                     }
                 }
                 TextField("Etiqueta", text: $label)
+                    .onChange(of: label, perform: { value in
+                        alias = generateAlias(from: value)
+                    })
                 TextField("Alias", text: $alias)
+                    .disabled(true)
             }
             
             Button("Acceder") {
