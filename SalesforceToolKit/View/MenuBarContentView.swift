@@ -19,6 +19,7 @@ struct MenuBarContentView: View {
     
     let SETUP_PATH = "/lightning/setup/SetupOneHome/home"
     let DEVCONSOLE_PATH = "/_ui/common/apex/debug/ApexCSIPage"
+    let SCHBUILDER_PATH = "/lightning/setup/SchemaBuilder/home"
     
     var body: some View {
         Button("Salesforce ToolKit (version \(version))"){}
@@ -66,23 +67,36 @@ struct MenuBarContentView: View {
                                 }
                             }
                             
+                            Menu {
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: SETUP_PATH)
+                                } label: {
+                                    Image(systemName: "gearshape")
+                                    Text("Abrir configuración...")
+                                }
+                                
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: SCHBUILDER_PATH)
+                                } label: {
+                                    Image(systemName: "map.fill")
+                                    Text("Abrir generador de esquemas")
+                                }
+                                
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
+                                } label: {
+                                    Image(systemName: "terminal.fill")
+                                    Text("Abrir consola de desarrollador")
+                                }
+                                
+                            } label: {
+                                Text("Desarrollador")
+                            }
+                            
                             Divider()
-                            
-                            Button() {
-                                let cli = SalesforceCLI()
-                                let _ = cli.open(alias: org.alias, path: SETUP_PATH)
-                            } label: {
-                                Image(systemName: "gearshape")
-                                Text("Abrir configuración...")
-                            }
-                            
-                            Button() {
-                                let cli = SalesforceCLI()
-                                let _ = cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
-                            } label: {
-                                Image(systemName: "terminal.fill")
-                                Text("Abrir consola de desarrollador")
-                            }
                             
                             Button("Preferencias...") {
                                 openEditAuthenticationWindow(org)
