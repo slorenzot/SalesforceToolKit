@@ -158,10 +158,13 @@ struct SalesforceToolKitApp: App {
                                     let cli = SalesforceCLI()
                                     cli.open(alias: org.alias)
                                 }
-                                Button("Edit") {
+                                Button("Edit...") {
                                     openEditAuthenticationWindow(org: org)
                                 }
-                                Button("Delete") {
+                                
+                                Divider()
+                                
+                                Button("Delete...") {
                                     confirmDelete(org: org)
                                 }
                             } label: {
