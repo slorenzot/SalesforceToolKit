@@ -6,7 +6,8 @@ struct MenuBarContentView: View {
     
     @ObservedObject var keyMonitor: KeyMonitor
     @ObservedObject var authenticatedOrgManager: AuthenticatedOrgManager
-    @Binding var relaunchOnLogin: Bool
+    @Binding var launchOnLogin: Bool
+    var setLaunchOnLogin: (Bool) -> Void
     var credentialManager: LinkManager
     var version: String
     
@@ -30,7 +31,7 @@ struct MenuBarContentView: View {
             openAuthenticationWindow()
         } label: {
             Image(systemName: "key.icloud.fill")
-            Text("Authencate & Open Org...")
+            Text("Autenticar y abrir organización...")
         }
         
         Divider()
@@ -38,7 +39,7 @@ struct MenuBarContentView: View {
         if (credentialManager.storedLinks.isEmpty) {
             Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
         } else {
-            Menu("Authenticated Orgs") {
+            Menu("Organizaciones autenticadas") {
                 if authenticatedOrgManager.authenticatedOrgs.isEmpty {
                     Button("No authenticated orgs"){}.disabled(true)
                 } else {
@@ -68,13 +69,7 @@ struct MenuBarContentView: View {
                             }
                             
                             Menu {
-                                Button() {
-                                    let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: SETUP_PATH)
-                                } label: {
-                                    Image(systemName: "gearshape")
-                                    Text("Abrir configuración...")
-                                }
+                                
                                 
                                 Button() {
                                     let cli = SalesforceCLI()
@@ -90,6 +85,16 @@ struct MenuBarContentView: View {
                                 } label: {
                                     Image(systemName: "terminal.fill")
                                     Text("Abrir consola de desarrollador")
+                                }
+                                
+                                Divider()
+                                
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: SETUP_PATH)
+                                } label: {
+                                    Image(systemName: "gearshape")
+                                    Text("Abrir configuración...")
                                 }
                                 
                             } label: {
@@ -172,7 +177,10 @@ struct MenuBarContentView: View {
         }
         
         Divider()
-        Toggle(NSLocalizedString("Launch at Startup", comment: ""), isOn: $relaunchOnLogin)
+        Toggle(NSLocalizedString("Launch at Startup", comment: ""), isOn: $launchOnLogin)
+            .onChange(of: launchOnLogin) { value in
+                setLaunchOnLogin(value)
+            }
             .toggleStyle(.checkbox)
         Button(NSLocalizedString("Preferences", comment: "")) {
             openPreferences()

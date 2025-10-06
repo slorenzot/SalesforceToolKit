@@ -11,9 +11,7 @@ import UserNotifications
 
 
 // https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
-func toggleLaunchOnLogin() {
-    NSApplication.shared.enableRelaunchOnLogin()
-}
+
 
 func openUrl(url: String) {
     // using OAuth token
@@ -39,9 +37,39 @@ func confirmQuit() {
     }
 }
 
+class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+    var window: NSWindow!
+    
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        UNUserNotificationCenter.current().delegate = self
+        
+        let bundleIdentifier = Bundle.main.bundleIdentifier!
+        let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier)
+        if runningApps.count > 1 {
+            print("Another instance is already running. Activating it and terminating.")
+            runningApps.first?.activate(options: .activateIgnoringOtherApps)
+            NSApp.terminate(nil)
+        }
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound])
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !flag {
+            for window in sender.windows {
+                window.makeKeyAndOrderFront(self)
+            }
+        }
+        return true
+    }
+}
+
 @main
 struct SalesforceToolKitApp: App {
-    @AppStorage("relaunchOnLogin") var relaunchOnLogin: Bool = false
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     @AppStorage("settings") var settings: String = ""
     
     @State var credentialManager = LinkManager()
@@ -51,6 +79,13 @@ struct SalesforceToolKitApp: App {
     
     @State var preferencesWindow: NSWindow?
     @State var authenticationWindow: NSWindow?
+    
+    @State private var launchOnLogin = false
+
+    private func setLaunchOnLogin(enabled: Bool) {
+        let identifier = "com.nesponsoul.SalesforceToolKit-Launcher" as CFString
+        SMLoginItemSetEnabled(identifier, enabled)
+    }
     
     var version = "2.3.0"
 
@@ -88,7 +123,7 @@ struct SalesforceToolKitApp: App {
                 backing: .buffered,
                 defer: false)
             window.center()
-            window.title = "Authenticate & Open Org"
+            window.title = "Autenticar y Abrir Organización"
             window.contentView = NSHostingView(rootView: AuthenticationView())
             authenticationWindow = window
         }
@@ -161,7 +196,8 @@ struct SalesforceToolKitApp: App {
             MenuBarContentView(
                 keyMonitor: keyMonitor,
                 authenticatedOrgManager: authenticatedOrgManager,
-                relaunchOnLogin: $relaunchOnLogin,
+                launchOnLogin: $launchOnLogin,
+                setLaunchOnLogin: setLaunchOnLogin,
                 credentialManager: credentialManager,
                 version: version,
                 openAuthenticationWindow: openAuthenticationWindow,
