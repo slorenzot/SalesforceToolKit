@@ -30,8 +30,8 @@ class SalesforceCLI {
         return (output, task.terminationStatus)
     }
     
-    private func killProcessUsingPort1717() {
-        let (lsofOutput, _) = execute(launchPath: "/usr/sbin/lsof", arguments: ["-i", ":1717"])
+    private func killProcess(port: Int) {
+        let (lsofOutput, _) = execute(launchPath: "/usr/sbin/lsof", arguments: ["-i", ":\(port)"])
         
         guard let output = lsofOutput else {
             return
@@ -50,7 +50,7 @@ class SalesforceCLI {
     }
     
     func auth(alias: String, instanceUrl: String? = nil, orgType: String) {
-        killProcessUsingPort1717()
+        killProcess(port: 1717)
         
         let sfPath = getSfPath()
         var arguments = ["org", "login", "web", "--alias", alias]

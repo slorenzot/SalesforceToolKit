@@ -132,7 +132,7 @@ struct SalesforceToolKitApp: App {
                                 }
                             } label: {
                                 Image(systemName: "cloud.fill")
-                                Text(org.alias)
+                                Text("\(org.alias) (\(org.orgType))")
                             }
                         }
                     }

@@ -14,8 +14,8 @@ class AuthenticatedOrgManager: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func addOrg(alias: String, orgType: String) {
-        let newOrg = AuthenticatedOrg(alias: alias, orgType: orgType)
+    func addOrg(label: String, alias: String, orgType: String) {
+        let newOrg = AuthenticatedOrg(alias: alias, label: label, orgType: orgType)
         if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
             authenticatedOrgs.append(newOrg)
             saveOrgs()
@@ -55,7 +55,7 @@ class AuthenticatedOrgManager: ObservableObject {
         if let userInfo = notification.userInfo,
            let alias = userInfo["alias"] as? String,
            let orgType = userInfo["orgType"] as? String {
-            addOrg(alias: alias, orgType: orgType)
+            addOrg(label: alias, alias: alias, orgType: orgType)
         }
     }
 }
