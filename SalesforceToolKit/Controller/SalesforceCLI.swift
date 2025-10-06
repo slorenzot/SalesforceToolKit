@@ -49,7 +49,7 @@ class SalesforceCLI {
         }
     }
     
-    func auth(alias: String, instanceUrl: String? = nil, orgType: String) {
+    func auth(alias: String, instanceUrl: String? = nil, orgType: String) -> Bool {
         killProcess(port: 1717)
         
         let sfPath = getSfPath()
@@ -63,9 +63,13 @@ class SalesforceCLI {
         if status == 0 {
             print("Successfully authenticated to org with alias: \(alias)")
             NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgType": orgType])
+            
+            return true
         } else {
             print("Error authenticating to org: \(output ?? "")")
         }
+        
+        return false
     }
     
     func open(alias: String) {
@@ -75,5 +79,16 @@ class SalesforceCLI {
         if status != 0 {
             print("Error opening org: \(output ?? "")")
         }
+    }
+
+    func delete(alias: String) -> Bool {
+        let sfPath = getSfPath()
+        let (output, status) = execute(launchPath: sfPath, arguments: ["org", "logout", "--target-org", alias, "--no-prompt"])
+
+        if status != 0 {
+            print("Error deleting org: \(output ?? "")")
+        }
+        
+        return true
     }
 }

@@ -22,11 +22,18 @@ class AuthenticatedOrgManager: ObservableObject {
         }
     }
     
-    func deleteOrg(org: AuthenticatedOrg) {
+    func deleteOrg(org: AuthenticatedOrg) -> Bool {
+        let cli = SalesforceCLI()
+        let deleted = cli.delete(alias: org.alias)
+        
         if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
             authenticatedOrgs.remove(at: index)
             saveOrgs()
+            
+            return deleted
         }
+        
+        return false
     }
     
     func updateOrg(org: AuthenticatedOrg, completion: (() -> Void)? = nil) {

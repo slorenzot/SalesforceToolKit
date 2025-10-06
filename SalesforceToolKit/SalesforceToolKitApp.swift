@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ServiceManagement
+import UserNotifications
 
 
 // https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
@@ -51,6 +52,16 @@ struct SalesforceToolKitApp: App {
     @State var authenticationWindow: NSWindow?
     
     var version = "2.3.0"
+
+    init() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+            if granted {
+                print("Notification authorization granted.")
+            } else if let error = error {
+                print("Notification authorization error: \(error.localizedDescription)")
+            }
+        }
+    }
     
     func openPreferences() {
         if preferencesWindow == nil {
@@ -82,6 +93,29 @@ struct SalesforceToolKitApp: App {
         }
         authenticationWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func confirmDelete(org: AuthenticatedOrg) {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("Confirm deletion", comment: "")
+        alert.informativeText = String(format: NSLocalizedString("Are you sure you want to delete the org with alias %@?", comment: ""), org.alias)
+        alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        alert.alertStyle = .warning
+
+        if alert.runModal() == .alertFirstButtonReturn {
+            let deleted = authenticatedOrgManager.deleteOrg(org: org)
+            
+            if (deleted) {
+                let content = UNMutableNotificationContent()
+                content.title = "Deletion Successful"
+                content.body = "Successfully deleted to \(org.alias)."
+                content.sound = UNNotificationSound.default
+
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(request)
+            }
+        }
     }
 
     func openEditAuthenticationWindow(org: AuthenticatedOrg) {
@@ -128,7 +162,7 @@ struct SalesforceToolKitApp: App {
                                     openEditAuthenticationWindow(org: org)
                                 }
                                 Button("Delete") {
-                                    authenticatedOrgManager.deleteOrg(org: org)
+                                    confirmDelete(org: org)
                                 }
                             } label: {
                                 Image(systemName: "cloud.fill")

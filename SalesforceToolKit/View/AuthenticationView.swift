@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct AuthenticationView: View {
     @State private var orgType = "Producción"
@@ -23,7 +24,17 @@ struct AuthenticationView: View {
                 let cli = SalesforceCLI()
                 let instanceUrl = orgType == "Producción" ? "https://login.salesforce.com" : "https://test.salesforce.com"
                 print("Calling cli.auth with alias: \(alias), instanceUrl: \(instanceUrl), orgType: \(orgType)")
-                cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
+                let authenticated = cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
+                
+                if (authenticated) {
+                    let content = UNMutableNotificationContent()
+                    content.title = "Authentication Successful"
+                    content.body = "Successfully authenticated to org \(alias)."
+                    content.sound = UNNotificationSound.default
+
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                }
             }
             .padding()
         }
