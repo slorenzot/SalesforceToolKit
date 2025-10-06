@@ -9,7 +9,6 @@ struct OrgResult: Codable {
 }
 
 class SalesforceCLI {
-    
     private func getSfPath() -> String {
         // Default to /usr/local/bin/sf if not set
         return UserDefaults.standard.string(forKey: "sfPath") ?? "/usr/local/bin/sf"
@@ -131,7 +130,7 @@ class SalesforceCLI {
     
     func open(alias: String, path: String = "", incognito:Bool = false, browser: String = "chrome") {
         let sfPath = getSfPath()
-        var arguments = ["org", "open", "--target-org", alias, "--browser", browser]
+        var arguments = ["org", "open", "--target-org", alias]
         
         if (path != "") {
             arguments.append("--path")
@@ -142,7 +141,13 @@ class SalesforceCLI {
             arguments.append("--private")
         }
         
+        if (browser != "default" && ["chrome", "edge", "firefox"].contains(browser)) {
+            arguments.append("--browser")
+            arguments.append(browser)
+        }
+        
         print("Opening org url by alias: \(alias)")
+        print("Using arguments: \(arguments)")
         
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         

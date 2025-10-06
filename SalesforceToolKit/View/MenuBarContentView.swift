@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MenuBarContentView: View {
+    @AppStorage("defaultBrowser") private var defaultBrowser: String = "chrome"
+    
     @ObservedObject var keyMonitor: KeyMonitor
     @ObservedObject var authenticatedOrgManager: AuthenticatedOrgManager
     @Binding var relaunchOnLogin: Bool
@@ -15,6 +17,7 @@ struct MenuBarContentView: View {
     var confirmQuit: () -> Void
     
     let SETUP_PATH = "/lightning/setup/SetupOneHome/home"
+    let DEVCONSOLE_PATH = "/_ui/common/apex/debug/ApexCSIPage"
     
     var body: some View {
         Button("Salesforce ToolKit (version \(version))"){}
@@ -39,17 +42,35 @@ struct MenuBarContentView: View {
                 } else {
                     ForEach(authenticatedOrgManager.authenticatedOrgs) { org in
                         Menu {
-                            Button("Abrir instancia...") {
+                            Button() {
                                 let cli = SalesforceCLI()
-                                cli.open(alias: org.alias)
+                                cli.open(alias: org.alias,browser: defaultBrowser)
+                            } label: {
+                               Image(systemName: "terminal.fill")
+                               Text("Abrir instancia...")
                             }
+                           
                             Button("Abrir instancia en navegación privada...") {
                                 let cli = SalesforceCLI()
-                                cli.open(alias: org.alias, incognito: true)
+                                cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
                             }
-                            Button("Abrir configuración de la Org...") {
+                            
+                            Divider()
+                            
+                            Button() {
                                 let cli = SalesforceCLI()
                                 cli.open(alias: org.alias, path: SETUP_PATH)
+                            } label: {
+                                Image(systemName: "gearshape")
+                                Text("Abrir configuración...")
+                            }
+                            
+                            Button() {
+                                let cli = SalesforceCLI()
+                                cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
+                            } label: {
+                                Image(systemName: "terminal.fill")
+                                Text("Abrir consola de desarrollador")
                             }
                             
                             Button("Preferencias...") {
