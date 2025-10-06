@@ -46,6 +46,7 @@ struct SalesforceToolKitApp: App {
     
     @State var credentialManager = LinkManager()
     @StateObject var authenticatedOrgManager = AuthenticatedOrgManager()
+    @StateObject private var keyMonitor = KeyMonitor()
     @State var currentOption: String  = "1"
     
     @State var preferencesWindow: NSWindow?
@@ -94,6 +95,29 @@ struct SalesforceToolKitApp: App {
         authenticationWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
+    
+    func confirmLogout(org: AuthenticatedOrg) {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("Confirm logout", comment: "")
+        alert.informativeText = String(format: NSLocalizedString("Are you sure you want to logout the org with alias %@?", comment: ""), org.alias)
+        alert.addButton(withTitle: NSLocalizedString("Logout", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        alert.alertStyle = .warning
+
+        if alert.runModal() == .alertFirstButtonReturn {
+            let deleted = authenticatedOrgManager.deleteOrg(org: org)
+            
+            if (deleted) {
+                let content = UNMutableNotificationContent()
+                content.title = "Logout Successful"
+                content.body = "Successfully logout to \(org.alias)."
+                content.sound = UNNotificationSound.default
+
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                UNUserNotificationCenter.current().add(request)
+            }
+        }
+    }
 
     func confirmDelete(org: AuthenticatedOrg) {
         let alert = NSAlert()
@@ -134,122 +158,19 @@ struct SalesforceToolKitApp: App {
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
-            
-            Button("Salesforce ToolKit (version \(version))"){}
-                .disabled(true)
-            Divider()
-            
-                Button(){
-                    openAuthenticationWindow()
-                } label: {
-                    Image(systemName: "cloud.fill")
-                    Text("Authencate & Open Org...")
-                }
-            
-            Divider()
-            
-            if (credentialManager.storedLinks.isEmpty) {
-                Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
-            } else {
-                Menu("Authenticated Orgs") {
-                    if authenticatedOrgManager.authenticatedOrgs.isEmpty {
-                        Button("No authenticated orgs"){}.disabled(true)
-                    } else {
-                        ForEach(authenticatedOrgManager.authenticatedOrgs) { org in
-                            Menu {
-                                Button("Abrir instancia en navegador...") {
-                                    let cli = SalesforceCLI()
-                                    cli.open(alias: org.alias)
-                                }
-                                Button("Preferencias...") {
-                                    openEditAuthenticationWindow(org: org)
-                                }
-                                
-                                Divider()
-                                
-                                Button("Eliminar...") {
-                                    confirmDelete(org: org)
-                                }
-                            } label: {
-                                Image(systemName: "cloud.fill")
-                                Text("\(org.alias) (\(org.orgType))")
-                            }
-                        }
-                    }
-                }
-                
-                Divider()
-                
-                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Org}) { link in
-                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
-                    }
-                    // TODO: agregar icono dependiento del tipo de Enlace en LinkType
-                }
-                
-                Divider()
-                
-                Menu("Request new org") {
-                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Specialized}) { link in
-                        Button(NSLocalizedString("Request", comment: "") + " \(link.label)"){
-                            openUrl(url: link.url)
-                        }
-                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
-                    }
-                }
-                
-                Divider()
-                
-                Menu("Tools"){
-                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
-                        Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                            openUrl(url: link.url)
-                        }
-                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
-                    }
-                }
-                
-                Divider()
-                
-                Menu("DevOp Tools") {
-                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
-                        Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                            openUrl(url: link.url)
-                        }
-                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
-                    }
-                }
-                
-                Divider()
-                
-                Menu("Help") {
-                    ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Help}) { link in
-                        Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                            openUrl(url: link.url)
-                        }
-                        // TODO: agregar icono dependiento del tipo de Enlace en LinkType
-                    }
-                }
-            }
-            
-            Divider()
-            Toggle(NSLocalizedString("Launch at Startup", comment: ""), isOn: $relaunchOnLogin)
-                .toggleStyle(.checkbox)
-            Button(NSLocalizedString("Preferences", comment: "")) {
-                openPreferences()
-            }
-            .keyboardShortcut("p")
-            
-            Divider()
-            Button(NSLocalizedString("About", comment: "")) {
-                openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
-            }
-            
-            Divider()
-            Button(NSLocalizedString("Quit", comment: "")) {
-                confirmQuit()
-            }
-            .keyboardShortcut("q")
+            MenuBarContentView(
+                keyMonitor: keyMonitor,
+                authenticatedOrgManager: authenticatedOrgManager,
+                relaunchOnLogin: $relaunchOnLogin,
+                credentialManager: credentialManager,
+                version: version,
+                openAuthenticationWindow: openAuthenticationWindow,
+                openEditAuthenticationWindow: openEditAuthenticationWindow,
+                confirmDelete: confirmDelete,
+                confirmLogout: confirmLogout,
+                openPreferences: openPreferences,
+                confirmQuit: confirmQuit
+            )
         }
         
     }

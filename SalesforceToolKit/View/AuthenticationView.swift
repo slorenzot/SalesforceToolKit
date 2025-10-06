@@ -38,6 +38,8 @@ struct AuthenticationView: View {
 
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                     UNUserNotificationCenter.current().add(request)
+                    
+                    close()
                 }
             }
             .disabled(label.trimmingCharacters(in: .whitespacesAndNewlines) == "" || alias.trimmingCharacters(in: .whitespacesAndNewlines) == "")
@@ -54,6 +56,12 @@ struct AuthenticationView: View {
         if let window = NSApp.keyWindow { // Or iterate through NSApp.shared.windows
             window.standardWindowButton(.zoomButton)?.isHidden = true
             window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        }
+    }
+    
+    func close() {
+        if let window = NSApp.keyWindow {
+            window.close()
         }
     }
 }

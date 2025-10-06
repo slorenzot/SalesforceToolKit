@@ -93,6 +93,7 @@ class SalesforceCLI {
         
         if status == 0 {
             print("Successfully authenticated to org with alias: \(alias)")
+            
             if let orgDetails = getOrgDetails(alias: alias) {
                 NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgType": orgType, "orgId": orgDetails.id])
             }
@@ -105,12 +106,45 @@ class SalesforceCLI {
         return false
     }
     
-    func open(alias: String) {
+    func logout(alias: String) -> Bool {
         let sfPath = getSfPath()
+        let arguments = ["org", "logout", "--target-org", alias, "--no-prompt"]
+        
+        print("Logout org by alias: \(alias)")
+        
+        let (output, status) = execute(launchPath: sfPath, arguments: arguments)
+        
+        if status == 0 {
+            print("Successfully authenticated to org with alias: \(alias)")
+            
+            if let orgDetails = getOrgDetails(alias: alias) {
+                NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgId": orgDetails.id])
+            }
+            
+            return true
+        } else {
+            print("Error authenticating to org: \(output ?? "")")
+        }
+        
+        return false
+    }
+    
+    func open(alias: String, path: String = "", incognito:Bool = false, browser: String = "chrome") {
+        let sfPath = getSfPath()
+        var arguments = ["org", "open", "--target-org", alias, "--browser", browser]
+        
+        if (path != "") {
+            arguments.append("--path")
+            arguments.append(path)
+        }
+        
+        if (incognito == true) {
+            arguments.append("--private")
+        }
         
         print("Opening org url by alias: \(alias)")
         
-        let (output, status) = execute(launchPath: sfPath, arguments: ["org", "open", "--target-org", alias])
+        let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
         if status != 0 {
             print("Error opening org: \(output ?? "")")
