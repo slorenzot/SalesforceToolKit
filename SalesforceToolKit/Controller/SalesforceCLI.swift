@@ -42,6 +42,7 @@ class SalesforceCLI {
         let (output, status) = execute(launchPath: sfPath, arguments: ["org", "display", "--target-org", alias, "--json"])
         
         print("Getting org details by alias: \(alias)")
+        print("Using arguments: \(["alias", alias])")
 
         if status == 0, let data = output?.data(using: .utf8) {
             do {
@@ -82,11 +83,12 @@ class SalesforceCLI {
         let sfPath = getSfPath()
         var arguments = ["org", "login", "web", "--alias", alias]
         
-        print("Authenticating org by alias: \(alias)")
-        
         if let instanceUrl = instanceUrl {
             arguments.append(contentsOf: ["--instance-url", instanceUrl])
         }
+        
+        print("Authenticating org by alias: \(alias)")
+        print("Using arguments: \(arguments)")
         
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
@@ -110,6 +112,7 @@ class SalesforceCLI {
         let arguments = ["org", "logout", "--target-org", alias, "--no-prompt"]
         
         print("Logout org by alias: \(alias)")
+        print("Using arguments: \(["alias", alias])")
         
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
@@ -128,7 +131,7 @@ class SalesforceCLI {
         return false
     }
     
-    func open(alias: String, path: String = "", incognito:Bool = false, browser: String = "chrome") {
+    func open(alias: String, path: String = "", incognito:Bool = false, browser: String = "chrome") -> Bool {
         let sfPath = getSfPath()
         var arguments = ["org", "open", "--target-org", alias]
         
@@ -139,11 +142,12 @@ class SalesforceCLI {
         
         if (incognito == true) {
             arguments.append("--private")
-        }
-        
-        if (browser != "default" && ["chrome", "edge", "firefox"].contains(browser)) {
-            arguments.append("--browser")
-            arguments.append(browser)
+            print("Passed --private arguments and ignoring --browser argument...")
+        } else {
+            if (browser != "default" && ["chrome", "edge", "firefox"].contains(browser)) {
+                arguments.append("--browser")
+                arguments.append(browser)
+            }
         }
         
         print("Opening org url by alias: \(alias)")
@@ -153,13 +157,19 @@ class SalesforceCLI {
         
         if status != 0 {
             print("Error opening org: \(output ?? "")")
+            
+            return false
         }
+        
+        return true
     }
 
     func delete(alias: String) -> Bool {
         let sfPath = getSfPath()
         
         print("Deleting org url by alias: \(alias)")
+        print("Using arguments: \(["alias", alias])")
+        
         let (output, status) = execute(launchPath: sfPath, arguments: ["org", "logout", "--target-org", alias, "--no-prompt"])
 
         if status != 0 {

@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct MenuBarContentView: View {
     @AppStorage("defaultBrowser") private var defaultBrowser: String = "chrome"
@@ -27,7 +28,7 @@ struct MenuBarContentView: View {
         Button(){
             openAuthenticationWindow()
         } label: {
-            Image(systemName: "cloud.fill")
+            Image(systemName: "key.icloud.fill")
             Text("Authencate & Open Org...")
         }
         
@@ -44,22 +45,32 @@ struct MenuBarContentView: View {
                         Menu {
                             Button() {
                                 let cli = SalesforceCLI()
-                                cli.open(alias: org.alias,browser: defaultBrowser)
+                                let _ = cli.open(alias: org.alias,browser: defaultBrowser)
                             } label: {
-                               Image(systemName: "terminal.fill")
+                               Image(systemName: "network")
                                Text("Abrir instancia...")
                             }
                            
                             Button("Abrir instancia en navegación privada...") {
                                 let cli = SalesforceCLI()
-                                cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
+                                let success = cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
+                                
+                                if (!success) {
+                                    let content = UNMutableNotificationContent()
+                                    content.title = "Opening Org Failed"
+                                    content.body = "Error opening to \(org.alias), the main reason is your default browser do not support this Salesforce feature..."
+                                    content.sound = UNNotificationSound.default
+
+                                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                                    UNUserNotificationCenter.current().add(request)
+                                }
                             }
                             
                             Divider()
                             
                             Button() {
                                 let cli = SalesforceCLI()
-                                cli.open(alias: org.alias, path: SETUP_PATH)
+                                let _ = cli.open(alias: org.alias, path: SETUP_PATH)
                             } label: {
                                 Image(systemName: "gearshape")
                                 Text("Abrir configuración...")
@@ -67,7 +78,7 @@ struct MenuBarContentView: View {
                             
                             Button() {
                                 let cli = SalesforceCLI()
-                                cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
+                                let _ = cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
                             } label: {
                                 Image(systemName: "terminal.fill")
                                 Text("Abrir consola de desarrollador")
@@ -90,8 +101,8 @@ struct MenuBarContentView: View {
                                 confirmDelete(org)
                             }
                         } label: {
-                            Image(systemName: "cloud.fill")
-                            Text(keyMonitor.altKeyPressed ? (org.orgId ?? "No Org ID") : "\(org.alias) (\(org.orgType))")
+                            Image(systemName: "key.icloud.fill")
+                            Text(keyMonitor.altKeyPressed ? (org.orgId ?? "No Org ID") : "\(org.label) (\(org.orgType))")
                         }
                     }
                 }
