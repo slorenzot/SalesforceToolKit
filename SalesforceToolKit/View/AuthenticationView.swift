@@ -2,7 +2,11 @@ import SwiftUI
 import UserNotifications
 
 struct AuthenticationView: View {
+    let PRO_AUTH_URL = "https://login.salesforce.com"
+    let DEV_AUTH_URL = "https://test.salesforce.com"
+    
     @State private var orgType = "Producción"
+    @State private var label = ""
     @State private var alias = ""
     
     let orgTypes = ["Producción", "Desarrollo"]
@@ -15,14 +19,14 @@ struct AuthenticationView: View {
                         Text($0)
                     }
                 }
-                
+                TextField("Etiqueta", text: $label)
                 TextField("Alias", text: $alias)
             }
             
             Button("Acceder") {
                 print("Acceder button clicked")
                 let cli = SalesforceCLI()
-                let instanceUrl = orgType == "Producción" ? "https://login.salesforce.com" : "https://test.salesforce.com"
+                let instanceUrl = orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL
                 print("Calling cli.auth with alias: \(alias), instanceUrl: \(instanceUrl), orgType: \(orgType)")
                 let authenticated = cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
                 
@@ -36,10 +40,21 @@ struct AuthenticationView: View {
                     UNUserNotificationCenter.current().add(request)
                 }
             }
+            .disabled(label.trimmingCharacters(in: .whitespacesAndNewlines) == "" || alias.trimmingCharacters(in: .whitespacesAndNewlines) == "")
             .padding()
         }
         .padding()
         .frame(width: 300, height: 150)
+        .onAppear {
+            hideWindowButtons()
+        }
+    }
+    
+    func hideWindowButtons() {
+        if let window = NSApp.keyWindow { // Or iterate through NSApp.shared.windows
+            window.standardWindowButton(.zoomButton)?.isHidden = true
+            window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        }
     }
 }
 

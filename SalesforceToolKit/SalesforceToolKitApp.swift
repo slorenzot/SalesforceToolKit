@@ -139,32 +139,35 @@ struct SalesforceToolKitApp: App {
                 .disabled(true)
             Divider()
             
+                Button(){
+                    openAuthenticationWindow()
+                } label: {
+                    Image(systemName: "cloud.fill")
+                    Text("Authencate & Open Org...")
+                }
+            
+            Divider()
+            
             if (credentialManager.storedLinks.isEmpty) {
                 Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
             } else {
-                ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.CLI}) { link in
-                    Button(link.label){
-                        openAuthenticationWindow()
-                    }
-                }
-                
                 Menu("Authenticated Orgs") {
                     if authenticatedOrgManager.authenticatedOrgs.isEmpty {
                         Button("No authenticated orgs"){}.disabled(true)
                     } else {
                         ForEach(authenticatedOrgManager.authenticatedOrgs) { org in
                             Menu {
-                                Button("Open") {
+                                Button("Abrir instancia en navegador...") {
                                     let cli = SalesforceCLI()
                                     cli.open(alias: org.alias)
                                 }
-                                Button("Edit...") {
+                                Button("Preferencias...") {
                                     openEditAuthenticationWindow(org: org)
                                 }
                                 
                                 Divider()
                                 
-                                Button("Delete...") {
+                                Button("Eliminar...") {
                                     confirmDelete(org: org)
                                 }
                             } label: {
