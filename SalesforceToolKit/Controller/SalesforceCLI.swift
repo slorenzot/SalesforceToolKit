@@ -1,5 +1,13 @@
 import Foundation
 
+struct OrgDetails: Codable {
+    let result: OrgResult
+}
+
+struct OrgResult: Codable {
+    let id: String
+}
+
 class SalesforceCLI {
     
     private func getSfPath() -> String {
@@ -30,8 +38,28 @@ class SalesforceCLI {
         return (output, task.terminationStatus)
     }
     
+    private func getOrgDetails(alias: String) -> OrgResult? {
+        let sfPath = getSfPath()
+        let (output, status) = execute(launchPath: sfPath, arguments: ["org", "display", "--target-org", alias, "--json"])
+        
+        print("Getting org details by alias: \(alias)")
+
+        if status == 0, let data = output?.data(using: .utf8) {
+            do {
+                let details = try JSONDecoder().decode(OrgDetails.self, from: data)
+                print(details)
+                return details.result
+            } catch {
+                print("Error decoding org details: \(error)")
+            }
+        }
+        return nil
+    }
+    
     private func killProcess(port: Int) {
         let (lsofOutput, _) = execute(launchPath: "/usr/sbin/lsof", arguments: ["-i", ":\(port)"])
+        
+        print("Killing process with PID: \(port)")
         
         guard let output = lsofOutput else {
             return
@@ -54,6 +82,9 @@ class SalesforceCLI {
         
         let sfPath = getSfPath()
         var arguments = ["org", "login", "web", "--alias", alias]
+        
+        print("Authenticating org by alias: \(alias)")
+        
         if let instanceUrl = instanceUrl {
             arguments.append(contentsOf: ["--instance-url", instanceUrl])
         }
@@ -62,7 +93,9 @@ class SalesforceCLI {
         
         if status == 0 {
             print("Successfully authenticated to org with alias: \(alias)")
-            NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgType": orgType])
+            if let orgDetails = getOrgDetails(alias: alias) {
+                NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgType": orgType, "orgId": orgDetails.id])
+            }
             
             return true
         } else {
@@ -74,6 +107,9 @@ class SalesforceCLI {
     
     func open(alias: String) {
         let sfPath = getSfPath()
+        
+        print("Opening org url by alias: \(alias)")
+        
         let (output, status) = execute(launchPath: sfPath, arguments: ["org", "open", "--target-org", alias])
         
         if status != 0 {
@@ -83,6 +119,8 @@ class SalesforceCLI {
 
     func delete(alias: String) -> Bool {
         let sfPath = getSfPath()
+        
+        print("Deleting org url by alias: \(alias)")
         let (output, status) = execute(launchPath: sfPath, arguments: ["org", "logout", "--target-org", alias, "--no-prompt"])
 
         if status != 0 {
