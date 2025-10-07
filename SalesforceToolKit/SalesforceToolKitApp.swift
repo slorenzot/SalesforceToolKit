@@ -125,7 +125,7 @@ struct SalesforceToolKitApp: App {
                 defer: false)
             window.center()
             window.title = "Autenticar y Abrir Organización"
-            window.contentView = NSHostingView(rootView: AuthenticationView())
+            window.contentView = NSHostingView(rootView: AuthenticationView().environmentObject(authenticatedOrgManager))
             authenticationWindow = window
         }
         authenticationWindow?.makeKeyAndOrderFront(nil)

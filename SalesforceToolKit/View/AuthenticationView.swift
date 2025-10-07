@@ -9,6 +9,8 @@ struct AuthenticationView: View {
     @State private var label = ""
     @State private var alias = ""
     
+    @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
+    
     let orgTypes = ["Producción", "Desarrollo"]
 
     private func generateAlias(from label: String) -> String {
@@ -44,7 +46,9 @@ struct AuthenticationView: View {
                 
                 if (authenticated) {
                     print("Authenticated org with alias: \(alias)")
-                    AuthenticatedOrgManager().addOrg(label: label, alias: alias, orgType: orgType)
+                    
+                    let userInfo: [String: Any] = ["label": label, "alias": alias, "orgType": orgType]
+                    NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: userInfo)
                     
                     let content = UNMutableNotificationContent()
                     content.title = "Authentication Successful"

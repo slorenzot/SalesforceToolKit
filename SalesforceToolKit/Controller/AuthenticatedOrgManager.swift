@@ -14,7 +14,7 @@ class AuthenticatedOrgManager: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func addOrg(label: String, alias: String, orgType: String) {
+    func addOrg(label: String, alias: String, orgType: String) -> Bool {
         let newOrg = AuthenticatedOrg(alias: alias, label: label, orgType: orgType)
         if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
             authenticatedOrgs.append(newOrg)
@@ -22,9 +22,9 @@ class AuthenticatedOrgManager: ObservableObject {
             
             print("Added org with alias (\(alias))")
             saveOrgs()
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
+            return true
         }
+        return false
     }
     
     func logoutOrg(org: AuthenticatedOrg) -> Bool {
@@ -36,8 +36,6 @@ class AuthenticatedOrgManager: ObservableObject {
             
             print("logout org with alias (\(org.alias))")
             saveOrgs()
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
             
             return deleted
         }
@@ -56,8 +54,6 @@ class AuthenticatedOrgManager: ObservableObject {
             print("deleted org with alias (\(org.alias))")
             saveOrgs()
             
-            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
-            
             return deleted
         }
         
@@ -72,8 +68,6 @@ class AuthenticatedOrgManager: ObservableObject {
             print("updated org with alias (\(org.alias))")
             
             saveOrgs()
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
             
             completion?()
         }
@@ -103,7 +97,14 @@ class AuthenticatedOrgManager: ObservableObject {
            let label = userInfo["label"] as? String,
            let alias = userInfo["alias"] as? String,
            let orgType = userInfo["orgType"] as? String {
-            let _ = addOrg(label: label, alias: alias, orgType: orgType)
+            let newOrg = AuthenticatedOrg(alias: alias, label: label, orgType: orgType)
+            if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
+                authenticatedOrgs.append(newOrg)
+                authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
+                
+                print("Added org with alias (\(alias))")
+                saveOrgs()
+            }
         }
     }
 }
