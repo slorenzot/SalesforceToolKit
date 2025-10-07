@@ -13,6 +13,7 @@ struct MenuBarContentView: View {
     
     var openAuthenticationWindow: () -> Void
     var openEditAuthenticationWindow: (AuthenticatedOrg) -> Void
+    var viewOrganizationDetailsWindow: (AuthenticatedOrg) -> Void
     var confirmDelete: (AuthenticatedOrg) -> Void
     var confirmLogout: (AuthenticatedOrg) -> Void
     var openPreferences: () -> Void
@@ -90,36 +91,6 @@ struct MenuBarContentView: View {
                                 Image(systemName: "gearshape")
                                 Text("Configuración...")
                             }
-                            
-                            Divider()
-                            
-                            Button("Preferencias...") {
-                                openEditAuthenticationWindow(org)
-                            }
-                            
-                            Toggle(isOn: Binding<Bool>(
-                                get: { org.isFavorite ?? false },
-                                set: { newValue in
-                                    var mutableOrg = org
-                                    mutableOrg.isFavorite = newValue
-                                    authenticatedOrgManager.updateOrg(org: mutableOrg)
-                                }
-                            )) {
-                                Text("Es favorita")
-                            }
-                            
-                            Divider()
-                            
-                            Button("Salir...") {
-                                confirmLogout(org)
-                            }
-                            
-                            
-                            Divider()
-                            
-                            Button("Eliminar...") {
-                                confirmDelete(org)
-                            }
                         } label: {
                             Image(systemName: "key.icloud.fill")
                             Text("\(org.label) (\(org.orgType))")
@@ -189,6 +160,12 @@ struct MenuBarContentView: View {
                             } label: {
                                 Image(systemName: "gearshape")
                                 Text("Configuración...")
+                            }
+                            
+                            Divider()
+                            
+                            Button("Mostrar detalles") {
+                                viewOrganizationDetailsWindow(org)
                             }
                             
                             Divider()
@@ -302,6 +279,14 @@ struct MenuBarContentView: View {
         Button(NSLocalizedString("Actualizar Salesforce CLI", comment: "")){
             let cli = SalesforceCLI()
             let _ = cli.update()
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Actualización exitosa"
+            content.body = "Se ha actualizado correctamente la versión de Salesforce CLI en su sistema."
+            content.sound = UNNotificationSound.default
+
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+            UNUserNotificationCenter.current().add(request)
         }
         
         Button(NSLocalizedString("About", comment: "")) {

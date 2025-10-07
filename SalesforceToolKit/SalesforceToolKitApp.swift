@@ -192,6 +192,24 @@ struct SalesforceToolKitApp: App {
         NSApp.activate(ignoringOtherApps: true)
     }
     
+    func viewOrganizationDetailsWindow(org: AuthenticatedOrg) {
+        let cli = SalesforceCLI()
+        let details = cli.orgDetails(alias: org.alias)
+        print("\(details?.clientId)")
+        
+        let editView = EditAuthenticationView(org: org, manager: authenticatedOrgManager)
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false)
+        window.center()
+        window.title = "Edit Org"
+        window.contentView = NSHostingView(rootView: editView)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "key.icloud.fill") {
             MenuBarContentView(
@@ -203,6 +221,7 @@ struct SalesforceToolKitApp: App {
                 version: version,
                 openAuthenticationWindow: openAuthenticationWindow,
                 openEditAuthenticationWindow: openEditAuthenticationWindow,
+                viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
                 confirmDelete: confirmDelete,
                 confirmLogout: confirmLogout,
                 openPreferences: openPreferences,

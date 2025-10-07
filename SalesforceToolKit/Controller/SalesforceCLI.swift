@@ -6,6 +6,12 @@ struct OrgDetails: Codable {
 
 struct OrgResult: Codable {
     let id: String
+    let alias: String
+    let apiVersion: String
+    let username: String
+    let instanceUrl: String
+    let clientId: String
+    let connectedStatus: String
 }
 
 class SalesforceCLI {
@@ -37,7 +43,7 @@ class SalesforceCLI {
         return (output, task.terminationStatus)
     }
     
-    private func getOrgDetails(alias: String) -> OrgResult? {
+    func orgDetails(alias: String) -> OrgResult? {
         let sfPath = getSfPath()
         let (output, status) = execute(launchPath: sfPath, arguments: ["org", "display", "--target-org", alias, "--json"])
         
@@ -48,11 +54,13 @@ class SalesforceCLI {
             do {
                 let details = try JSONDecoder().decode(OrgDetails.self, from: data)
                 print(details)
+                
                 return details.result
             } catch {
                 print("Error decoding org details: \(error)")
             }
         }
+        
         return nil
     }
     
@@ -95,7 +103,7 @@ class SalesforceCLI {
         if status == 0 {
             print("Successfully authenticated to org with alias: \(alias)")
             
-            if let orgDetails = getOrgDetails(alias: alias) {
+            if let orgDetails = orgDetails(alias: alias) {
                 NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgType": orgType, "orgId": orgDetails.id])
             }
             
@@ -119,7 +127,7 @@ class SalesforceCLI {
         if status == 0 {
             print("Successfully authenticated to org with alias: \(alias)")
             
-            if let orgDetails = getOrgDetails(alias: alias) {
+            if let orgDetails = orgDetails(alias: alias) {
                 NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: ["alias": alias, "orgId": orgDetails.id])
             }
             
