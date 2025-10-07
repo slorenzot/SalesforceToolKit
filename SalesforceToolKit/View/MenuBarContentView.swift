@@ -97,6 +97,17 @@ struct MenuBarContentView: View {
                                 openEditAuthenticationWindow(org)
                             }
                             
+                            Toggle(isOn: Binding<Bool>(
+                                get: { org.isFavorite ?? false },
+                                set: { newValue in
+                                    var mutableOrg = org
+                                    mutableOrg.isFavorite = newValue
+                                    authenticatedOrgManager.updateOrg(org: mutableOrg)
+                                }
+                            )) {
+                                Text("Es favorita")
+                            }
+                            
                             Divider()
                             
                             Button("Salir...") {
@@ -184,6 +195,17 @@ struct MenuBarContentView: View {
                             
                             Button("Preferencias...") {
                                 openEditAuthenticationWindow(org)
+                            }
+                            
+                            Toggle(isOn: Binding<Bool>(
+                                get: { org.isFavorite ?? false },
+                                set: { newValue in
+                                    var mutableOrg = org
+                                    mutableOrg.isFavorite = newValue
+                                    authenticatedOrgManager.updateOrg(org: mutableOrg)
+                                }
+                            )) {
+                                Text("Es favorita")
                             }
                             
                             Divider()
