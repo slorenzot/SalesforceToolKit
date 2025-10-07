@@ -14,12 +14,16 @@ class AuthenticatedOrgManager: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func addOrg(label: String, alias: String, orgType: String, orgId: String) {
-        let newOrg = AuthenticatedOrg(orgId: orgId, alias: alias, label: label, orgType: orgType)
+    func addOrg(label: String, alias: String, orgType: String) {
+        let newOrg = AuthenticatedOrg(alias: alias, label: label, orgType: orgType)
         if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
             authenticatedOrgs.append(newOrg)
             authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
+            
+            print("Added org with alias (\(alias))")
             saveOrgs()
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
         }
     }
     
@@ -29,7 +33,11 @@ class AuthenticatedOrgManager: ObservableObject {
         
         if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
             authenticatedOrgs.remove(at: index)
+            
+            print("logout org with alias (\(org.alias))")
             saveOrgs()
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
             
             return deleted
         }
@@ -44,7 +52,11 @@ class AuthenticatedOrgManager: ObservableObject {
         
         if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
             authenticatedOrgs.remove(at: index)
+            
+            print("deleted org with alias (\(org.alias))")
             saveOrgs()
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
             
             return deleted
         }
@@ -56,7 +68,13 @@ class AuthenticatedOrgManager: ObservableObject {
         if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
             authenticatedOrgs[index] = org
             authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
+            
+            print("updated org with alias (\(org.alias))")
+            
             saveOrgs()
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulAuth), name: .didCompleteAuth, object: nil)
+            
             completion?()
         }
     }
@@ -64,6 +82,8 @@ class AuthenticatedOrgManager: ObservableObject {
     private func saveOrgs() {
         if let encoded = try? JSONEncoder().encode(authenticatedOrgs) {
             UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
+            
+            print("Save all orgs with alias...")
         }
     }
     
@@ -72,6 +92,8 @@ class AuthenticatedOrgManager: ObservableObject {
             if let decoded = try? JSONDecoder().decode([AuthenticatedOrg].self, from: data) {
                 authenticatedOrgs = decoded
                 authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
+                
+                print("loaded orgs (\(authenticatedOrgs.count))")
             }
         }
     }
@@ -80,9 +102,8 @@ class AuthenticatedOrgManager: ObservableObject {
         if let userInfo = notification.userInfo,
            let label = userInfo["label"] as? String,
            let alias = userInfo["alias"] as? String,
-           let orgType = userInfo["orgType"] as? String,
-           let orgId = userInfo["orgId"] as? String {
-            addOrg(label: label, alias: alias, orgType: orgType, orgId: orgId)
+           let orgType = userInfo["orgType"] as? String {
+            let _ = addOrg(label: label, alias: alias, orgType: orgType)
         }
     }
 }

@@ -27,23 +27,17 @@ struct MenuBarContentView: View {
             .disabled(true)
         Divider()
         
-        Button(){
-            openAuthenticationWindow()
-        } label: {
-            Image(systemName: "key.icloud.fill")
-            Text("Autenticar y abrir organización...")
-        }
-        
-        Divider()
-        
         if (credentialManager.storedLinks.isEmpty) {
             Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
         } else {
-            Menu("Organizaciones autenticadas") {
-                if authenticatedOrgManager.authenticatedOrgs.isEmpty {
-                    Button("No authenticated orgs"){}.disabled(true)
+            let orgs = authenticatedOrgManager.authenticatedOrgs
+            let favorites = authenticatedOrgManager.authenticatedOrgs.filter{ $0.isFavorite == true }
+            
+            Menu() {
+                if favorites.isEmpty {
+                    Button("No hay organizaciones favoritas"){}.disabled(true)
                 } else {
-                    ForEach(authenticatedOrgManager.authenticatedOrgs) { org in
+                    ForEach(favorites) { org in
                         Menu {
                             Button() {
                                 let cli = SalesforceCLI()
@@ -117,9 +111,106 @@ struct MenuBarContentView: View {
                             }
                         } label: {
                             Image(systemName: "key.icloud.fill")
-                            Text(keyMonitor.altKeyPressed ? (org.orgId ?? "No Org ID") : "\(org.label) (\(org.orgType))")
+                            Text("\(org.label) (\(org.orgType))")
                         }
                     }
+                }
+            } label: {
+                Image(systemName: "star.fill")
+                Text("Favoritas")
+            }
+            
+            Divider()
+            
+            Menu("Organizaciones autenticadas") {
+                if orgs.isEmpty {
+                    Button("No organizaciones autenticadas"){}.disabled(true)
+                } else {
+                    ForEach(orgs) { org in
+                        Menu {
+                            Button() {
+                                let cli = SalesforceCLI()
+                                let _ = cli.open(alias: org.alias,browser: defaultBrowser)
+                            } label: {
+                               Image(systemName: "network")
+                               Text("Abrir instancia...")
+                            }
+                           
+                            Button("Abrir instancia en navegación privada...") {
+                                let cli = SalesforceCLI()
+                                let success = cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
+                                
+                                if (!success) {
+                                    let content = UNMutableNotificationContent()
+                                    content.title = "Opening Org Failed"
+                                    content.body = "Error opening to \(org.alias), the main reason is your default browser do not support this Salesforce feature..."
+                                    content.sound = UNNotificationSound.default
+
+                                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                                    UNUserNotificationCenter.current().add(request)
+                                }
+                            }
+                            
+                            Menu {
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: SCHBUILDER_PATH)
+                                } label: {
+                                    Image(systemName: "map.fill")
+                                    Text("Generador de esquemas")
+                                }
+                                
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
+                                } label: {
+                                    Image(systemName: "terminal.fill")
+                                    Text("Consola de desarrollador")
+                                }
+                                
+                            } label: {
+                                Text("Herramientas de Desarrollo")
+                            }
+                            
+                            Button() {
+                                let cli = SalesforceCLI()
+                                let _ = cli.open(alias: org.alias, path: SETUP_PATH)
+                            } label: {
+                                Image(systemName: "gearshape")
+                                Text("Configuración...")
+                            }
+                            
+                            Divider()
+                            
+                            Button("Preferencias...") {
+                                openEditAuthenticationWindow(org)
+                            }
+                            
+                            Divider()
+                            
+                            Button("Salir...") {
+                                confirmLogout(org)
+                            }
+                            
+                            
+                            Divider()
+                            
+                            Button("Eliminar...") {
+                                confirmDelete(org)
+                            }
+                        } label: {
+                            Image(systemName: "key.icloud.fill")
+                            Text("\(org.label) (\(org.orgType))")
+                        }
+                    }
+                }
+                
+                Divider()
+                Button(){
+                    openAuthenticationWindow()
+                } label: {
+                    Image(systemName: "key.icloud.fill")
+                    Text("Autenticar organización...")
                 }
             }
             
@@ -127,7 +218,7 @@ struct MenuBarContentView: View {
             
             ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Org}) { link in
                 Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                    openUrl(url: link.url)
+                    let _ = openUrl(url: link.url)
                 }
             }
             
@@ -136,7 +227,7 @@ struct MenuBarContentView: View {
             Menu("Request new org") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Specialized}) { link in
                     Button(NSLocalizedString("Request", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
+                        let _ = openUrl(url: link.url)
                     }
                 }
             }
@@ -146,7 +237,7 @@ struct MenuBarContentView: View {
             Menu("Tools"){
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
                     Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
+                        let _ = openUrl(url: link.url)
                     }
                 }
             }
@@ -156,7 +247,7 @@ struct MenuBarContentView: View {
             Menu("DevOp Tools") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
                     Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
+                        let _ = openUrl(url: link.url)
                     }
                 }
             }
@@ -166,7 +257,7 @@ struct MenuBarContentView: View {
             Menu("Help") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Help}) { link in
                     Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                        openUrl(url: link.url)
+                        let _ = openUrl(url: link.url)
                     }
                 }
             }
@@ -192,7 +283,7 @@ struct MenuBarContentView: View {
         }
         
         Button(NSLocalizedString("About", comment: "")) {
-            openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
+            let _ = openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
         }
         
         Divider()

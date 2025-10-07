@@ -43,6 +43,9 @@ struct AuthenticationView: View {
                 let authenticated = cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
                 
                 if (authenticated) {
+                    print("Authenticated org with alias: \(alias)")
+                    AuthenticatedOrgManager().addOrg(label: label, alias: alias, orgType: orgType)
+                    
                     let content = UNMutableNotificationContent()
                     content.title = "Authentication Successful"
                     content.body = "Successfully authenticated to org \(alias)."
