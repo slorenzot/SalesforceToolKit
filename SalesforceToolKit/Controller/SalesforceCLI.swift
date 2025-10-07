@@ -178,4 +178,23 @@ class SalesforceCLI {
         
         return true
     }
+    
+    func update() -> Bool {
+        let sfPath = getSfPath()
+        let arguments = ["update"]
+        
+        print("Updating Salesforce CLI")
+        print("Using arguments: \(arguments)")
+        
+        let (output, status) = execute(launchPath: sfPath, arguments: arguments)
+
+        if status != 0 {
+            print("Error updating CLI: \(output ?? "")")
+            return false
+        }
+        
+        print("Version output: \(output ?? "")")
+        
+        return true
+    }
 }

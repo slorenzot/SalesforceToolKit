@@ -173,6 +173,7 @@ struct MenuBarContentView: View {
         }
         
         Divider()
+        
         Toggle(NSLocalizedString("Launch at Startup", comment: ""), isOn: $launchOnLogin)
             .onChange(of: launchOnLogin) { value in
                 setLaunchOnLogin(value)
@@ -184,11 +185,18 @@ struct MenuBarContentView: View {
         .keyboardShortcut("p")
         
         Divider()
+        
+        Button(NSLocalizedString("Actualizar Salesforce CLI", comment: "")){
+            let cli = SalesforceCLI()
+            let _ = cli.update()
+        }
+        
         Button(NSLocalizedString("About", comment: "")) {
             openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
         }
         
         Divider()
+        
         Button(NSLocalizedString("Quit", comment: "")) {
             confirmQuit()
         }

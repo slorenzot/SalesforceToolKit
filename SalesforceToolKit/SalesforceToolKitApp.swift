@@ -13,15 +13,16 @@ import UserNotifications
 // https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
 
 
-func openUrl(url: String) {
+func openUrl(url: String) -> Bool {
     // using OAuth token
     // http://[instance].salesforce.com/secur/frontdoor.jsp?sid=[access token]&retURL=[start page]
     // https://sfdcblogger.in/2023/03/09/open-salesforce-org-using-session-id-or-access-token/?i=1
     
-    
     if let url = URL(string: url) {
         NSWorkspace.shared.open(url)
     }
+    
+    return true
 }
 
 func confirmQuit() {
