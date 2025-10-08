@@ -25,8 +25,11 @@ struct MenuBarContentView: View {
     let DEVELOPER_CONSOLE_PATH = "/_ui/common/apex/debug/ApexCSIPage"
     let SCHEMA_BUILDER_PATH = "/lightning/setup/SchemaBuilder/home"
     let CODE_BUILDER_PATH = "/runtime_developerplatform_codebuilder/codebuilder.app?launch=true"
+    let FLOW_PATH = "/lightning/setup/Flows/home"
     
     var body: some View {
+        let cli = SalesforceCLI()
+        
         if (credentialManager.storedLinks.isEmpty) {
             Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
         } else {
@@ -54,7 +57,6 @@ struct MenuBarContentView: View {
                     ForEach(favorites) { org in
                         Menu {
                             Button() {
-                                let cli = SalesforceCLI()
                                 let _ = cli.open(alias: org.alias,browser: defaultBrowser)
                             } label: {
                                Image(systemName: "network")
@@ -62,7 +64,6 @@ struct MenuBarContentView: View {
                             }
                            
                             Button("Abrir instancia en navegación privada...") {
-                                let cli = SalesforceCLI()
                                 let success = cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
                                 
                                 if (!success) {
@@ -78,7 +79,6 @@ struct MenuBarContentView: View {
                             
                             Menu {
                                 Button() {
-                                    let cli = SalesforceCLI()
                                     let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH)
                                 } label: {
                                     Image(systemName: "cube.fill")
@@ -86,7 +86,6 @@ struct MenuBarContentView: View {
                                 }
                                 
                                 Button() {
-                                    let cli = SalesforceCLI()
                                     let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH)
                                 } label: {
                                     Image(systemName: "map.fill")
@@ -94,19 +93,26 @@ struct MenuBarContentView: View {
                                 }
                                 
                                 Button() {
-                                    let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
-                                } label: {
-                                    Image(systemName: "terminal.fill")
-                                    Text("Consola de desarrollador")
-                                }
-                                
-                                Button() {
-                                    let cli = SalesforceCLI()
                                     let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH)
                                 } label: {
                                     Image(systemName: "display.and.screwdriver")
                                     Text("Generador de código")
+                                }
+                                
+                                Button() {
+                                    let _ = cli.open(alias: org.alias, path: FLOW_PATH)
+                                } label: {
+                                    Image(systemName: "wind")
+                                    Text("Flujos")
+                                }
+                                
+                                Divider()
+                                
+                                Button() {
+                                    let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
+                                } label: {
+                                    Image(systemName: "terminal.fill")
+                                    Text("Consola de desarrollador")
                                 }
                                 
                             } label: {
@@ -116,7 +122,6 @@ struct MenuBarContentView: View {
                             Divider()
                             
                             Button() {
-                                let cli = SalesforceCLI()
                                 let _ = cli.open(alias: org.alias, path: SETUP_PATH)
                             } label: {
                                 Image(systemName: "gearshape")
@@ -183,18 +188,27 @@ struct MenuBarContentView: View {
                                 
                                 Button() {
                                     let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
-                                } label: {
-                                    Image(systemName: "terminal.fill")
-                                    Text("Consola de desarrollador")
-                                }
-                                
-                                Button() {
-                                    let cli = SalesforceCLI()
                                     let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH)
                                 } label: {
                                     Image(systemName: "display.and.screwdriver")
                                     Text("Generador de código")
+                                }
+                                
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: FLOW_PATH)
+                                } label: {
+                                    Image(systemName: "wind")
+                                    Text("Flujos")
+                                }
+                                
+                                Divider()
+                                
+                                Button() {
+                                    let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
+                                } label: {
+                                    Image(systemName: "terminal.fill")
+                                    Text("Consola de desarrollador")
                                 }
                                 
                             } label: {
@@ -347,7 +361,6 @@ struct MenuBarContentView: View {
         Divider()
         
         Button(NSLocalizedString("Actualizar Salesforce CLI", comment: "")){
-            let cli = SalesforceCLI()
             let _ = cli.update()
             
             let content = UNMutableNotificationContent()

@@ -183,7 +183,7 @@ struct SalesforceToolKitApp: App {
     func confirmLogout(org: AuthenticatedOrg) {
         let alert = NSAlert()
         alert.messageText = "Confirmar cerrar sesión"
-        alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label)?"
+        alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label))?"
             + "\n\n"
             + "Se cerrarán todas las conexiones con la instancia."
         alert.addButton(withTitle: NSLocalizedString("Si, cerrar sesión", comment: ""))
@@ -228,7 +228,7 @@ struct SalesforceToolKitApp: App {
                 if (deleted) {
                     let content = UNMutableNotificationContent()
                     content.title = "Eliminación exitosa"
-                    content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias)."
+                    content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias))."
                     content.sound = UNNotificationSound.default
 
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)

@@ -40,6 +40,7 @@ struct AuthenticationView: View {
     @State private var isAuthenticating = false
     @State private var authenticationCancelled = false
     @State private var windowDelegate = AuthenticationWindowDelegate()
+    @State private var thisWindow: NSWindow?
     
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
     
@@ -91,7 +92,7 @@ struct AuthenticationView: View {
                             .font(.system(size: 10))
                         
                         TextField("Alias", text: $alias)
-                            .disabled(orgToEdit == nil)
+                            .disabled(true)
                         Text("El alias es usado por Salesforce CLI para ejecutar los comandos, no puede contener espacios ni caracteres especiales.")
                             .font(.system(size: 10))
                         
@@ -151,11 +152,12 @@ struct AuthenticationView: View {
         }
         .frame(width: 480, height: 520)
         .onAppear {
+            self.thisWindow = NSApp.keyWindow
             windowDelegate.isAuthenticating = self.isAuthenticating
             windowDelegate.onCancel = {
                 self.authenticationCancelled = true
             }
-            NSApp.keyWindow?.delegate = windowDelegate
+            self.thisWindow?.delegate = windowDelegate
             hideWindowButtons()
         }
         .onChange(of: isAuthenticating) { newValue in
@@ -201,14 +203,16 @@ struct AuthenticationView: View {
     }
     
     func hideWindowButtons() {
-        if let window = NSApp.keyWindow { // Or iterate through NSApp.shared.windows
+        if let window = thisWindow { // Or iterate through NSApp.shared.windows
             window.standardWindowButton(.zoomButton)?.isHidden = true
             window.standardWindowButton(.miniaturizeButton)?.isHidden = true
         }
     }
     
     func close() {
-        if let window = NSApp.keyWindow {
+        print("Close")
+        if let window = thisWindow {
+            print("Close 2")
             window.close()
         }
     }
