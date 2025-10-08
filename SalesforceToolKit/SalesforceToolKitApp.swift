@@ -182,46 +182,58 @@ struct SalesforceToolKitApp: App {
     
     func confirmLogout(org: AuthenticatedOrg) {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("Confirm logout", comment: "")
-        alert.informativeText = String(format: NSLocalizedString("Are you sure you want to logout the org with alias %@?", comment: ""), org.alias)
-        alert.addButton(withTitle: NSLocalizedString("Logout", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        alert.messageText = "Confirmar cerrar sesión"
+        alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label)?"
+            + "\n\n"
+            + "Se cerrarán todas las conexiones con la instancia."
+        alert.addButton(withTitle: NSLocalizedString("Si, cerrar sesión", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Cancelar", comment: ""))
         alert.alertStyle = .warning
 
         if alert.runModal() == .alertFirstButtonReturn {
+            let cli = SalesforceCLI()
+            let logout = cli.logout(alias: org.alias)
             let deleted = authenticatedOrgManager.deleteOrg(org: org)
             
-            if (deleted) {
-                let content = UNMutableNotificationContent()
-                content.title = "Logout Successful"
-                content.body = "Successfully logout to \(org.alias)."
-                content.sound = UNNotificationSound.default
+            if (logout) {
+                if (deleted) {
+                    let content = UNMutableNotificationContent()
+                    content.title = "Cierre de sesión exitoso"
+                    content.body = "Se ha cerrado existosamente la sesión en la instancia \(org.label) (\(org.alias))."
+                    content.sound = UNNotificationSound.default
 
-                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(request)
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                }
             }
         }
     }
 
     func confirmDelete(org: AuthenticatedOrg) {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("Confirm deletion", comment: "")
-        alert.informativeText = String(format: NSLocalizedString("Are you sure you want to delete the org with alias %@?", comment: ""), org.alias)
+        alert.messageText = "Confirmar borrado"
+        alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label)?"
+        + "\n\n"
+        + "Antes de eliminar la sesión se cerrarán todas las conexiones con la instancia."
         alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
         alert.alertStyle = .warning
 
         if alert.runModal() == .alertFirstButtonReturn {
+            let cli = SalesforceCLI()
+            let logout = cli.logout(alias: org.alias)
             let deleted = authenticatedOrgManager.deleteOrg(org: org)
-            
-            if (deleted) {
-                let content = UNMutableNotificationContent()
-                content.title = "Eliminación exitosa"
-                content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias)."
-                content.sound = UNNotificationSound.default
+           
+            if (logout) {
+                if (deleted) {
+                    let content = UNMutableNotificationContent()
+                    content.title = "Eliminación exitosa"
+                    content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias)."
+                    content.sound = UNNotificationSound.default
 
-                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                UNUserNotificationCenter.current().add(request)
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                    UNUserNotificationCenter.current().add(request)
+                }
             }
         }
     }
@@ -234,7 +246,7 @@ struct SalesforceToolKitApp: App {
                 backing: .buffered,
                 defer: false)
             window.center()
-            window.title = "Editar organización"
+            window.title = "Editar \(org.label)"
             window.isReleasedWhenClosed = false
             editAuthenticationWindow = window
             window.delegate = appDelegate
