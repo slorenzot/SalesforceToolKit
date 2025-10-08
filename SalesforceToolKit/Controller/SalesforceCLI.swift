@@ -82,7 +82,7 @@ class SalesforceCLI {
         return nil
     }
     
-    private func killProcess(port: Int) {
+    func killProcess(port: Int) {
         let (lsofOutput, _) = execute(launchPath: "/usr/sbin/lsof", arguments: ["-i", ":\(port)"])
         
         print("Killing process with PID: \(port)")
