@@ -38,8 +38,10 @@ func confirmQuit() {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate, NSWindowDelegate {
     var window: NSWindow!
+    
+    static let windowWillCloseNotification = Notification.Name("windowWillCloseNotification")
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         UNUserNotificationCenter.current().delegate = self
@@ -65,6 +67,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         }
         return true
     }
+    
+    func windowWillClose(_ notification: Notification) {
+        NotificationCenter.default.post(name: AppDelegate.windowWillCloseNotification, object: notification.object)
+    }
 }
 
 @main
@@ -80,7 +86,10 @@ struct SalesforceToolKitApp: App {
     
     @State var preferencesWindow: NSWindow?
     @State var authenticationWindow: NSWindow?
-    
+    @State var mainWindow: NSWindow?
+    @State var editAuthenticationWindow: NSWindow?
+    @State var viewOrganizationDetailsWindow: NSWindow?
+
     @State private var launchOnLogin = false
 
     private func setLaunchOnLogin(enabled: Bool) {
@@ -98,8 +107,22 @@ struct SalesforceToolKitApp: App {
                 print("Notification authorization error: \(error.localizedDescription)")
             }
         }
+    }
+    
+    private func onWindowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow else { return }
         
-        openMainWindow()
+        if window == mainWindow {
+            mainWindow = nil
+        } else if window == preferencesWindow {
+            preferencesWindow = nil
+        } else if window == authenticationWindow {
+            authenticationWindow = nil
+        } else if window == editAuthenticationWindow {
+            editAuthenticationWindow = nil
+        } else if window == viewOrganizationDetailsWindow {
+            viewOrganizationDetailsWindow = nil
+        }
     }
     
     func openPreferences() {
@@ -112,23 +135,30 @@ struct SalesforceToolKitApp: App {
             window.center()
             window.title = NSLocalizedString("Preferences", comment: "")
             window.contentView = NSHostingView(rootView: AppPreferencesView())
+            window.isReleasedWhenClosed = false
             preferencesWindow = window
+            window.delegate = appDelegate
         }
         preferencesWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
     
     func openMainWindow() {
-        let editView = MainView()
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 700, height: 450),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false)
-        window.center()
-        window.title = "Salesforce Toolkit"
-        window.contentView = NSHostingView(rootView: editView)
-        window.makeKeyAndOrderFront(nil)
+        if mainWindow == nil {
+            let editView = MainView()
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 700, height: 450),
+                styleMask: [.titled, .closable],
+                backing: .buffered,
+                defer: false)
+            window.center()
+            window.title = "Salesforce Toolkit"
+            window.contentView = NSHostingView(rootView: editView)
+            window.isReleasedWhenClosed = false
+            mainWindow = window
+            window.delegate = appDelegate
+        }
+        mainWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
     
@@ -142,7 +172,9 @@ struct SalesforceToolKitApp: App {
             window.center()
             window.title = "Autenticar y Abrir Organización"
             window.contentView = NSHostingView(rootView: AuthenticationView().environmentObject(authenticatedOrgManager))
+            window.isReleasedWhenClosed = false
             authenticationWindow = window
+            window.delegate = appDelegate
         }
         authenticationWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -195,34 +227,42 @@ struct SalesforceToolKitApp: App {
     }
 
     func openEditAuthenticationWindow(org: AuthenticatedOrg) {
+        if editAuthenticationWindow == nil {
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+                styleMask: [.titled, .closable],
+                backing: .buffered,
+                defer: false)
+            window.center()
+            window.title = "Editar organización"
+            window.isReleasedWhenClosed = false
+            editAuthenticationWindow = window
+            window.delegate = appDelegate
+        }
+        
         let editView = EditAuthenticationView(org: org, manager: authenticatedOrgManager)
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false)
-        window.center()
-        window.title = "Editar organización"
-        window.contentView = NSHostingView(rootView: editView)
-        window.makeKeyAndOrderFront(nil)
+        editAuthenticationWindow?.contentView = NSHostingView(rootView: editView)
+        editAuthenticationWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
     
     func viewOrganizationDetailsWindow(org: AuthenticatedOrg) {
-        let cli = SalesforceCLI()
-        let details = cli.orgDetails(alias: org.alias)
-        // print("\(details?.clientId ??)")
+        if viewOrganizationDetailsWindow == nil {
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+                styleMask: [.titled, .closable],
+                backing: .buffered,
+                defer: false)
+            window.center()
+            window.title = "Edit Org"
+            window.isReleasedWhenClosed = false
+            viewOrganizationDetailsWindow = window
+            window.delegate = appDelegate
+        }
         
         let editView = EditAuthenticationView(org: org, manager: authenticatedOrgManager)
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false)
-        window.center()
-        window.title = "Edit Org"
-        window.contentView = NSHostingView(rootView: editView)
-        window.makeKeyAndOrderFront(nil)
+        viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: editView)
+        viewOrganizationDetailsWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
     
@@ -244,6 +284,9 @@ struct SalesforceToolKitApp: App {
                 openPreferences: openPreferences,
                 confirmQuit: confirmQuit
             )
+            .onReceive(NotificationCenter.default.publisher(for: AppDelegate.windowWillCloseNotification)) { notification in
+                self.onWindowWillClose(notification)
+            }
         }
         
         // Define the window that will be shown on icon click
@@ -254,3 +297,5 @@ struct SalesforceToolKitApp: App {
         
     }
 }
+
+
