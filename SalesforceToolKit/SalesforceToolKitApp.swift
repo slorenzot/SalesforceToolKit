@@ -240,8 +240,8 @@ struct SalesforceToolKitApp: App {
             window.delegate = appDelegate
         }
         
-        let editView = EditAuthenticationView(org: org, manager: authenticatedOrgManager)
-        editAuthenticationWindow?.contentView = NSHostingView(rootView: editView)
+        let editView = AuthenticationView(org: org)
+        editAuthenticationWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
         editAuthenticationWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -260,8 +260,8 @@ struct SalesforceToolKitApp: App {
             window.delegate = appDelegate
         }
         
-        let editView = EditAuthenticationView(org: org, manager: authenticatedOrgManager)
-        viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: editView)
+        let editView = AuthenticationView(org: org)
+        viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
         viewOrganizationDetailsWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
