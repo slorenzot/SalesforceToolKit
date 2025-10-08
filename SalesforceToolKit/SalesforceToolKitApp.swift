@@ -168,8 +168,8 @@ struct SalesforceToolKitApp: App {
             
             if (deleted) {
                 let content = UNMutableNotificationContent()
-                content.title = "Deletion Successful"
-                content.body = "Successfully deleted to \(org.alias)."
+                content.title = "Eliminación exitosa"
+                content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias)."
                 content.sound = UNNotificationSound.default
 
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
@@ -186,7 +186,7 @@ struct SalesforceToolKitApp: App {
             backing: .buffered,
             defer: false)
         window.center()
-        window.title = "Edit Org"
+        window.title = "Editar organización"
         window.contentView = NSHostingView(rootView: editView)
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -195,7 +195,7 @@ struct SalesforceToolKitApp: App {
     func viewOrganizationDetailsWindow(org: AuthenticatedOrg) {
         let cli = SalesforceCLI()
         let details = cli.orgDetails(alias: org.alias)
-        print("\(details?.clientId)")
+        // print("\(details?.clientId ??)")
         
         let editView = EditAuthenticationView(org: org, manager: authenticatedOrgManager)
         let window = NSWindow(

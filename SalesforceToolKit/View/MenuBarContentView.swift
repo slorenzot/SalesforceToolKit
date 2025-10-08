@@ -20,14 +20,12 @@ struct MenuBarContentView: View {
     var confirmQuit: () -> Void
     
     let SETUP_PATH = "/lightning/setup/SetupOneHome/home"
-    let DEVCONSOLE_PATH = "/_ui/common/apex/debug/ApexCSIPage"
-    let SCHBUILDER_PATH = "/lightning/setup/SchemaBuilder/home"
+    let OBJECT_MANAGER_PATH = "/lightning/setup/ObjectManager/home"
+    let DEVELOPER_CONSOLE_PATH = "/_ui/common/apex/debug/ApexCSIPage"
+    let SCHEMA_BUILDER_PATH = "/lightning/setup/SchemaBuilder/home"
+    let CODE_BUILDER_PATH = "/runtime_developerplatform_codebuilder/codebuilder.app?launch=true"
     
     var body: some View {
-        Button("Salesforce ToolKit (version \(version))"){}
-            .disabled(true)
-        Divider()
-        
         if (credentialManager.storedLinks.isEmpty) {
             Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
         } else {
@@ -76,7 +74,15 @@ struct MenuBarContentView: View {
                             Menu {
                                 Button() {
                                     let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: SCHBUILDER_PATH)
+                                    let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH)
+                                } label: {
+                                    Image(systemName: "cube.fill")
+                                    Text("Gestor de objetos")
+                                }
+                                
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH)
                                 } label: {
                                     Image(systemName: "map.fill")
                                     Text("Generador de esquemas")
@@ -84,15 +90,25 @@ struct MenuBarContentView: View {
                                 
                                 Button() {
                                     let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
+                                    let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
                                 } label: {
                                     Image(systemName: "terminal.fill")
                                     Text("Consola de desarrollador")
                                 }
                                 
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH)
+                                } label: {
+                                    Image(systemName: "display.and.screwdriver")
+                                    Text("Generador de código")
+                                }
+                                
                             } label: {
                                 Text("Herramientas de Desarrollo")
                             }
+                            
+                            Divider()
                             
                             Button() {
                                 let cli = SalesforceCLI()
@@ -146,7 +162,15 @@ struct MenuBarContentView: View {
                             Menu {
                                 Button() {
                                     let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: SCHBUILDER_PATH)
+                                    let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH)
+                                } label: {
+                                    Image(systemName: "cube.fill")
+                                    Text("Gestor de objetos")
+                                }
+                                
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH)
                                 } label: {
                                     Image(systemName: "map.fill")
                                     Text("Generador de esquemas")
@@ -154,15 +178,25 @@ struct MenuBarContentView: View {
                                 
                                 Button() {
                                     let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: DEVCONSOLE_PATH)
+                                    let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
                                 } label: {
                                     Image(systemName: "terminal.fill")
                                     Text("Consola de desarrollador")
                                 }
                                 
+                                Button() {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH)
+                                } label: {
+                                    Image(systemName: "display.and.screwdriver")
+                                    Text("Generador de código")
+                                }
+                                
                             } label: {
                                 Text("Herramientas de Desarrollo")
                             }
+                            
+                            Divider()
                             
                             Button() {
                                 let cli = SalesforceCLI()
@@ -229,7 +263,7 @@ struct MenuBarContentView: View {
                 Button(){
                     openAuthenticationWindow()
                 } label: {
-                    Image(systemName: "key.icloud.fill")
+                    Image(systemName: "plus.circle")
                     Text("Autenticar organización...")
                 }
             }
@@ -246,8 +280,11 @@ struct MenuBarContentView: View {
             
             Menu("Request new org") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Specialized}) { link in
-                    Button(NSLocalizedString("Request", comment: "") + " \(link.label)"){
+                    Button(){
                         let _ = openUrl(url: link.url)
+                    } label: {
+                        Image(systemName: "network")
+                        Text(link.label)
                     }
                 }
             }
@@ -256,8 +293,11 @@ struct MenuBarContentView: View {
             
             Menu("Tools"){
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
-                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                    Button() {
                         let _ = openUrl(url: link.url)
+                    } label: {
+                        Image(systemName: "network")
+                        Text(link.label)
                     }
                 }
             }
@@ -266,8 +306,11 @@ struct MenuBarContentView: View {
             
             Menu("DevOp Tools") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
-                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                    Button() {
                         let _ = openUrl(url: link.url)
+                    } label: {
+                        Image(systemName: "network")
+                        Text(link.label)
                     }
                 }
             }
@@ -276,7 +319,7 @@ struct MenuBarContentView: View {
             
             Menu("Help") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Help}) { link in
-                    Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
+                    Button(link.label) {
                         let _ = openUrl(url: link.url)
                     }
                 }
@@ -290,6 +333,7 @@ struct MenuBarContentView: View {
                 setLaunchOnLogin(value)
             }
             .toggleStyle(.checkbox)
+        
         Button(NSLocalizedString("Preferences", comment: "")) {
             openPreferences()
         }
@@ -310,7 +354,11 @@ struct MenuBarContentView: View {
             UNUserNotificationCenter.current().add(request)
         }
         
-        Button(NSLocalizedString("About", comment: "")) {
+        Text("Versión actual: 1.0.0")
+            .font(.system(size: 10))
+            .disabled(true)
+        
+        Button(NSLocalizedString("Salesforce ToolKit (v\(version))", comment: "")) {
             let _ = openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
         }
         
