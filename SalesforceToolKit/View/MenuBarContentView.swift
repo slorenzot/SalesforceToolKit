@@ -130,12 +130,12 @@ struct MenuBarContentView: View {
                 }
             } label: {
                 Image(systemName: "heart.fill")
-                Text("Favoritas")
+                Text("Favoritas (\(favorites.count))")
             }
             
             Divider()
             
-            Menu("Organizaciones autenticadas") {
+            Menu("Organizaciones autenticadas (\(orgs.count))") {
                 if orgs.isEmpty {
                     Button("No organizaciones autenticadas"){}.disabled(true)
                 } else {
