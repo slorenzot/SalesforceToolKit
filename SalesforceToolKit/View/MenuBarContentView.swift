@@ -33,6 +33,16 @@ struct MenuBarContentView: View {
         } else {
             let orgs = authenticatedOrgManager.authenticatedOrgs
             let favorites = authenticatedOrgManager.authenticatedOrgs.filter{ $0.isFavorite == true }
+            let defaultOrg = orgs.filter{ $0.isDefault == true }.first
+            
+            Button(){
+                
+            } label: {
+                Image(systemName: "star.fill")
+                Text("Por defecto: \(defaultOrg?.label ?? "Ninguna")")
+            }
+            
+            Divider()
             
             Menu() {
                 if favorites.isEmpty {
@@ -98,7 +108,7 @@ struct MenuBarContentView: View {
                     }
                 }
             } label: {
-                Image(systemName: "star.fill")
+                Image(systemName: "heart.fill")
                 Text("Favoritas")
             }
             
@@ -183,6 +193,17 @@ struct MenuBarContentView: View {
                                 }
                             )) {
                                 Text("Es favorita")
+                            }
+                            
+                            Toggle(isOn: Binding<Bool>(
+                                get: { org.isDefault ?? false },
+                                set: { newValue in
+                                    var mutableOrg = org
+                                    mutableOrg.isDefault = newValue
+                                    authenticatedOrgManager.setDefaultOrg(org: mutableOrg)
+                                }
+                            )) {
+                                Text("Por defecto")
                             }
                             
                             Divider()

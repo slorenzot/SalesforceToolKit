@@ -6,4 +6,5 @@ struct AuthenticatedOrg: Codable, Identifiable {
     var label: String
     var orgType: String // "Producción" or "Desarrollo"
     var isFavorite: Bool? = false
+    var isDefault: Bool? = false
 }

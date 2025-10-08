@@ -60,12 +60,31 @@ class AuthenticatedOrgManager: ObservableObject {
         return false
     }
     
+    func setDefaultOrg(org: AuthenticatedOrg) {
+        for i in 0..<authenticatedOrgs.count {
+            authenticatedOrgs[i].isDefault = false
+        }
+
+        if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
+            if org.isDefault == true {
+                let cli = SalesforceCLI()
+                let success = cli.orgDefault(alias: org.alias)
+                
+                if success {
+                    authenticatedOrgs[index].isDefault = true
+                    print("Updated default org with alias (\(org.alias))")
+                }
+            }
+        }
+        saveOrgs()
+    }
+    
     func updateOrg(org: AuthenticatedOrg, completion: (() -> Void)? = nil) {
         if let index = authenticatedOrgs.firstIndex(where: { $0.id == org.id }) {
             authenticatedOrgs[index] = org
             authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
             
-            print("updated org with alias (\(org.alias))")
+            print("Updated org with alias (\(org.alias))")
             
             saveOrgs()
             

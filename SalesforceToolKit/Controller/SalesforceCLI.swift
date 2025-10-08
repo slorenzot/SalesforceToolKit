@@ -43,6 +43,24 @@ class SalesforceCLI {
         return (output, task.terminationStatus)
     }
     
+    func orgDefault(alias: String) -> Bool {
+        let sfPath = getSfPath()
+        let (output, status) = execute(launchPath: sfPath, arguments: ["config", "set", "target-org", alias, "--global"])
+        
+        print("Setted default org by alias: \(alias)")
+        print("Using arguments: \(["alias", alias])")
+
+        if status != 0 {
+            print("Error updating CLI: \(output ?? "")")
+            
+            return false
+        }
+        
+        print("Error updating CLI: \(output ?? "")")
+        
+        return true
+    }
+    
     func orgDetails(alias: String) -> OrgResult? {
         let sfPath = getSfPath()
         let (output, status) = execute(launchPath: sfPath, arguments: ["org", "display", "--target-org", alias, "--json"])
