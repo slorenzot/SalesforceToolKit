@@ -11,6 +11,7 @@ struct MenuBarContentView: View {
     var credentialManager: LinkManager
     var version: String
     
+    var mainWindow: () -> Void
     var openAuthenticationWindow: () -> Void
     var openEditAuthenticationWindow: (AuthenticatedOrg) -> Void
     var viewOrganizationDetailsWindow: (AuthenticatedOrg) -> Void
@@ -32,6 +33,10 @@ struct MenuBarContentView: View {
             let orgs = authenticatedOrgManager.authenticatedOrgs
             let favorites = authenticatedOrgManager.authenticatedOrgs.filter{ $0.isFavorite == true }
             let defaultOrg = orgs.filter{ $0.isDefault == true }.first
+            
+            Button("Salesforce Toolkit"){
+                mainWindow()
+            }
             
             Button(){
                 

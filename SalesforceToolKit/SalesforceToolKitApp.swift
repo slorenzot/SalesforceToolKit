@@ -98,6 +98,8 @@ struct SalesforceToolKitApp: App {
                 print("Notification authorization error: \(error.localizedDescription)")
             }
         }
+        
+        openMainWindow()
     }
     
     func openPreferences() {
@@ -115,7 +117,21 @@ struct SalesforceToolKitApp: App {
         preferencesWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
-
+    
+    func openMainWindow() {
+        let editView = MainView()
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 700, height: 450),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false)
+        window.center()
+        window.title = "Salesforce Toolkit"
+        window.contentView = NSHostingView(rootView: editView)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
     func openAuthenticationWindow() {
         if authenticationWindow == nil {
             let window = NSWindow(
@@ -219,6 +235,7 @@ struct SalesforceToolKitApp: App {
                 setLaunchOnLogin: setLaunchOnLogin,
                 credentialManager: credentialManager,
                 version: version,
+                mainWindow: openMainWindow,
                 openAuthenticationWindow: openAuthenticationWindow,
                 openEditAuthenticationWindow: openEditAuthenticationWindow,
                 viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
@@ -228,6 +245,12 @@ struct SalesforceToolKitApp: App {
                 confirmQuit: confirmQuit
             )
         }
+        
+        // Define the window that will be shown on icon click
+        WindowGroup("My Custom Window", id: "myCustomWindow") {
+            MainView()
+        }
+        .handlesExternalEvents(matching: Set(arrayLiteral: "openMyWindow")) // For programmatic opening
         
     }
 }
