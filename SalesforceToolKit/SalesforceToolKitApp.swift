@@ -152,25 +152,27 @@ struct SalesforceToolKitApp: App {
     }
     
     func openPreferences() {
-        if preferencesWindow == nil {
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 480, height: 120),
-                styleMask: [.titled, .closable],
-                backing: .buffered,
-                defer: false)
-            window.center()
-            window.title = NSLocalizedString("Preferences", comment: "")
-            // Pass the biometric settings to AppPreferencesView
-            window.contentView = NSHostingView(rootView: AppPreferencesView(
-                biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
-                isTouchIDAvailable: authManager.isTouchIDAvailable
-            ))
-            window.isReleasedWhenClosed = false
-            preferencesWindow = window
-            window.delegate = appDelegate
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to open preference window", comment: "")) {
+            if preferencesWindow == nil {
+                let window = NSWindow(
+                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 120),
+                    styleMask: [.titled, .closable],
+                    backing: .buffered,
+                    defer: false)
+                window.center()
+                window.title = NSLocalizedString("Preferences", comment: "")
+                // Pass the biometric settings to AppPreferencesView
+                window.contentView = NSHostingView(rootView: AppPreferencesView(
+                    biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
+                    isTouchIDAvailable: authManager.isTouchIDAvailable
+                ))
+                window.isReleasedWhenClosed = false
+                preferencesWindow = window
+                window.delegate = appDelegate
+            }
+            preferencesWindow?.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
         }
-        preferencesWindow?.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
     }
     
     func openMainWindow() {

@@ -163,48 +163,58 @@ struct MenuBarContentView: View {
                             }
                            
                             Button("Abrir instancia en navegación privada...") {
-                                let cli = SalesforceCLI()
-                                let success = cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
-                                
-                                if (!success) {
-                                    let content = UNMutableNotificationContent()
-                                    content.title = "Opening Org Failed"
-                                    content.body = "Error opening to \(org.alias), the main reason is your default browser do not support this Salesforce feature..."
-                                    content.sound = UNNotificationSound.default
-
-                                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                                    UNUserNotificationCenter.current().add(request)
+                                authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                    let cli = SalesforceCLI()
+                                    let success = cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
+                                    
+                                    if (!success) {
+                                        let content = UNMutableNotificationContent()
+                                        content.title = "Opening Org Failed"
+                                        content.body = "Error opening to \(org.alias), the main reason is your default browser do not support this Salesforce feature..."
+                                        content.sound = UNNotificationSound.default
+                                        
+                                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                                        UNUserNotificationCenter.current().add(request)
+                                    }
                                 }
                             }
                             
                             Menu {
                                 Button() {
-                                    let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH)
+                                    authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                        let cli = SalesforceCLI()
+                                        let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH)
+                                    }
                                 } label: {
                                     Image(systemName: "cube.fill")
                                     Text("Gestor de objetos")
                                 }
                                 
                                 Button() {
-                                    let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH)
+                                    authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                        let cli = SalesforceCLI()
+                                        let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH)
+                                    }
                                 } label: {
                                     Image(systemName: "map.fill")
                                     Text("Generador de esquemas")
                                 }
                                 
                                 Button() {
-                                    let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH)
+                                    authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                        let cli = SalesforceCLI()
+                                        let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH)
+                                    }
                                 } label: {
                                     Image(systemName: "display.and.screwdriver")
                                     Text("Generador de código")
                                 }
                                 
                                 Button() {
-                                    let cli = SalesforceCLI()
-                                    let _ = cli.open(alias: org.alias, path: FLOW_PATH)
+                                    authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                        let cli = SalesforceCLI()
+                                        let _ = cli.open(alias: org.alias, path: FLOW_PATH)
+                                    }
                                 } label: {
                                     Image(systemName: "wind")
                                     Text("Flujos")
@@ -213,7 +223,9 @@ struct MenuBarContentView: View {
                                 Divider()
                                 
                                 Button() {
-                                    let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
+                                    authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                        let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
+                                    }
                                 } label: {
                                     Image(systemName: "terminal.fill")
                                     Text("Consola de desarrollador")
@@ -226,8 +238,10 @@ struct MenuBarContentView: View {
                             Divider()
                             
                             Button() {
-                                let cli = SalesforceCLI()
-                                let _ = cli.open(alias: org.alias, path: SETUP_PATH)
+                                authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias, path: SETUP_PATH)
+                                }
                             } label: {
                                 Image(systemName: "gearshape")
                                 Text("Configuración...")
@@ -270,14 +284,18 @@ struct MenuBarContentView: View {
                             Divider()
                             
                             Button("Salir...") {
-                                confirmLogout(org)
+                                authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                    confirmLogout(org)
+                                }
                             }
                             
                             
                             Divider()
                             
                             Button("Eliminar...") {
-                                confirmDelete(org)
+                                authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                    confirmDelete(org)
+                                }
                             }
                         } label: {
                             Image(systemName: "key.icloud.fill")
@@ -360,12 +378,6 @@ struct MenuBarContentView: View {
                 setLaunchOnLogin(value)
             }
             .toggleStyle(.checkbox)
-        
-        // New: Toggle for Biometric Authentication
-        if isTouchIDAvailable {
-            Toggle("Habilitar autenticación biométrica", isOn: $biometricAuthenticationEnabled)
-                .toggleStyle(.checkbox)
-        }
         
         Button(NSLocalizedString("Preferences", comment: "")) {
             openPreferences()

@@ -24,7 +24,7 @@ struct AppPreferencesView: View {
                 }
                 .padding(.bottom, 5) // Add some spacing
                 
-                TextField("Navegador personalizado (ej: /Applications/Brave Browser.app)", text: $defaultBrowser) // Changed string to Spanish
+                TextField("Navegador personalizado (ej: /Applications/Chrome.app)", text: $defaultBrowser) // Changed string to Spanish
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.bottom, 10)
                 
@@ -35,8 +35,10 @@ struct AppPreferencesView: View {
                 // New: Toggle for biometric authentication
                 if isTouchIDAvailable {
                     Toggle("Habilitar autenticación biométrica", isOn: $biometricAuthenticationEnabled)
-                        .toggleStyle(.checkbox)
+                        .toggleStyle(.switch)
                         .padding(.top, 5)
+                    Text("Deberá autenticarse cada vez que requiera abrir, modificar la configuración, cerrar la sesión o eliminar alguna instancia o módulo")
+                        .font(.system(size: 11))
                 } else {
                     Text("Autenticación biométrica no disponible en este dispositivo.")
                         .font(.caption)
@@ -46,7 +48,7 @@ struct AppPreferencesView: View {
             }
         }
         .padding()
-        .frame(width: 400, height: 180) // Adjusted height to accommodate new controls
+        .frame(width: 520, height: 480) // Adjusted height to accommodate new controls
     }
 }
 
