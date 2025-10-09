@@ -8,7 +8,7 @@
 import SwiftUI
 import ServiceManagement
 import UserNotifications
-
+import LocalAuthentication // Add this import for Touch ID/Face ID
 
 // https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
 
@@ -78,10 +78,14 @@ struct SalesforceToolKitApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @AppStorage("settings") var settings: String = ""
+    // New AppStorage for biometric authentication setting
+    @AppStorage("biometricAuthenticationEnabled") var biometricAuthenticationEnabled: Bool = false
     
     @State var credentialManager = LinkManager()
     @StateObject var authenticatedOrgManager = AuthenticatedOrgManager()
     @StateObject private var keyMonitor = KeyMonitor()
+    // New StateObject for the local authentication manager
+    @StateObject private var authManager = LocalAuthenticationManager()
     @State var currentOption: String  = "1"
     
     @State var preferencesWindow: NSWindow?
@@ -125,6 +129,28 @@ struct SalesforceToolKitApp: App {
         }
     }
     
+    // MARK: - Biometric Authentication Helper
+    /// Authenticates the user with biometrics if enabled and available, then executes the action.
+    /// If authentication fails or is not required, an alert is shown or the action is executed directly.
+    private func authenticateIfRequired(reason: String, action: @escaping () -> Void) {
+        if biometricAuthenticationEnabled && authManager.isTouchIDAvailable {
+            authManager.authenticate(reason: reason) { success in
+                if success {
+                    action()
+                } else {
+                    // Show an alert if authentication fails
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Authentication Failed", comment: "")
+                    alert.informativeText = NSLocalizedString("Could not verify your identity. Access denied.", comment: "")
+                    alert.alertStyle = .critical
+                    alert.runModal()
+                }
+            }
+        } else {
+            action() // Execute immediately if biometrics are not enabled or not available
+        }
+    }
+    
     func openPreferences() {
         if preferencesWindow == nil {
             let window = NSWindow(
@@ -134,7 +160,11 @@ struct SalesforceToolKitApp: App {
                 defer: false)
             window.center()
             window.title = NSLocalizedString("Preferences", comment: "")
-            window.contentView = NSHostingView(rootView: AppPreferencesView())
+            // Pass the biometric settings to AppPreferencesView
+            window.contentView = NSHostingView(rootView: AppPreferencesView(
+                biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
+                isTouchIDAvailable: authManager.isTouchIDAvailable
+            ))
             window.isReleasedWhenClosed = false
             preferencesWindow = window
             window.delegate = appDelegate
@@ -163,123 +193,137 @@ struct SalesforceToolKitApp: App {
     }
     
     func openAuthenticationWindow() {
-        if authenticationWindow == nil {
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
-                styleMask: [.titled, .closable],
-                backing: .buffered,
-                defer: false)
-            window.center()
-            window.title = "Autenticar y Abrir Organización"
-            window.contentView = NSHostingView(rootView: AuthenticationView().environmentObject(authenticatedOrgManager))
-            window.isReleasedWhenClosed = false
-            authenticationWindow = window
-            window.delegate = appDelegate
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+            if authenticationWindow == nil {
+                let window = NSWindow(
+                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
+                    styleMask: [.titled, .closable],
+                    backing: .buffered,
+                    defer: false)
+                window.center()
+                window.title = "Autenticar y Abrir Organización"
+                window.contentView = NSHostingView(rootView: AuthenticationView().environmentObject(authenticatedOrgManager))
+                window.isReleasedWhenClosed = false
+                authenticationWindow = window
+                window.delegate = appDelegate
+            }
+            authenticationWindow?.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
         }
-        authenticationWindow?.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
     }
     
     func confirmLogout(org: AuthenticatedOrg) {
-        let alert = NSAlert()
-        alert.messageText = "Confirmar cerrar sesión"
-        alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label))?"
-            + "\n\n"
-            + "Se cerrarán todas las conexiones con la instancia."
-        alert.addButton(withTitle: NSLocalizedString("Si, cerrar sesión", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("Cancelar", comment: ""))
-        alert.alertStyle = .warning
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to logout from an organization", comment: "")) {
+            let alert = NSAlert()
+            alert.messageText = "Confirmar cerrar sesión"
+            alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label))?"
+                + "\n\n"
+                + "Se cerrarán todas las conexiones con la instancia."
+            alert.addButton(withTitle: NSLocalizedString("Si, cerrar sesión", comment: ""))
+            alert.addButton(withTitle: NSLocalizedString("Cancelar", comment: ""))
+            alert.alertStyle = .warning
 
-        if alert.runModal() == .alertFirstButtonReturn {
-            let cli = SalesforceCLI()
-            let logout = cli.logout(alias: org.alias)
-            let deleted = authenticatedOrgManager.deleteOrg(org: org)
-            
-            if (logout) {
-                if (deleted) {
-                    let content = UNMutableNotificationContent()
-                    content.title = "Cierre de sesión exitoso"
-                    content.body = "Se ha cerrado existosamente la sesión en la instancia \(org.label) (\(org.alias))."
-                    content.sound = UNNotificationSound.default
+            if alert.runModal() == .alertFirstButtonReturn {
+                let cli = SalesforceCLI()
+                let logout = cli.logout(alias: org.alias)
+                let deleted = authenticatedOrgManager.deleteOrg(org: org)
+                
+                if (logout) {
+                    if (deleted) {
+                        let content = UNMutableNotificationContent()
+                        content.title = "Cierre de sesión exitoso"
+                        content.body = "Se ha cerrado existosamente la sesión en la instancia \(org.label) (\(org.alias))."
+                        content.sound = UNNotificationSound.default
 
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                    UNUserNotificationCenter.current().add(request)
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+                    }
                 }
             }
         }
     }
 
     func confirmDelete(org: AuthenticatedOrg) {
-        let alert = NSAlert()
-        alert.messageText = "Confirmar borrado"
-        alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label)?"
-        + "\n\n"
-        + "Antes de eliminar la sesión se cerrarán todas las conexiones con la instancia."
-        alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-        alert.alertStyle = .warning
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to delete an organization", comment: "")) {
+            let alert = NSAlert()
+            alert.messageText = "Confirmar borrado"
+            alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label)?"
+            + "\n\n"
+            + "Antes de eliminar la sesión se cerrarán todas las conexiones con la instancia."
+            alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
+            alert.addButton(withTitle: NSLocalizedString("Cancelar", comment: ""))
+            alert.alertStyle = .warning
 
-        if alert.runModal() == .alertFirstButtonReturn {
-            let cli = SalesforceCLI()
-            let logout = cli.logout(alias: org.alias)
-            let deleted = authenticatedOrgManager.deleteOrg(org: org)
-           
-            if (logout) {
-                if (deleted) {
-                    let content = UNMutableNotificationContent()
-                    content.title = "Eliminación exitosa"
-                    content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias))."
-                    content.sound = UNNotificationSound.default
+            if alert.runModal() == .alertFirstButtonReturn {
+                let cli = SalesforceCLI()
+                let logout = cli.logout(alias: org.alias)
+                let deleted = authenticatedOrgManager.deleteOrg(org: org)
+               
+                if (logout) {
+                    if (deleted) {
+                        let content = UNMutableNotificationContent()
+                        content.title = "Eliminación exitosa"
+                        content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias))."
+                        content.sound = UNNotificationSound.default
 
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                    UNUserNotificationCenter.current().add(request)
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+                    }
                 }
             }
         }
     }
 
     func openEditAuthenticationWindow(org: AuthenticatedOrg) {
-        if editAuthenticationWindow == nil {
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
-                styleMask: [.titled, .closable],
-                backing: .buffered,
-                defer: false)
-            window.center()
-            window.title = "Editar \(org.label)"
-            window.isReleasedWhenClosed = false
-            editAuthenticationWindow = window
-            window.delegate = appDelegate
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to edit organization details", comment: "")) {
+            if editAuthenticationWindow == nil {
+                let window = NSWindow(
+                    contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+                    styleMask: [.titled, .closable],
+                    backing: .buffered,
+                    defer: false)
+                window.center()
+                window.title = "Editar \(org.label)"
+                window.isReleasedWhenClosed = false
+                editAuthenticationWindow = window
+                window.delegate = appDelegate
+            }
+            
+            let editView = AuthenticationView(org: org)
+            editAuthenticationWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
+            editAuthenticationWindow?.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
         }
-        
-        let editView = AuthenticationView(org: org)
-        editAuthenticationWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
-        editAuthenticationWindow?.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
     }
     
     func viewOrganizationDetailsWindow(org: AuthenticatedOrg) {
-        if viewOrganizationDetailsWindow == nil {
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
-                styleMask: [.titled, .closable],
-                backing: .buffered,
-                defer: false)
-            window.center()
-            window.title = "Edit Org"
-            window.isReleasedWhenClosed = false
-            viewOrganizationDetailsWindow = window
-            window.delegate = appDelegate
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to view organization details", comment: "")) {
+            if viewOrganizationDetailsWindow == nil {
+                let window = NSWindow(
+                    contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+                    styleMask: [.titled, .closable],
+                    backing: .buffered,
+                    defer: false)
+                window.center()
+                // The title "Edit Org" here seems like a typo if this is for viewing details.
+                // You might want to change it to "View \(org.label) Details" or similar.
+                window.title = "Edit Org"
+                window.isReleasedWhenClosed = false
+                viewOrganizationDetailsWindow = window
+                window.delegate = appDelegate
+            }
+            
+            // Reusing AuthenticationView for viewing might not be ideal if it allows editing.
+            // Consider creating a dedicated `ViewOrganizationDetailsView` if you only want to display.
+            let editView = AuthenticationView(org: org)
+            viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
+            viewOrganizationDetailsWindow?.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
         }
-        
-        let editView = AuthenticationView(org: org)
-        viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
-        viewOrganizationDetailsWindow?.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
     }
     
     var body: some Scene {
-        MenuBarExtra(currentOption, systemImage: "key.icloud.fill") {
+        MenuBarExtra(currentOption, systemImage: "lock.open.fill") {
             MenuBarContentView(
                 keyMonitor: keyMonitor,
                 authenticatedOrgManager: authenticatedOrgManager,
@@ -288,13 +332,21 @@ struct SalesforceToolKitApp: App {
                 credentialManager: credentialManager,
                 version: version,
                 mainWindow: openMainWindow,
+                // Fix for the error: explicitly wrap authenticateIfRequired in a closure
+                // to match the expected labeled parameter type.
+                authenticateIfRequired: { reason, action in
+                    self.authenticateIfRequired(reason: reason, action: action)
+                },
                 openAuthenticationWindow: openAuthenticationWindow,
                 openEditAuthenticationWindow: openEditAuthenticationWindow,
                 viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
                 confirmDelete: confirmDelete,
                 confirmLogout: confirmLogout,
                 openPreferences: openPreferences,
-                confirmQuit: confirmQuit
+                confirmQuit: confirmQuit,
+                // Pass new biometric authentication parameters to MenuBarContentView
+                biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
+                isTouchIDAvailable: authManager.isTouchIDAvailable
             )
             .onReceive(NotificationCenter.default.publisher(for: AppDelegate.windowWillCloseNotification)) { notification in
                 self.onWindowWillClose(notification)
@@ -309,5 +361,3 @@ struct SalesforceToolKitApp: App {
         
     }
 }
-
-

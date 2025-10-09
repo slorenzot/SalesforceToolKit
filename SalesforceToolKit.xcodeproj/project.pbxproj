@@ -17,6 +17,7 @@
 		BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */ = {isa = PBXBuildFile; fileRef = BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */; };
 		BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */; };
 		BC8821142A94595200B75DDA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC8821162A94595200B75DDA /* Localizable.strings */; };
+		BCA03D572E97525700C88E31 /* LocalAuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */; };
 		BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +53,7 @@
 		BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSavableError.swift; sourceTree = "<group>"; };
 		BC8821152A94595200B75DDA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAuthenticationManager.swift; sourceTree = "<group>"; };
 		BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Salesforce-logo.jpg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,6 +117,7 @@
 				827E4AD62A66C7110062977D /* Assets.xcassets */,
 				827E4ADB2A66C7110062977D /* SalesforceToolKit.entitlements */,
 				827E4AD82A66C7110062977D /* Preview Content */,
+				BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */,
 			);
 			path = SalesforceToolKit;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 				BC2B3BB92CBF0A8900C65391 /* ObjectSavable.swift in Sources */,
 				827E4AD32A66C70D0062977D /* SalesforceToolKitApp.swift in Sources */,
 				BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */,
+				BCA03D572E97525700C88E31 /* LocalAuthenticationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

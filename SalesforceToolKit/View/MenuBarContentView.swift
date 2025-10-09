@@ -12,6 +12,8 @@ struct MenuBarContentView: View {
     var version: String
     
     var mainWindow: () -> Void
+    // FIX: Changed from a tuple type to a function type with labeled parameters.
+    var authenticateIfRequired: (_ reason: String, _ action: @escaping () -> Void) -> Void
     var openAuthenticationWindow: () -> Void
     var openEditAuthenticationWindow: (AuthenticatedOrg) -> Void
     var viewOrganizationDetailsWindow: (AuthenticatedOrg) -> Void
@@ -19,6 +21,10 @@ struct MenuBarContentView: View {
     var confirmLogout: (AuthenticatedOrg) -> Void
     var openPreferences: () -> Void
     var confirmQuit: () -> Void
+    
+    // New properties for biometric authentication
+    @Binding var biometricAuthenticationEnabled: Bool
+    var isTouchIDAvailable: Bool
     
     let SETUP_PATH = "/lightning/setup/SetupOneHome/home"
     let OBJECT_MANAGER_PATH = "/lightning/setup/ObjectManager/home"
@@ -147,8 +153,10 @@ struct MenuBarContentView: View {
                     ForEach(orgs) { org in
                         Menu {
                             Button() {
-                                let cli = SalesforceCLI()
-                                let _ = cli.open(alias: org.alias,browser: defaultBrowser)
+                                authenticateIfRequired(NSLocalizedString("Authenticate to open authentication window", comment: "")) {
+                                    let cli = SalesforceCLI()
+                                    let _ = cli.open(alias: org.alias,browser: defaultBrowser)
+                                }
                             } label: {
                                Image(systemName: "network")
                                Text("Abrir instancia...")
@@ -353,6 +361,12 @@ struct MenuBarContentView: View {
             }
             .toggleStyle(.checkbox)
         
+        // New: Toggle for Biometric Authentication
+        if isTouchIDAvailable {
+            Toggle("Habilitar autenticación biométrica", isOn: $biometricAuthenticationEnabled)
+                .toggleStyle(.checkbox)
+        }
+        
         Button(NSLocalizedString("Preferences", comment: "")) {
             openPreferences()
         }
@@ -388,3 +402,4 @@ struct MenuBarContentView: View {
         .keyboardShortcut("q")
     }
 }
+
