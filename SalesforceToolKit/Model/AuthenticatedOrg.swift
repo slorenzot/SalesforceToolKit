@@ -17,4 +17,5 @@ struct AuthenticatedOrg: Codable, Identifiable {
     var orgType: String // "Producción" or "Desarrollo"
     var isFavorite: Bool? = false
     var isDefault: Bool? = false
+    var useBrowser: String? = "default"
 }
