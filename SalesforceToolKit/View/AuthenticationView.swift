@@ -172,6 +172,7 @@ struct AuthenticationView: View {
         DispatchQueue.global(qos: .userInitiated).async {
             let cli = SalesforceCLI()
             let instanceUrl = orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL
+            
             print("Calling cli.auth with alias: \(alias), instanceUrl: \(instanceUrl), orgType: \(orgType)")
             let authenticated = cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
             

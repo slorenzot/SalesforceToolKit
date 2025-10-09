@@ -20,6 +20,8 @@ struct OrgMenuItem: View {
     let SCHEMA_BUILDER_PATH = "/lightning/setup/SchemaBuilder/home"
     let CODE_BUILDER_PATH = "/runtime_developerplatform_codebuilder/codebuilder.app?launch=true"
     let FLOW_PATH = "/lightning/setup/Flows/home"
+    
+    let OBJECT_PATH = "/lightning/o/<ObjectName>/home"
 
     var body: some View {
         Menu {
