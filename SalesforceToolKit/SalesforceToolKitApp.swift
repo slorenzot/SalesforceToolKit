@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ServiceManagement
+import ServiceManagement // Add this import for SMAppService
 import UserNotifications
 import LocalAuthentication // Add this import for Touch ID/Face ID
 
@@ -96,9 +96,37 @@ struct SalesforceToolKitApp: App {
 
     @State private var launchOnLogin = false
 
-    private func setLaunchOnLogin(enabled: Bool) {
-        let identifier = "com.nesponsoul.SalesforceToolKit-Launcher" as CFString
-        SMLoginItemSetEnabled(identifier, enabled)
+    private func setLaunchOnLogin(enabled: Bool) async { // MARK: - Changed to async
+        let serviceIdentifier = "com.nesponsoul.SalesforceToolKit-Launcher"
+        let content = UNMutableNotificationContent()
+        
+        let service = SMAppService.loginItem(identifier: serviceIdentifier)
+        
+        do {
+            if enabled {
+                try service.register()
+                content.title = "Agregado al inicio exitoso"
+                content.body = "Se ha añadido como elemento en el inicio."
+                content.sound = UNNotificationSound.default
+            } else {
+                try await service.unregister()
+                content.title = "Eliminado en el inicio exitoso"
+                content.body = "Se ha removido de los elemento en el inicio."
+                content.sound = UNNotificationSound.default
+            }
+        } catch {
+            print("Failed to set login item: \(error)")
+            content.title = "Error al configurar inicio"
+            content.body = "Hubo un error al \(enabled ? "añadir" : "remover") como elemento de inicio: \(error.localizedDescription)"
+            content.sound = UNNotificationSound.default
+        }
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+        } catch {
+            print("Error decoding org details: \(error)")
+        }
     }
     
     var version = "2.3.0"
@@ -325,12 +353,17 @@ struct SalesforceToolKitApp: App {
     }
     
     var body: some Scene {
-        MenuBarExtra(currentOption, systemImage: "lock.open.fill") {
+        MenuBarExtra(currentOption, systemImage: "key.fill") {
             MenuBarContentView(
                 keyMonitor: keyMonitor,
                 authenticatedOrgManager: authenticatedOrgManager,
                 launchOnLogin: $launchOnLogin,
-                setLaunchOnLogin: setLaunchOnLogin,
+                setLaunchOnLogin: { enabled in
+                    // Call the async function from a Task
+                    Task {
+                        await setLaunchOnLogin(enabled: enabled)
+                    }
+                },
                 credentialManager: credentialManager,
                 version: version,
                 mainWindow: openMainWindow,
@@ -363,3 +396,4 @@ struct SalesforceToolKitApp: App {
         
     }
 }
+

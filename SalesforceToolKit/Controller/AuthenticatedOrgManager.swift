@@ -106,17 +106,18 @@ class AuthenticatedOrgManager: ObservableObject {
                 authenticatedOrgs = decoded
                 authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
                 
-                print("loaded orgs (\(authenticatedOrgs.count))")
+                print("Loaded orgs (\(authenticatedOrgs.count))")
             }
         }
     }
     
     @objc private func handleSuccessfulAuth(notification: Notification) {
         if let userInfo = notification.userInfo,
+           let orgId = userInfo["orgId"] as? String,
            let label = userInfo["label"] as? String,
            let alias = userInfo["alias"] as? String,
            let orgType = userInfo["orgType"] as? String {
-            let newOrg = AuthenticatedOrg(alias: alias, label: label, orgType: orgType)
+            let newOrg = AuthenticatedOrg(alias: alias, label: label, orgId: orgId, orgType: orgType)
             if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
                 authenticatedOrgs.append(newOrg)
                 authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }

@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 struct OrgDetails: Codable {
     let result: OrgResult
@@ -15,6 +16,18 @@ struct OrgResult: Codable {
 }
 
 class SalesforceCLI {
+    func openUrl(url: String) -> Bool {
+        // using OAuth token
+        // http://[instance].salesforce.com/secur/frontdoor.jsp?sid=[access token]&retURL=[start page]
+        // https://sfdcblogger.in/2023/03/09/open-salesforce-org-using-session-id-or-access-token/?i=1
+        
+        if let url = URL(string: url) {
+            NSWorkspace.shared.open(url)
+        }
+        
+        return true
+    }
+    
     private func getSfPath() -> String {
         // Default to /usr/local/bin/sf if not set
         return UserDefaults.standard.string(forKey: "sfPath") ?? "/usr/local/bin/sf"
@@ -156,6 +169,17 @@ class SalesforceCLI {
         
         return false
     }
+    
+    // Iniciar sesión
+    ////servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&/servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&
+    ///servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m
+    func openAsUser(userId: String, alias: String, path: String = "/home", incognito:Bool = false, browser: String = "chrome") -> Bool {
+        let orgId = "00DO900000DIJfr"
+        let asUserId = "005Hs00000BVy3m"
+        let LOGIN_AS_PATH =  "https://suracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com/servlet/servlet.su?oid=\(orgId)&suorgadminid=\(asUserId)&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&/servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&"
+        return openUrl(url: LOGIN_AS_PATH)
+    }
+    
     
     func open(alias: String, path: String = "", incognito:Bool = false, browser: String = "chrome") -> Bool {
         let sfPath = getSfPath()

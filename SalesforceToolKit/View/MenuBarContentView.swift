@@ -7,7 +7,7 @@ struct MenuBarContentView: View {
     @ObservedObject var keyMonitor: KeyMonitor
     @ObservedObject var authenticatedOrgManager: AuthenticatedOrgManager
     @Binding var launchOnLogin: Bool
-    var setLaunchOnLogin: (Bool) -> Void
+    var setLaunchOnLogin: (Bool) async -> Void // MARK: - Changed closure type to async
     var credentialManager: LinkManager
     var version: String
     
@@ -53,6 +53,7 @@ struct MenuBarContentView: View {
             } label: {
                 Image(systemName: "star.fill")
                 Text("Por defecto: \(defaultOrg?.label ?? "Ninguna")")
+                Text("Por defecto: \(defaultOrg?.orgId ?? "Ninguna")")
             }
             
             Divider()
@@ -175,7 +176,10 @@ struct MenuBarContentView: View {
         
         Toggle(NSLocalizedString("Launch at Startup", comment: ""), isOn: $launchOnLogin)
             .onChange(of: launchOnLogin) { value in
-                setLaunchOnLogin(value)
+                // MARK: - Call the async function within a Task
+                Task {
+                    await setLaunchOnLogin(value)
+                }
             }
             .toggleStyle(.checkbox)
         
@@ -214,3 +218,4 @@ struct MenuBarContentView: View {
         .keyboardShortcut("q")
     }
 }
+

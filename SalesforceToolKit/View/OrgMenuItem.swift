@@ -50,6 +50,22 @@ struct OrgMenuItem: View {
                 }
             }
             
+            Button("Abrir instancia como...") {
+                authenticateIfRequired(NSLocalizedString("Authenticate to open Org Private window", comment: "")) {
+                    let success = cli.openAsUser(userId: "005Hs00000BVy3m", alias: org.alias, incognito: false, browser: defaultBrowser)
+                    
+                    if (!success) {
+                        let content = UNMutableNotificationContent()
+                        content.title = "Opening Org Failed"
+                        content.body = "Error opening to \(org.alias), the main reason is your default browser do not support this Salesforce feature..."
+                        content.sound = UNNotificationSound.default
+                        
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+                    }
+                }
+            }
+            
             Menu {
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Object Manager window", comment: "")) {
@@ -116,6 +132,8 @@ struct OrgMenuItem: View {
             if (!isFavorite) {
                 
                 Divider()
+                
+                Text("(\(org.orgId ?? "--"))")
                 
                 Button("Mostrar detalles") {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open show Org details window", comment: "")) {

@@ -183,8 +183,11 @@ struct AuthenticationView: View {
                 
                 if (authenticated) {
                     print("Authenticated org with alias: \(alias)")
+                    let org = cli.orgDetails(alias: alias)
                     
-                    let userInfo: [String: Any] = ["label": label, "alias": alias, "orgType": orgType]
+                    print("-------\(org?.id)")
+                    
+                    let userInfo: [String: Any] = ["orgId": org?.id, "label": label, "alias": alias, "orgType": orgType]
                     NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: userInfo)
                     
                     let content = UNMutableNotificationContent()
@@ -211,9 +214,8 @@ struct AuthenticationView: View {
     }
     
     func close() {
-        print("Close")
         if let window = thisWindow {
-            print("Close 2")
+            print("Closing authenticacion window...")
             window.close()
         }
     }
