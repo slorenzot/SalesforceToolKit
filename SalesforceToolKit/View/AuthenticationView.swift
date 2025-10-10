@@ -187,9 +187,10 @@ struct AuthenticationView: View {
                     
                     print("-------\(org?.id)")
                     
-                    let userInfo: [String: Any] = ["orgId": org?.id, "label": label, "alias": alias, "orgType": orgType]
-                    NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: userInfo)
+                    let userInfo: [String: Any] = ["orgId": org?.id, "instanceUrl": org?.instanceUrl, "label": label, "alias": alias, "orgType": orgType]
+                    close()
                     
+                    NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: userInfo)
                     let content = UNMutableNotificationContent()
                     content.title = "Autenticación exitosa"
                     content.body = "Se ha autenticado correctamente con el alias \(alias)."
@@ -197,8 +198,6 @@ struct AuthenticationView: View {
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                     UNUserNotificationCenter.current().add(request)
-                    
-                    close()
                 } else {
                     isAuthenticating = false
                 }

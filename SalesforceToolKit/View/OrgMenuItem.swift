@@ -25,6 +25,11 @@ struct OrgMenuItem: View {
 
     var body: some View {
         Menu {
+            Text("\(org.label ?? "") (\(org.orgId ?? "--"))")
+            Text("\(org.instanceUrl ?? "--")")
+
+            Divider()
+            
             Button() {
                 authenticateIfRequired(NSLocalizedString("Authenticate to open Org window", comment: "")) {
                     let _ = cli.open(alias: org.alias,browser: defaultBrowser)
@@ -132,8 +137,6 @@ struct OrgMenuItem: View {
             if (!isFavorite) {
                 
                 Divider()
-                
-                Text("(\(org.orgId ?? "--"))")
                 
                 Button("Mostrar detalles") {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open show Org details window", comment: "")) {
