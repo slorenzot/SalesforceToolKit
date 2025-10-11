@@ -1,5 +1,6 @@
 import SwiftUI
 import UserNotifications
+import AppKit // Import AppKit for NSPasteboard
 
 struct OrgMenuItem: View {
     let org: AuthenticatedOrg
@@ -25,8 +26,25 @@ struct OrgMenuItem: View {
 
     var body: some View {
         Menu {
-            Text("\(org.label ?? "") (\(org.orgId ?? "--"))")
-            Text("\(org.instanceUrl ?? "--")")
+            Text("\(org.label)")
+            
+            Divider()
+            
+            Button("Org ID: \(org.orgId ?? "--")") {
+                // Copy Org ID to pasteboard
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(org.orgId ?? "", forType: .string)
+            }
+            Button("Enlace: \(org.instanceUrl ?? "--")") {
+                // Copy Instance URL to pasteboard
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(org.instanceUrl ?? "", forType: .string)
+            }
+            Button("Alias: \(org.alias)") {
+                // Copy Alias to pasteboard
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(org.alias, forType: .string)
+            }
 
             Divider()
             
@@ -69,7 +87,7 @@ struct OrgMenuItem: View {
                         UNUserNotificationCenter.current().add(request)
                     }
                 }
-            }
+            }.disabled(true)
             
             Menu {
                 Button() {
