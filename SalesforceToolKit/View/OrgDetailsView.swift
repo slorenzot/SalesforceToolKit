@@ -49,6 +49,11 @@ struct OrgDetailsView: View {
     @State private var windowDelegate = OrgDetailsWindowDelegate()
     @State private var thisWindow: NSWindow?
     
+    // Timer specific states
+    @State private var elapsedSeconds: Int = 0
+    @State private var showEarlyTimeoutPrompt: Bool = false
+    @State private var uiTimer: Timer?
+    
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
     
     let orgTypes = ["Producción", "Desarrollo"]
@@ -120,7 +125,8 @@ struct OrgDetailsView: View {
                 .padding()
             }
             
-            if isFetching {
+            // Show main progress view only if not showing the early timeout prompt
+            if isFetching && !showEarlyTimeoutPrompt {
                 VStack {
                     ProgressView()
                     Text("Obteniendo información su organización...")
@@ -132,6 +138,28 @@ struct OrgDetailsView: View {
                 .frame(width: 480, height: 520)
                 .background(Color(NSColor.windowBackgroundColor))
             }
+            
+            // Show the early timeout prompt if triggered
+            if showEarlyTimeoutPrompt {
+                EarlyTimeoutPromptView(
+                    onRetry: {
+                        stopUITimer() // Stop this prompt's timer
+                        authenticationCancelled = false // Reset cancellation flag for new attempt
+                        SalesforceCLI().killProcess(port: 1717) // Ensure any previous CLI process is killed
+                        isFetching = false // Temporarily hide all progress to allow a clean restart of UI
+                        authenticate() // Restart authentication
+                    },
+                    onCancel: {
+                        stopUITimer() // Stop this prompt's timer
+                        authenticationCancelled = true // Mark cancellation
+                        SalesforceCLI().killProcess(port: 1717) // Explicitly kill CLI process
+                        isFetching = false // Hide progress UI
+                        close() // Close the window
+                    }
+                )
+                .frame(width: 480, height: 520) // Match the parent size
+                .background(Color(NSColor.windowBackgroundColor))
+            }
         }
         .frame(width: 480, height: 520)
         .onAppear {
@@ -139,13 +167,57 @@ struct OrgDetailsView: View {
             windowDelegate.isAuthenticating = self.isFetching
             windowDelegate.onCancel = {
                 self.authenticationCancelled = true
+                self.stopUITimer() // Stop the UI timer when user cancels via window close
             }
             self.thisWindow?.delegate = windowDelegate
             hideWindowButtons()
+            
+            // If we are already fetching (e.g., re-appearing after another view), start timer
+            if isFetching {
+                startUITimer()
+            }
         }
         .onChange(of: isFetching) { newValue in
             windowDelegate.isAuthenticating = newValue
+            if newValue {
+                startUITimer()
+            } else {
+                stopUITimer()
+            }
         }
+        .onDisappear {
+            stopUITimer() // Ensure timer is stopped when the view is no longer active
+        }
+    }
+    
+    // MARK: - UI Timer Logic
+    private func startUITimer() {
+        stopUITimer() // Ensure any existing timer is stopped
+        elapsedSeconds = 0
+        showEarlyTimeoutPrompt = false
+
+        uiTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if isFetching { // Only increment if we are still fetching
+                elapsedSeconds += 1
+                if elapsedSeconds >= 10 {
+                    // Trigger the prompt, but don't stop the underlying auth process yet
+                    showEarlyTimeoutPrompt = true
+                }
+            } else {
+                stopUITimer() // If isFetching became false, stop the timer
+            }
+        }
+        // Add timer to common run loop mode to ensure it fires even during other UI events
+        if let timer = uiTimer {
+            RunLoop.current.add(timer, forMode: .common)
+        }
+    }
+
+    private func stopUITimer() {
+        uiTimer?.invalidate()
+        uiTimer = nil
+        elapsedSeconds = 0
+        showEarlyTimeoutPrompt = false
     }
     
     // MARK: - Authentication Logic with Timeout
@@ -282,9 +354,46 @@ struct OrgDetailsView: View {
     }
 }
 
+// MARK: - New View for Early Timeout Prompt
+struct EarlyTimeoutPromptView: View {
+    var onRetry: () -> Void
+    var onCancel: () -> Void
+
+    var body: some View {
+        VStack {
+            Image(systemName: "hourglass.badge.fill")
+                .font(.largeTitle)
+                .foregroundColor(.orange)
+                .padding(.bottom, 10)
+
+            Text("Esto está tardando más de lo esperado")
+                .font(.title2)
+                .padding(.bottom, 5)
+
+            Text("El proceso de exploración de su organización está tardando más de 10 segundos. ¿Desea reintentar o cancelar?")
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+                .foregroundColor(.secondary)
+
+            HStack {
+                Button("Cancelar") {
+                    onCancel()
+                }
+                .keyboardShortcut(.cancelAction) // Para el comportamiento estándar de cancelar
+
+                Button("Reintentar") {
+                    onRetry()
+                }
+                .keyboardShortcut(.defaultAction) // Para el comportamiento estándar de acción predeterminada
+            }
+            .padding(.top, 20)
+        }
+    }
+}
+
 struct OrgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         OrgDetailsView()
     }
 }
-
