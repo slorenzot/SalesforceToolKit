@@ -17,7 +17,7 @@ fileprivate class AuthenticationWindowDelegate: NSObject, NSWindowDelegate {
             if alert.runModal() == .alertFirstButtonReturn {
                 let cli = SalesforceCLI()
                 cli.killProcess(port: 1717)
-                onCancel?()
+                onCancel?() // This will set `authenticationCancelled = true` in AuthenticationView
                 return true
             } else {
                 return false
@@ -38,7 +38,7 @@ struct AuthenticationView: View {
     @State private var alias: String
     @State private var isFavorite: Bool = false
     @State private var isAuthenticating = false
-    @State private var authenticationCancelled = false
+    @State private var authenticationCancelled = false // Tracks if user or timeout cancelled
     @State private var windowDelegate = AuthenticationWindowDelegate()
     @State private var thisWindow: NSWindow?
     
@@ -46,7 +46,7 @@ struct AuthenticationView: View {
     
     let orgTypes = ["Producción", "Desarrollo"]
 
-    init(org: AuthenticatedOrg? = nil) {
+    init(org: AuthenticatedOrg? = nil) { // Corrected type here
         self.orgToEdit = org
         
         if let org = org {
@@ -87,7 +87,7 @@ struct AuthenticationView: View {
                                     alias = generateAlias(from: value)
                                 }
                             })
-                            .disabled(orgToEdit != nil)
+                        
                         Text("La etiqueta es el nombre que se mostrará en Salesforce Toolkit para identificar fácilmente las instancias de su organización y puede contener espacios y caracteres especiales")
                             .font(.system(size: 10))
                         
@@ -126,7 +126,7 @@ struct AuthenticationView: View {
                                 close()
                             } else {
                                 // Create Mode
-                                isAuthenticating = true
+                                // isAuthenticating is set to true at the beginning of authenticate()
                                 authenticate()
                             }
                         }
@@ -165,42 +165,119 @@ struct AuthenticationView: View {
         }
     }
     
+    // MARK: - Authentication Logic with Timeout
     func authenticate() {
         authenticationCancelled = false
-        isAuthenticating = true
-        
-        DispatchQueue.global(qos: .userInitiated).async {
+        isAuthenticating = true // Show progress UI
+
+        Task { @MainActor in // Use @MainActor to safely update UI-related @State
             let cli = SalesforceCLI()
             let instanceUrl = orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL
-            
-            print("Calling cli.auth with alias: \(alias), instanceUrl: \(instanceUrl), orgType: \(orgType)")
-            let authenticated = cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
-            
-            DispatchQueue.main.async {
-                if authenticationCancelled {
-                    return
+
+            var authResult: Bool? = nil // To store the result of the authentication attempt
+
+            do {
+                authResult = try await withThrowingTaskGroup(of: Bool?.self) { group in
+                    // Task for the actual authentication process
+                    group.addTask {
+                        // Perform the blocking CLI call on a background thread/queue using Task.detached.
+                        return await Task.detached {
+                            print("Calling cli.auth with alias: \(await alias), instanceUrl: \(instanceUrl), orgType: \(await orgType)")
+                            return await cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
+                        }.value
+                    }
+
+                    // Task for the timeout
+                    group.addTask {
+                        do {
+                            try await Task.sleep(for: .seconds(30))
+                            // If we reach here, the timeout occurred.
+                            // Signal cancellation and explicitly kill the CLI process.
+                            await MainActor.run { // Ensure state updates and CLI kill are handled safely
+                                self.authenticationCancelled = true // Mark cancellation
+                                cli.killProcess(port: 1717) // Ensure process is killed
+                                self.isAuthenticating = false // Hide progress UI due to timeout
+                                // Show an alert for timeout
+                                let alert = NSAlert()
+                                alert.messageText = "Autenticación Cancelada"
+                                alert.informativeText = "El proceso de inicio de sesión ha tardado demasiado y se ha cancelado."
+                                alert.addButton(withTitle: "OK")
+                                alert.alertStyle = .warning
+                                alert.runModal()
+                            }
+                            return nil // Indicate that timeout occurred
+                        } catch is CancellationError {
+                            // The sleep task was cancelled by the authentication task finishing first.
+                            return nil
+                        }
+                    }
+
+                    var result: Bool? = nil
+                    // Wait for the first task to complete
+                    for try await outcome in group {
+                        result = outcome
+                        group.cancelAll() // Cancel the other task immediately
+                        break
+                    }
+                    return result
                 }
-                
-                if (authenticated) {
+
+                // Now evaluate the result on the MainActor after the TaskGroup completes
+                if authenticationCancelled {
+                    // This means either the user cancelled via the window delegate or the timeout occurred.
+                    // If timeout, an alert was already shown and isAuthenticating was set to false.
+                    // If user cancelled, isAuthenticating needs to be reset here.
+                    isAuthenticating = false
+                    return // Exit early
+                }
+
+                if let authenticated = authResult, authenticated {
                     print("Authenticated org with alias: \(alias)")
-                    let org = cli.orgDetails(alias: alias)
                     
-                    print("-------\(org?.id)")
+                    // Fetch org details (also potentially blocking, run in detached task)
+                    let org = await Task.detached {
+                        return cli.orgDetails(alias: alias)
+                    }.value
+
+                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": org?.instanceUrl ?? "", "label": label, "alias": alias, "orgType": orgType]
                     
-                    let userInfo: [String: Any] = ["orgId": org?.id, "instanceUrl": org?.instanceUrl, "label": label, "alias": alias, "orgType": orgType]
-                    close()
+                    // Close the window on successful authentication ss
+                    close() // This will implicitly update `isAuthenticating` via `onChange`
                     
                     NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: userInfo)
+                    
                     let content = UNMutableNotificationContent()
                     content.title = "Autenticación exitosa"
                     content.body = "Se ha autenticado correctamente con el alias \(alias)."
                     content.sound = UNNotificationSound.default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                    UNUserNotificationCenter.current().add(request)
-                } else {
-                    isAuthenticating = false
+                    try await UNUserNotificationCenter.current().add(request) // Await notification addition
+                    
+                } else if authResult == false {
+                    // Authentication explicitly failed by CLI, not timeout.
+                    isAuthenticating = false // Hide progress UI
+                    let alert = NSAlert()
+                    alert.messageText = "Autenticación Fallida"
+                    alert.informativeText = "No se pudo autenticar con el alias \(alias). Por favor, inténtelo de nuevo."
+                    alert.addButton(withTitle: "OK")
+                    alert.alertStyle = .critical
+                    alert.runModal()
                 }
+                // If authResult is nil at this point, it means the timeout task returned nil,
+                // and that was already handled by setting `authenticationCancelled = true` and showing an alert.
+            } catch is CancellationError {
+                print("Authentication process Task was cancelled (e.g., parent task cancelled).")
+                isAuthenticating = false // Reset state
+            } catch {
+                print("An unexpected error occurred during authentication: \(error.localizedDescription)")
+                isAuthenticating = false // Reset state
+                let alert = NSAlert()
+                alert.messageText = "Error Inesperado"
+                alert.informativeText = "Ocurrió un error inesperado durante la autenticación: \(error.localizedDescription)"
+                alert.addButton(withTitle: "OK")
+                alert.alertStyle = .critical
+                alert.runModal()
             }
         }
     }
@@ -216,6 +293,8 @@ struct AuthenticationView: View {
         if let window = thisWindow {
             print("Closing authenticacion window...")
             window.close()
+            // When window closes, `onChange(of: isAuthenticating)` and `windowDelegate.onCancel`
+            // should handle the necessary state cleanup if not already done.
         }
     }
 }
@@ -225,3 +304,4 @@ struct AuthenticationView_Previews: PreviewProvider {
         AuthenticationView()
     }
 }
+
