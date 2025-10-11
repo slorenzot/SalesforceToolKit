@@ -210,7 +210,12 @@ struct OrgMenuItem: View {
                 }
             }
         } label: {
-            Image(systemName: "key.icloud.fill")
+            if (isFavorite) {
+                Image(systemName: "heart.fill")
+            } else {
+                Image(systemName: "key.icloud.fill")
+            }
+            
             Text("\(org.label) (\(org.orgType))")
         }
     }

@@ -145,7 +145,7 @@ struct OrgDetailsView: View {
                     onRetry: {
                         stopUITimer() // Stop this prompt's timer
                         authenticationCancelled = false // Reset cancellation flag for new attempt
-                        SalesforceCLI().killProcess(port: 1717) // Ensure any previous CLI process is killed
+                        // SalesforceCLI().killProcess(port: 1717) // Ensure any previous CLI process is killed
                         isFetching = false // Temporarily hide all progress to allow a clean restart of UI
                         authenticate() // Restart authentication
                     },
@@ -354,46 +354,9 @@ struct OrgDetailsView: View {
     }
 }
 
-// MARK: - New View for Early Timeout Prompt
-struct EarlyTimeoutPromptView: View {
-    var onRetry: () -> Void
-    var onCancel: () -> Void
-
-    var body: some View {
-        VStack {
-            Image(systemName: "hourglass.badge.fill")
-                .font(.largeTitle)
-                .foregroundColor(.orange)
-                .padding(.bottom, 10)
-
-            Text("Esto está tardando más de lo esperado")
-                .font(.title2)
-                .padding(.bottom, 5)
-
-            Text("El proceso de exploración de su organización está tardando más de 10 segundos. ¿Desea reintentar o cancelar?")
-                .font(.body)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .foregroundColor(.secondary)
-
-            HStack {
-                Button("Cancelar") {
-                    onCancel()
-                }
-                .keyboardShortcut(.cancelAction) // Para el comportamiento estándar de cancelar
-
-                Button("Reintentar") {
-                    onRetry()
-                }
-                .keyboardShortcut(.defaultAction) // Para el comportamiento estándar de acción predeterminada
-            }
-            .padding(.top, 20)
-        }
-    }
-}
-
 struct OrgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         OrgDetailsView()
     }
 }
+

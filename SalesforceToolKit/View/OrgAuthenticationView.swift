@@ -17,7 +17,7 @@ fileprivate class AuthenticationWindowDelegate: NSObject, NSWindowDelegate {
             if alert.runModal() == .alertFirstButtonReturn {
                 let cli = SalesforceCLI()
                 cli.killProcess(port: 1717)
-                onCancel?() // This will set `authenticationCancelled = true` in AuthenticationView
+                onCancel?() // This will set `authenticationCancelled = true` in AuthenticationView and stop UI timer
                 return true
             } else {
                 return false
@@ -27,11 +27,13 @@ fileprivate class AuthenticationWindowDelegate: NSObject, NSWindowDelegate {
     }
 }
 
-struct AuthenticationView: View {
+struct OrgAuthenticationView: View {
     let PRO_AUTH_URL = "https://login.salesforce.com"
     let DEV_AUTH_URL = "https://test.salesforce.com"
     
     var orgToEdit: AuthenticatedOrg?
+    
+    let timer = 30
     
     @State private var orgType: String
     @State private var label: String
@@ -41,6 +43,11 @@ struct AuthenticationView: View {
     @State private var authenticationCancelled = false // Tracks if user or timeout cancelled
     @State private var windowDelegate = AuthenticationWindowDelegate()
     @State private var thisWindow: NSWindow?
+    
+    // Timer specific states
+    @State private var elapsedSeconds: Int = 0
+    @State private var showEarlyTimeoutPrompt: Bool = false
+    @State private var uiTimer: Timer?
     
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
     
@@ -137,7 +144,8 @@ struct AuthenticationView: View {
                 .padding()
             }
             
-            if isAuthenticating {
+            // Show main progress view only if authenticating and not showing the early timeout prompt
+            if isAuthenticating && !showEarlyTimeoutPrompt {
                 VStack {
                     ProgressView()
                     Text("Iniciando sesión...")
@@ -149,6 +157,30 @@ struct AuthenticationView: View {
                 .frame(width: 480, height: 520)
                 .background(Color(NSColor.windowBackgroundColor))
             }
+            
+            // Show the early timeout prompt if triggered
+            if showEarlyTimeoutPrompt {
+                EarlyTimeoutPromptView(
+                    onRetry: {
+                        stopUITimer() // Detener este temporizador del aviso
+                        authenticationCancelled = false // Restablecer la bandera de cancelación para un nuevo intento
+                        let cli = SalesforceCLI()
+                        cli.killProcess(port: 1717) // Asegurarse de que cualquier proceso CLI anterior se detenga
+                        isAuthenticating = false // Ocultar temporalmente todo el progreso para permitir un reinicio limpio de la UI
+                        authenticate() // Reiniciar autenticación
+                    },
+                    onCancel: {
+                        stopUITimer() // Detener este temporizador del aviso
+                        authenticationCancelled = true // Marcar cancelación
+                        let cli = SalesforceCLI()
+                        cli.killProcess(port: 1717) // Detener explícitamente el proceso CLI
+                        isAuthenticating = false // Ocultar UI de progreso
+                        close() // Cerrar la ventana
+                    }
+                )
+                .frame(width: 480, height: 520) // Coincidir con el tamaño del padre
+                .background(Color(NSColor.windowBackgroundColor))
+            }
         }
         .frame(width: 480, height: 520)
         .onAppear {
@@ -156,13 +188,57 @@ struct AuthenticationView: View {
             windowDelegate.isAuthenticating = self.isAuthenticating
             windowDelegate.onCancel = {
                 self.authenticationCancelled = true
+                self.stopUITimer() // Detener el temporizador de la UI cuando el usuario cancela a través del cierre de la ventana
             }
             self.thisWindow?.delegate = windowDelegate
             hideWindowButtons()
+            
+            // If we are already authenticating (e.g., re-appearing after another view), start timer
+            if isAuthenticating {
+                startUITimer()
+            }
         }
         .onChange(of: isAuthenticating) { newValue in
             windowDelegate.isAuthenticating = newValue
+            if newValue {
+                startUITimer()
+            } else {
+                stopUITimer()
+            }
         }
+        .onDisappear {
+            stopUITimer() // Ensure timer is stopped when the view is no longer active
+        }
+    }
+    
+    // MARK: - UI Timer Logic
+    private func startUITimer() {
+        stopUITimer() // Ensure any existing timer is stopped
+        elapsedSeconds = 0
+        showEarlyTimeoutPrompt = false
+
+        uiTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if isAuthenticating { // Only increment if we are still authenticating
+                elapsedSeconds += 1
+                if elapsedSeconds >= timer {
+                    // Trigger the prompt, but don't stop the underlying auth process yet
+                    showEarlyTimeoutPrompt = true
+                }
+            } else {
+                stopUITimer() // If isAuthenticating became false, stop the timer
+            }
+        }
+        // Add timer to common run loop mode to ensure it fires even during other UI events
+        if let timer = uiTimer {
+            RunLoop.current.add(timer, forMode: .common)
+        }
+    }
+
+    private func stopUITimer() {
+        uiTimer?.invalidate()
+        uiTimer = nil
+        elapsedSeconds = 0
+        showEarlyTimeoutPrompt = false
     }
     
     // MARK: - Authentication Logic with Timeout
@@ -190,7 +266,7 @@ struct AuthenticationView: View {
                     // Task for the timeout
                     group.addTask {
                         do {
-                            try await Task.sleep(for: .seconds(30))
+                            try await Task.sleep(for: .seconds(timer))
                             // If we reach here, the timeout occurred.
                             // Signal cancellation and explicitly kill the CLI process.
                             await MainActor.run { // Ensure state updates and CLI kill are handled safely
@@ -301,7 +377,6 @@ struct AuthenticationView: View {
 
 struct AuthenticationView_Previews: PreviewProvider {
     static var previews: some View {
-        AuthenticationView()
+        OrgAuthenticationView()
     }
 }
-

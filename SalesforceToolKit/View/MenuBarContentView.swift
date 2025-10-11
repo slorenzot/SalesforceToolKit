@@ -58,9 +58,12 @@ struct MenuBarContentView: View {
             
             Divider()
             
-            Menu() {
+            //Menu() {
                 if favorites.isEmpty {
-                    Button("No hay organizaciones favoritas"){}.disabled(true)
+                    Button(){} label: {
+                        Image(systemName: "heart.fill")
+                        Text("No hay favoritos")
+                    }.disabled(true)
                 } else {
                     ForEach(favorites) { org in
                         OrgMenuItem(
@@ -77,10 +80,12 @@ struct MenuBarContentView: View {
                         .environmentObject(authenticatedOrgManager) // Provide environment object
                     }
                 }
-            } label: {
+            /*
+             } label: {
                 Image(systemName: "heart.fill")
                 Text("Favoritas (\(favorites.count))")
             }
+             */
             
             Divider()
             

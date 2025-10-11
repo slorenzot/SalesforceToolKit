@@ -232,7 +232,7 @@ struct SalesforceToolKitApp: App {
                     defer: false)
                 window.center()
                 window.title = "Autenticar y Abrir Organización"
-                window.contentView = NSHostingView(rootView: AuthenticationView().environmentObject(authenticatedOrgManager))
+                window.contentView = NSHostingView(rootView: OrgAuthenticationView().environmentObject(authenticatedOrgManager))
                 window.isReleasedWhenClosed = false
                 authenticationWindow = window
                 window.delegate = appDelegate
@@ -319,7 +319,7 @@ struct SalesforceToolKitApp: App {
                 window.delegate = appDelegate
             }
             
-            let editView = AuthenticationView(org: org)
+            let editView = OrgAuthenticationView(org: org)
             editAuthenticationWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
             editAuthenticationWindow?.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
