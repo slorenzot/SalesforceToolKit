@@ -5,6 +5,7 @@ struct AuthenticatedOrg: Codable, Identifiable {
     var alias: String
     var label: String
     var orgId: String? = ""
+    var username: String? = ""
     var instanceUrl: String? = ""
     var orgType: String // "Producción" or "Desarrollo"
     var sandboxType: String? = "sandbox"

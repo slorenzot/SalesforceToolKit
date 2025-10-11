@@ -308,7 +308,7 @@ struct SalesforceToolKitApp: App {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to edit organization details", comment: "")) {
             if editAuthenticationWindow == nil {
                 let window = NSWindow(
-                    contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
                     styleMask: [.titled, .closable],
                     backing: .buffered,
                     defer: false)
@@ -330,14 +330,14 @@ struct SalesforceToolKitApp: App {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to view organization details", comment: "")) {
             if viewOrganizationDetailsWindow == nil {
                 let window = NSWindow(
-                    contentRect: NSRect(x: 0, y: 0, width: 300, height: 150),
+                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
                     styleMask: [.titled, .closable],
                     backing: .buffered,
                     defer: false)
                 window.center()
                 // The title "Edit Org" here seems like a typo if this is for viewing details.
                 // You might want to change it to "View \(org.label) Details" or similar.
-                window.title = "Edit Org"
+                window.title = "Detalles de la Organización"
                 window.isReleasedWhenClosed = false
                 viewOrganizationDetailsWindow = window
                 window.delegate = appDelegate
@@ -345,8 +345,8 @@ struct SalesforceToolKitApp: App {
             
             // Reusing AuthenticationView for viewing might not be ideal if it allows editing.
             // Consider creating a dedicated `ViewOrganizationDetailsView` if you only want to display.
-            let editView = AuthenticationView(org: org)
-            viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
+            let detailsView = OrgDetailsView(org: org)
+            viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: detailsView.environmentObject(authenticatedOrgManager))
             viewOrganizationDetailsWindow?.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
         }
