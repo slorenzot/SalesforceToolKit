@@ -16,6 +16,7 @@
 		BC2B3BB92CBF0A8900C65391 /* ObjectSavable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */; };
 		BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */ = {isa = PBXBuildFile; fileRef = BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */; };
 		BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */; };
+		BC5926222E99461C007FDB68 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = BC5926212E99461C007FDB68 /* KeyboardShortcuts */; };
 		BC8821142A94595200B75DDA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC8821162A94595200B75DDA /* Localizable.strings */; };
 		BCA03D572E97525700C88E31 /* LocalAuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */; };
 		BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */; };
@@ -68,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC5926222E99461C007FDB68 /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +96,7 @@
 				827E4AD12A66C70D0062977D /* SalesforceToolKit */,
 				827E4AE32A66C7110062977D /* SalesforceToolKitTests */,
 				827E4AED2A66C7110062977D /* SalesforceToolKitUITests */,
+				BC5926202E99461C007FDB68 /* Frameworks */,
 				827E4AD02A66C70D0062977D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -159,6 +162,13 @@
 				BC2B3BCB2CBF0F9400C65391 /* Model */,
 			);
 			name = "Main Window";
+			sourceTree = "<group>";
+		};
+		BC5926202E99461C007FDB68 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		BCE27F4C2A944B000004DB9C /* Localizables */ = {
@@ -263,6 +273,9 @@
 				es,
 			);
 			mainGroup = 827E4AC62A66C70D0062977D;
+			packageReferences = (
+				BC59261F2E99451F007FDB68 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+			);
 			productRefGroup = 827E4AD02A66C70D0062977D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -477,6 +490,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = SalesforceToolKit/SalesforceToolKit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -484,6 +498,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SalesforceToolKit/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Keepe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -503,6 +519,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = SalesforceToolKit/SalesforceToolKit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -510,6 +527,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SalesforceToolKit/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Keepe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -632,6 +651,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BC59261F2E99451F007FDB68 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BC5926212E99461C007FDB68 /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC59261F2E99451F007FDB68 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 827E4AC72A66C70D0062977D /* Project object */;
 }
