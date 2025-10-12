@@ -38,13 +38,36 @@ struct OrgDetailsView: View {
     let PRO_AUTH_URL = "https://login.salesforce.com"
     let DEV_AUTH_URL = "https://test.salesforce.com"
     
-    var orgToEdit: AuthenticatedOrg?
-    
-    @State private var orgType: String
-    @State private var label: String
+    var org: AuthenticatedOrg? // Keep this as a property to store the initial org
+
+    /*
+     Org Description
+     ┌──────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+     │ KEY              │ VALUE                                                                                                            │
+     ├──────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+     │ Access Token     │ 00DD6000000VTHv!AQEAQGpRh9Unu2JrtoJ6hL01H9IGXiYV68AZpLZnFx3Aa0DVVh3dunvHjkZY6oLmEu4lwGSNmdm7JD7vN0x.ahNwmri.w6OI │
+     │ Alias            │ sura-uat                                                                                                         │
+     │ Api Version      │ 65.0                                                                                                             │
+     │ Client Id        │ PlatformCLI                                                                                                      │
+     │ Connected Status │ Connected                                                                                                      │
+     │ Id               │ 00DD6000000VTHvMAO                                                                                               │
+     │ Instance Url     │ https://suracanaldigitalmotos--uat.sandbox.my.salesforce.com                                                     │
+     │ Username         │ devcb@sura.com.uat                                                                                               │
+     └──────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+     */
     @State private var alias: String
-    @State private var isFavorite: Bool = false
-    @State private var isFetching = true
+    @State private var apiVersion: String
+    @State private var clientId: String
+    @State private var connectedStatus: String
+    @State private var orgId: String
+    @State private var instanceUrl: String
+    @State private var username: String
+    
+    // Missing @State properties identified from usage in `body` and `authenticate`
+    @State private var isFetching: Bool = true // Set to true initially to show progress while loading details
+    @State private var orgType: String // e.g., "Producción" or "Desarrollo"
+    @State private var label: String // From AuthenticatedOrg
+    
     @State private var authenticationCancelled = false // Tracks if user or timeout cancelled
     @State private var windowDelegate = OrgDetailsWindowDelegate()
     @State private var thisWindow: NSWindow?
@@ -59,27 +82,44 @@ struct OrgDetailsView: View {
     let orgTypes = ["Producción", "Desarrollo"]
 
     init(org: AuthenticatedOrg? = nil) { // Corrected type here
-        self.orgToEdit = org
-        
-        if let org = org {
-            _orgType = State(initialValue: org.orgType)
-            _label = State(initialValue: org.label)
-            _alias = State(initialValue: org.alias)
-            _isFavorite = State(initialValue: org.isFavorite ?? false)
-        } else {
-            _orgType = State(initialValue: "Producción")
-            _label = State(initialValue: "")
+        // Handle the case where org might be nil, though the preview uses a default init().
+        // For 'OrgDetailsView', it typically means we ARE viewing details of an existing org.
+        guard let existingOrg = org else {
+            // Provide default values if no org is passed (e.g., for previews or error states)
             _alias = State(initialValue: "")
-            _isFavorite = State(initialValue: false)
+            _apiVersion = State(initialValue: "")
+            _clientId = State(initialValue: "")
+            _connectedStatus = State(initialValue: "")
+            _orgId = State(initialValue: "")
+            _instanceUrl = State(initialValue: "")
+            _username = State(initialValue: "")
+            _isFetching = State(initialValue: false) // Not fetching if no org to display
+            _orgType = State(initialValue: "Producción") // Default
+            _label = State(initialValue: "N/A") // Default
+            self.org = nil // Store nil in the instance property
+            return
         }
-    }
 
-    private func generateAlias(from label: String) -> String {
-        let newLabel = label.folding(options: .diacriticInsensitive, locale: .current).replacingOccurrences(of: " ", with: "-")
-        let allowedCharacters = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-"))
-        return newLabel.lowercased()
-            .components(separatedBy: allowedCharacters.inverted)
-            .joined()
+        self.org = existingOrg // Store the passed org in the instance property
+
+        let cli = SalesforceCLI()
+        // Assuming org!.alias is safe to unwrap here because we checked existingOrg
+        // If orgDetails is slow, consider making this async and loading in .onAppear
+        let data = cli.orgDetails(alias: existingOrg.alias)
+        
+        // Initialize all @State properties. Provide default empty string for optionals.
+        _alias = State(initialValue: data?.alias ?? existingOrg.alias) // Prefer data, fall back to existingOrg
+        _apiVersion = State(initialValue: data?.apiVersion ?? "")
+        _clientId = State(initialValue: data?.clientId ?? "")
+        _connectedStatus = State(initialValue: data?.connectedStatus ?? "")
+        _orgId = State(initialValue: data?.id ?? existingOrg.orgId ?? "")
+        _instanceUrl = State(initialValue: data?.instanceUrl ?? existingOrg.instanceUrl ?? "")
+        _username = State(initialValue: data?.username ?? existingOrg.username ?? "")
+
+        // Initialize newly identified @State properties
+        _isFetching = State(initialValue: true) // Start fetching/loading details
+        _orgType = State(initialValue: existingOrg.orgType)
+        _label = State(initialValue: existingOrg.label)
     }
 
     var body: some View {
@@ -87,39 +127,27 @@ struct OrgDetailsView: View {
             if !isFetching {
                 VStack {
                     Form {
+                        LabeledContent("Etiqueta", value: label)
+                        LabeledContent("Alias", value: alias)
+                        LabeledContent("ID de Org", value: orgId)
+                        LabeledContent("Estado de Conexión", value: connectedStatus)
+                        LabeledContent("Usuario", value: username)
+                        LabeledContent("URL de Instancia", value: instanceUrl)
+                        LabeledContent("Versión de API", value: apiVersion)
+                        LabeledContent("ID de Cliente", value: clientId)
+                        
                         Picker("Tipo de Org", selection: $orgType) {
                             ForEach(orgTypes, id: \.self) {
                                 Text($0)
                             }
                         }
                     }
-                    .frame(width: 420, height: 440)
+                    .padding() // Add padding to the Form itself
                     
                     HStack() {
                         Button("Cancelar") {
                             close()
                         }
-                        
-                        Button(orgToEdit == nil ? "Acceder" : "Guardar") {
-                            if let org = orgToEdit {
-                                // Edit Mode
-                                var updatedOrg = org
-                                updatedOrg.label = label
-                                updatedOrg.alias = alias
-                                updatedOrg.orgType = orgType
-                                updatedOrg.isFavorite = isFavorite
-                                
-                                authenticatedOrgManager.updateOrg(org: updatedOrg)
-                                
-                                close()
-                            } else {
-                                // Create Mode
-                                // isAuthenticating is set to true at the beginning of authenticate()
-                                authenticate()
-                            }
-                        }
-                        .disabled(label.trimmingCharacters(in: .whitespacesAndNewlines) == "" || alias.trimmingCharacters(in: .whitespacesAndNewlines) == "")
-                        .padding()
                     }
                 }
                 .padding()
@@ -175,6 +203,21 @@ struct OrgDetailsView: View {
             // If we are already fetching (e.g., re-appearing after another view), start timer
             if isFetching {
                 startUITimer()
+            }
+            
+            // If the view is meant to display details, it should start loading them
+            // This is especially important if the cli.orgDetails call in init() is slow or network-bound.
+            // For now, setting isFetching to false here if details were loaded in init()
+            // In a real scenario, you might want to call an async func here to fetch details.
+            if org != nil {
+                // If org was provided, assume details were loaded in init or will be loaded.
+                // For now, we'll assume `isFetching` will be managed by `authenticate()` if that's the intended path.
+                // If this view is purely for *displaying* already fetched org details,
+                // then `isFetching` should be `false` by default or set to `false` after `init` if data is available.
+                // Given the `authenticate` func, it seems like this view might also be part of an auth flow.
+                // I'm going to set `isFetching` to false if `org` is present, to show the form by default
+                // after the init block runs.
+                self.isFetching = false // Org details should be loaded by now or we show the form
             }
         }
         .onChange(of: isFetching) { newValue in
@@ -237,7 +280,7 @@ struct OrgDetailsView: View {
                     group.addTask {
                         // Perform the blocking CLI call on a background thread/queue using Task.detached.
                         return await Task.detached {
-                            print("Calling cli.auth with alias: \(await alias), instanceUrl: \(instanceUrl), orgType: \(await orgType)")
+                            print("Calling cli.auth with alias: \(alias), instanceUrl: \(instanceUrl), orgType: \(orgType)")
                             return await cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
                         }.value
                     }
@@ -290,11 +333,11 @@ struct OrgDetailsView: View {
                     print("Authenticated org with alias: \(alias)")
                     
                     // Fetch org details (also potentially blocking, run in detached task)
-                    let org = await Task.detached {
+                    let fetchedOrgDetails = await Task.detached {
                         return cli.orgDetails(alias: alias)
                     }.value
 
-                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": org?.instanceUrl ?? "", "label": label, "alias": alias, "orgType": orgType]
+                    let userInfo: [String: Any] = ["orgId": fetchedOrgDetails?.id ?? "", "instanceUrl": fetchedOrgDetails?.instanceUrl ?? "", "label": label, "alias": alias, "orgType": orgType]
                     
                     // Close the window on successful authentication ss
                     close() // This will implicitly update `isAuthenticating` via `onChange`
@@ -356,7 +399,9 @@ struct OrgDetailsView: View {
 
 struct OrgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        OrgDetailsView()
+        // Provide a mock AuthenticatedOrg for the preview
+        OrgDetailsView(org: AuthenticatedOrg(alias: "mock-org", label: "Mock Org Label", orgId: "00DMock", instanceUrl: "https://mock.salesforce.com", orgType: "Desarrollo"))
+            .environmentObject(AuthenticatedOrgManager()) // Provide a manager for the preview
     }
 }
 
