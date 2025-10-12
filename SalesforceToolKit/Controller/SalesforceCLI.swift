@@ -29,6 +29,16 @@ struct OrgLimitsResult: Codable {
     let connectedStatus: String
 }
 
+struct cliInfo: Codable {
+    let result: cliInfoResult
+}
+
+struct cliInfoResult: Codable {
+    let architecture: String
+    let cliVersion: String
+    let nodeVersion: String
+}
+
 class SalesforceCLI {
     func openUrl(url: String) -> Bool {
         // using OAuth token
@@ -282,5 +292,26 @@ class SalesforceCLI {
         print("Version output: \(output ?? "")")
         
         return true
+    }
+    
+    func version() -> cliInfoResult? {
+        let sfPath = getSfPath()
+        let (output, status) = execute(launchPath: sfPath, arguments: ["version", "--json"])
+        
+        print("Getting CLI version")
+
+        if status == 0, let data = output?.data(using: .utf8) {
+            do {
+                let details = try JSONDecoder().decode(cliInfo.self, from: data)
+                print(details)
+                
+                return details.result
+            } catch {
+                print("Error decoding org details: \(error)")
+            }
+        }
+        
+        return nil
+
     }
 }

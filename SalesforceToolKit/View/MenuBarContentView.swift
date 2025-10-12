@@ -39,14 +39,15 @@ struct MenuBarContentView: View {
             Button("Salesforce Toolkit - v2.3.0"){
                 mainWindow()
             }
+            .disabled(true)
             
             Button(){
                 
             } label: {
                 Image(systemName: "star.fill")
-                Text("Por defecto: \(defaultOrg?.label ?? "Ninguna")")
+                Text("\(defaultOrg?.label ?? "Ninguna") (\(defaultOrg?.orgId ?? "Ninguna"))")
                 Text("\(defaultOrg?.instanceUrl ?? "Ninguna")")
-                Text("\(defaultOrg?.orgId ?? "Ninguna")")
+                    .font(.system(size: 10))
             }
             
             Divider()
@@ -199,12 +200,13 @@ struct MenuBarContentView: View {
             UNUserNotificationCenter.current().add(request)
         }
         
-        Text("Versión actual: 1.0.0")
-            .font(.system(size: 10))
-            .disabled(true)
+        Divider()
         
-        Button(NSLocalizedString("Salesforce ToolKit (v\(version))", comment: "")) {
+        Button() {
             let _ = openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
+        } label: {
+            Text(NSLocalizedString("Sponsor Salesforce ToolKit on Github", comment: ""))
+            Text("Your support matters")
         }
         
         Divider()
