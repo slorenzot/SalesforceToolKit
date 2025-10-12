@@ -221,6 +221,7 @@ struct OrgDetailsView: View {
     private func loadOrgData() {
         Task { @MainActor in
             guard let currentOrgAlias = self.org?.alias else {
+                print("Error: Alias de organización no disponible para cargar detalles y límites.")
                 self.isFetching = false // No hay alias, no hay nada que cargar
                 return
             }
