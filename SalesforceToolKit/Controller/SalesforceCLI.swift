@@ -84,23 +84,32 @@ class SalesforceCLI {
     // MARK: - limits function modified to return OrgDetailLimits?
     func limits(alias: String) -> OrgDetailLimits? {
         let sfPath = getSfPath()
-        let arguments = ["org", "limits", "--target-org", alias, "--json"] // Argumentos correctos
+        let arguments = ["org", "list", "limits", "--target-org", alias, "--json"]
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
+        print("--- DEBUG SF CLI LIMITS ---")
         print("Obteniendo límites de la organización por alias: \(alias)")
-        print("Usando argumentos: \(arguments)") // Registro correcto de argumentos
-
+        print("Usando argumentos: \(arguments)")
+        print("Ruta de sf: \(sfPath)")
+        print("Estado de terminación del comando: \(status)")
+        print("Salida cruda del comando: \(output ?? "No hay salida")") // Imprimir salida cruda
+        
         if status == 0, let data = output?.data(using: .utf8) {
             do {
-                let limits = try JSONDecoder().decode(OrgDetailLimits.self, from: data) // Decodifica al nuevo tipo
-                print(limits)
-                
+                let limits = try JSONDecoder().decode(OrgDetailLimits.self, from: data)
+                print("Decodificación de límites exitosa: \(limits)")
                 return limits
             } catch {
-                print("Error decodificando límites de la organización: \(error)") // Mensaje de registro correcto
+                print("Error decodificando límites de la organización para alias \(alias): \(error.localizedDescription)") // Mensaje de error más detallado
+                if let decodingError = error as? DecodingError {
+                    print("Detalles del error de decodificación: \(decodingError)")
+                }
             }
+        } else {
+            print("El comando 'sf org limits' falló o no produjo una salida válida para el alias \(alias).")
         }
         
+        print("--- FIN DEBUG SF CLI LIMITS ---")
         return nil
     }
     // END MARK
@@ -111,15 +120,15 @@ class SalesforceCLI {
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
         print("Estableciendo organización por defecto con alias: \(alias)")
-        print("Usando argumentos: \(arguments)") // Registro correcto de argumentos
+        print("Usando argumentos: \(arguments)")
 
         if status != 0 {
-            print("Error al establecer la organización por defecto: \(output ?? "")") // Mensaje de registro corregido
+            print("Error al establecer la organización por defecto: \(output ?? "")")
             
             return false
         }
         
-        print("Organización por defecto establecida exitosamente: \(output ?? "")") // Mensaje de registro corregido
+        print("Organización por defecto establecida exitosamente: \(output ?? "")")
         
         return true
     }
@@ -130,7 +139,7 @@ class SalesforceCLI {
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
         print("Obteniendo detalles de la organización por alias: \(alias)")
-        print("Usando argumentos: \(arguments)") // Registro correcto de argumentos
+        print("Usando argumentos: \(arguments)")
 
         if status == 0, let data = output?.data(using: .utf8) {
             do {
@@ -149,7 +158,7 @@ class SalesforceCLI {
     func killProcess(port: Int) {
         let (lsofOutput, _) = execute(launchPath: "/usr/sbin/lsof", arguments: ["-i", ":\(port)"])
         
-        print("Matando proceso con PID en puerto: \(port)") // Mensaje de registro corregido
+        print("Matando proceso con PID en puerto: \(port)")
         
         guard let output = lsofOutput else {
             return
@@ -162,7 +171,7 @@ class SalesforceCLI {
             if components.count > 1 {
                 let pid = String(components[1])
                 let (killOutput, _) = execute(launchPath: "/bin/kill", arguments: ["-9", pid])
-                print("Proceso con PID \(pid) usando el puerto \(port) eliminado. Salida: \(killOutput ?? "")") // Mensaje de registro corregido
+                print("Proceso con PID \(pid) usando el puerto \(port) eliminado. Salida: \(killOutput ?? "")")
             }
         }
     }
@@ -203,18 +212,17 @@ class SalesforceCLI {
         let sfPath = getSfPath()
         let arguments = ["org", "logout", "--target-org", alias, "--no-prompt"]
         
-        print("Cerrando sesión de la organización por alias: \(alias)") // Mensaje de registro corregido
-        print("Usando argumentos: \(arguments)") // Registro correcto de argumentos
+        print("Cerrando sesión de la organización por alias: \(alias)")
+        print("Usando argumentos: \(arguments)")
         
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
         if status == 0 {
-            print("Sesión cerrada exitosamente de la organización con alias: \(alias)") // Mensaje de registro corregido
-            // Se eliminó la llamada a orgDetails ya que no es necesaria para la notificación de cierre de sesión
-            NotificationCenter.default.post(name: .didCompleteLogout, object: nil, userInfo: ["alias": alias]) // Se asume que .didCompleteLogout existe o se creará
+            print("Sesión cerrada exitosamente de la organización con alias: \(alias)")
+            NotificationCenter.default.post(name: .didCompleteLogout, object: nil, userInfo: ["alias": alias])
             return true
         } else {
-            print("Error al cerrar sesión de la organización: \(output ?? "")") // Mensaje de registro corregido
+            print("Error al cerrar sesión de la organización: \(output ?? "")")
         }
         
         return false
@@ -224,8 +232,8 @@ class SalesforceCLI {
     ////servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&/servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&
     ///servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m
     func openAsUser(userId: String, alias: String, path: String = "/home", incognito:Bool = false, browser: String = "chrome") -> Bool {
-        let orgId = "00DO900000DIJfr" // Esto está hardcodeado
-        let asUserId = "005Hs00000BVy3m" // Esto está hardcodeado
+        let orgId = "00DO900000DIJfr"
+        let asUserId = "005Hs00000BVy3m"
         let LOGIN_AS_PATH =  "https://suracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com/servlet/servlet.su?oid=\(orgId)&suorgadminid=\(asUserId)&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&/servlet/servlet.su?oid=00DO900000DIJfr&suorgadminid=005Hs00000BVy3m&retURL=%2F005%3FisUserEntityOverride%3D1%26retURL%3D%252Fsetup%252Fhome%26appLayout%3Dsetup%26tour%3D%26isdtp%3Dp1%26sfdcIFrameOrigin%3Dhttps%253A%252F%252Fsuracanaldigitalmotos--devbanca.sandbox.my.salesforce-setup.com%26sfdcIFrameHost%3Dweb%26nonce%3D11225f4a2e79083ca494e1211a87d136a0b310dc0604304de52d75c20d374160%26ltn_app_id%3D%26clc%3D1&targetURL=%2Fhome%2Fhome.jsp&"
         return openUrl(url: LOGIN_AS_PATH)
     }
@@ -251,7 +259,7 @@ class SalesforceCLI {
         }
         
         print("Abriendo URL de la organización por alias: \(alias)")
-        print("Usando argumentos: \(arguments)") // Registro correcto de argumentos
+        print("Usando argumentos: \(arguments)")
         
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
@@ -266,10 +274,10 @@ class SalesforceCLI {
 
     func delete(alias: String) -> Bool {
         let sfPath = getSfPath()
-        let arguments = ["org", "delete", "--target-org", alias, "--no-prompt"] // Corregido a 'delete'
+        let arguments = ["org", "delete", "--target-org", alias, "--no-prompt"]
         
-        print("Eliminando organización por alias: \(alias)") // Mensaje de registro corregido
-        print("Usando argumentos: \(arguments)") // Registro correcto de argumentos
+        print("Eliminando organización por alias: \(alias)")
+        print("Usando argumentos: \(arguments)")
         
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
 
@@ -278,7 +286,7 @@ class SalesforceCLI {
             return false
         }
         
-        print("Organización eliminada exitosamente: \(alias). Salida: \(output ?? "")") // Mensaje de éxito añadido
+        print("Organización eliminada exitosamente: \(alias). Salida: \(output ?? "")")
         return true
     }
     
@@ -307,7 +315,7 @@ class SalesforceCLI {
         let (output, status) = execute(launchPath: sfPath, arguments: arguments)
         
         print("Obteniendo versión de CLI")
-        print("Usando argumentos: \(arguments)") // Registro de argumentos añadido
+        print("Usando argumentos: \(arguments)")
 
         if status == 0, let data = output?.data(using: .utf8) {
             do {
@@ -316,7 +324,7 @@ class SalesforceCLI {
                 
                 return details.result
             } catch {
-                print("Error decodificando versión de CLI: \(error)") // Mensaje de registro corregido
+                print("Error decodificando versión de CLI: \(error)")
             }
         }
         
@@ -324,7 +332,7 @@ class SalesforceCLI {
 
     }
 }
-// Añade un nombre de notificación personalizado para el cierre de sesión para evitar confusiones con la autenticación.
+
 extension Notification.Name {
     static let didCompleteLogout = Notification.Name("didCompleteLogout")
 }
