@@ -2,10 +2,24 @@ import Foundation
 import AppKit
 
 struct OrgDetails: Codable {
-    let result: OrgResult
+    let result: OrgDetailsResult
 }
 
-struct OrgResult: Codable {
+struct OrgDetailsResult: Codable {
+    let id: String
+    let alias: String
+    let apiVersion: String
+    let username: String
+    let instanceUrl: String
+    let clientId: String
+    let connectedStatus: String
+}
+
+struct OrgLimits: Codable {
+    let result: OrgLimitsResult
+}
+
+struct OrgLimitsResult: Codable {
     let id: String
     let alias: String
     let apiVersion: String
@@ -56,6 +70,28 @@ class SalesforceCLI {
         return (output, task.terminationStatus)
     }
     
+    func limits(alias: String) -> OrgLimitsResult? {
+        let sfPath = getSfPath()
+        let (output, status) = execute(launchPath: sfPath, arguments: ["org", "limits", "--target-org", alias, "--json"])
+        
+        print("Getting org details by alias: \(alias)")
+        print("Using arguments: \(["alias", alias])")
+
+        if status == 0, let data = output?.data(using: .utf8) {
+            do {
+                let limits = try JSONDecoder().decode(OrgLimits.self, from: data)
+                print(limits)
+                
+                return limits.result
+            } catch {
+                print("Error decoding org details: \(error)")
+            }
+        }
+        
+        return nil
+
+    }
+    
     func orgDefault(alias: String) -> Bool {
         let sfPath = getSfPath()
         let (output, status) = execute(launchPath: sfPath, arguments: ["config", "set", "target-org", alias, "--global"])
@@ -74,7 +110,7 @@ class SalesforceCLI {
         return true
     }
     
-    func orgDetails(alias: String) -> OrgResult? {
+    func orgDetails(alias: String) -> OrgDetailsResult? {
         let sfPath = getSfPath()
         let (output, status) = execute(launchPath: sfPath, arguments: ["org", "display", "--target-org", alias, "--json"])
         

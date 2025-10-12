@@ -26,14 +26,6 @@ struct MenuBarContentView: View {
     @Binding var biometricAuthenticationEnabled: Bool
     var isTouchIDAvailable: Bool
     
-    // These paths are only used by OrgMenuItem, no need for them here directly
-    // let SETUP_PATH = "/lightning/setup/SetupOneHome/home"
-    // let OBJECT_MANAGER_PATH = "/lightning/setup/ObjectManager/home"
-    // let DEVELOPER_CONSOLE_PATH = "/_ui/common/apex/debug/ApexCSIPage"
-    // let SCHEMA_BUILDER_PATH = "/lightning/setup/SchemaBuilder/home"
-    // let CODE_BUILDER_PATH = "/runtime_developerplatform_codebuilder/codebuilder.app?launch=true"
-    // let FLOW_PATH = "/lightning/setup/Flows/home"
-    
     var body: some View {
         let cli = SalesforceCLI() // Instantiate CLI once here and pass it down
         
@@ -44,7 +36,7 @@ struct MenuBarContentView: View {
             let favorites = authenticatedOrgManager.authenticatedOrgs.filter{ $0.isFavorite == true }
             let defaultOrg = orgs.filter{ $0.isDefault == true }.first
             
-            Button("Salesforce Toolkit"){
+            Button("Salesforce Toolkit - v2.3.0"){
                 mainWindow()
             }
             
@@ -53,7 +45,8 @@ struct MenuBarContentView: View {
             } label: {
                 Image(systemName: "star.fill")
                 Text("Por defecto: \(defaultOrg?.label ?? "Ninguna")")
-                Text("Por defecto: \(defaultOrg?.orgId ?? "Ninguna")")
+                Text("\(defaultOrg?.instanceUrl ?? "Ninguna")")
+                Text("\(defaultOrg?.orgId ?? "Ninguna")")
             }
             
             Divider()
@@ -181,7 +174,6 @@ struct MenuBarContentView: View {
         
         Toggle(NSLocalizedString("Launch at Startup", comment: ""), isOn: $launchOnLogin)
             .onChange(of: launchOnLogin) { value in
-                // MARK: - Call the async function within a Task
                 Task {
                     await setLaunchOnLogin(value)
                 }
