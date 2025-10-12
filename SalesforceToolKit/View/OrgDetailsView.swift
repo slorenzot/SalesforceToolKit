@@ -9,22 +9,23 @@ import SwiftUI
 import UserNotifications
 
 fileprivate class OrgDetailsWindowDelegate: NSObject, NSWindowDelegate {
-    var isAuthenticating: Bool = false
-    var onCancel: (() -> Void)?
+    // Renombrado de isAuthenticating a isDataLoading para reflejar mejor el propósito de la vista
+    var isDataLoading: Bool = false
+    var onCancel: (() -> Void)? // Mantener onCancel si es necesario para alguna acción al cerrar ventana durante carga.
 
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        if isAuthenticating {
+        if isDataLoading { // Usar isDataLoading
             let alert = NSAlert()
-            alert.messageText = "Cancelar exploración de su organización"
-            alert.informativeText = "¿Estás seguro de que quieres cancelar el proceso de exploración?"
-            alert.addButton(withTitle: "Sí, cancelar")
+            alert.messageText = "Cancelar carga de información"
+            alert.informativeText = "¿Estás seguro de que quieres cerrar la ventana mientras se carga la información de la organización?"
+            alert.addButton(withTitle: "Sí, cerrar")
             alert.addButton(withTitle: "No")
             alert.alertStyle = .warning
             
             if alert.runModal() == .alertFirstButtonReturn {
-                let cli = SalesforceCLI()
-                cli.killProcess(port: 1717)
-                onCancel?() // This will set `authenticationCancelled = true` in AuthenticationView
+                // Aquí podrías agregar lógica para detener cualquier tarea de carga activa si fuera necesario.
+                // Sin embargo, para Task en Swift Concurrency, simplemente la tarea se cancela al destruir la vista.
+                onCancel?() 
                 return true
             } else {
                 return false
@@ -63,29 +64,41 @@ struct OrgDetailsView: View {
     @State private var instanceUrl: String
     @State private var username: String
     
-    // Missing @State properties identified from usage in `body` and `authenticate`
-    @State private var isFetching: Bool = true // Set to true initially to show progress while loading details
+    // Estado unificado para la carga de datos de la organización y límites
+    @State private var isFetching: Bool 
     @State private var orgType: String // e.g., "Producción" or "Desarrollo"
     @State private var label: String // From AuthenticatedOrg
     
-    @State private var authenticationCancelled = false // Tracks if user or timeout cancelled
+    // Eliminadas las propiedades relacionadas con la autenticación interactiva (timer, prompt, cancellation)
     @State private var windowDelegate = OrgDetailsWindowDelegate()
     @State private var thisWindow: NSWindow?
-    
-    // Timer specific states
-    @State private var elapsedSeconds: Int = 0
-    @State private var showEarlyTimeoutPrompt: Bool = false
-    @State private var uiTimer: Timer?
     
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
     
     let orgTypes = ["Producción", "Desarrollo"]
 
-    init(org: AuthenticatedOrg? = nil) { // Corrected type here
-        // Handle the case where org might be nil, though the preview uses a default init().
-        // For 'OrgDetailsView', it typically means we ARE viewing details of an existing org.
-        guard let existingOrg = org else {
-            // Provide default values if no org is passed (e.g., for previews or error states)
+    // MARK: - New State properties for Org Limits
+    @State private var orgLimits: [OrgLimitItem] = []
+    @State private var selectedTab: String = "Details" // Para la TabView
+    // END MARK
+
+    init(org: AuthenticatedOrg? = nil) {
+        self.org = org
+
+        if let existingOrg = org {
+            // Inicializar con valores de AuthenticatedOrg y marcamos para cargar los detalles completos
+            _alias = State(initialValue: existingOrg.alias)
+            _apiVersion = State(initialValue: "") // Se cargará asíncronamente
+            _clientId = State(initialValue: "") // Se cargará asíncronamente
+            _connectedStatus = State(initialValue: "") // Se cargará asíncronamente
+            _orgId = State(initialValue: existingOrg.orgId ?? "")
+            _instanceUrl = State(initialValue: existingOrg.instanceUrl ?? "")
+            _username = State(initialValue: existingOrg.username ?? "")
+            _orgType = State(initialValue: existingOrg.orgType)
+            _label = State(initialValue: existingOrg.label)
+            _isFetching = State(initialValue: true) // Indicar que la carga de datos está en curso
+        } else {
+            // No hay organización para mostrar, no hay carga de datos
             _alias = State(initialValue: "")
             _apiVersion = State(initialValue: "")
             _clientId = State(initialValue: "")
@@ -93,71 +106,18 @@ struct OrgDetailsView: View {
             _orgId = State(initialValue: "")
             _instanceUrl = State(initialValue: "")
             _username = State(initialValue: "")
-            _isFetching = State(initialValue: false) // Not fetching if no org to display
-            _orgType = State(initialValue: "Producción") // Default
-            _label = State(initialValue: "N/A") // Default
-            self.org = nil // Store nil in the instance property
-            return
+            _isFetching = State(initialValue: false)
+            _orgType = State(initialValue: "Producción") // Valor por defecto
+            _label = State(initialValue: "N/A") // Valor por defecto
         }
-
-        self.org = existingOrg // Store the passed org in the instance property
-
-        let cli = SalesforceCLI()
-        // Assuming org!.alias is safe to unwrap here because we checked existingOrg
-        // If orgDetails is slow, consider making this async and loading in .onAppear
-        let data = cli.orgDetails(alias: existingOrg.alias)
-        
-        // Initialize all @State properties. Provide default empty string for optionals.
-        _alias = State(initialValue: data?.alias ?? existingOrg.alias) // Prefer data, fall back to existingOrg
-        _apiVersion = State(initialValue: data?.apiVersion ?? "")
-        _clientId = State(initialValue: data?.clientId ?? "")
-        _connectedStatus = State(initialValue: data?.connectedStatus ?? "")
-        _orgId = State(initialValue: data?.id ?? existingOrg.orgId ?? "")
-        _instanceUrl = State(initialValue: data?.instanceUrl ?? existingOrg.instanceUrl ?? "")
-        _username = State(initialValue: data?.username ?? existingOrg.username ?? "")
-
-        // Initialize newly identified @State properties
-        _isFetching = State(initialValue: true) // Start fetching/loading details
-        _orgType = State(initialValue: existingOrg.orgType)
-        _label = State(initialValue: existingOrg.label)
     }
 
     var body: some View {
         ZStack {
-            if !isFetching {
-                VStack {
-                    Form {
-                        LabeledContent("Etiqueta", value: label)
-                        LabeledContent("Alias", value: alias)
-                        LabeledContent("ID de Org", value: orgId)
-                        LabeledContent("Estado de Conexión", value: connectedStatus)
-                        LabeledContent("Usuario", value: username)
-                        LabeledContent("URL de Instancia", value: instanceUrl)
-                        LabeledContent("Versión de API", value: apiVersion)
-                        LabeledContent("ID de Cliente", value: clientId)
-                        
-                        Picker("Tipo de Org", selection: $orgType) {
-                            ForEach(orgTypes, id: \.self) {
-                                Text($0)
-                            }
-                        }
-                    }
-                    .padding() // Add padding to the Form itself
-                    
-                    HStack() {
-                        Button("Cancelar") {
-                            close()
-                        }
-                    }
-                }
-                .padding()
-            }
-            
-            // Show main progress view only if not showing the early timeout prompt
-            if isFetching && !showEarlyTimeoutPrompt {
+            if isFetching { // Mostrar ProgressView si isFetching es true
                 VStack {
                     ProgressView()
-                    Text("Obteniendo información su organización...")
+                    Text("Obteniendo información de la organización y límites...")
                         .padding(.top, 10)
                     Text("Espere mientras exploramos su organización de Salesforce y organizamos la información.")
                         .font(.caption)
@@ -165,221 +125,137 @@ struct OrgDetailsView: View {
                 }
                 .frame(width: 480, height: 520)
                 .background(Color(NSColor.windowBackgroundColor))
-            }
-            
-            // Show the early timeout prompt if triggered
-            if showEarlyTimeoutPrompt {
-                EarlyTimeoutPromptView(
-                    onRetry: {
-                        stopUITimer() // Stop this prompt's timer
-                        authenticationCancelled = false // Reset cancellation flag for new attempt
-                        // SalesforceCLI().killProcess(port: 1717) // Ensure any previous CLI process is killed
-                        isFetching = false // Temporarily hide all progress to allow a clean restart of UI
-                        authenticate() // Restart authentication
-                    },
-                    onCancel: {
-                        stopUITimer() // Stop this prompt's timer
-                        authenticationCancelled = true // Mark cancellation
-                        SalesforceCLI().killProcess(port: 1717) // Explicitly kill CLI process
-                        isFetching = false // Hide progress UI
-                        close() // Close the window
+            } else { // Mostrar la TabView una vez que la carga ha terminado
+                VStack {
+                    // MARK: - TabView para Detalles y Límites
+                    TabView(selection: $selectedTab) {
+                        // Detalles de la Organización
+                        Form {
+                            LabeledContent("Etiqueta", value: label)
+                            LabeledContent("Alias", value: alias)
+                            LabeledContent("ID de Org", value: orgId)
+                            LabeledContent("Estado de Conexión", value: connectedStatus)
+                            LabeledContent("Usuario", value: username)
+                            LabeledContent("URL de Instancia", value: instanceUrl)
+                            LabeledContent("Versión de API", value: apiVersion)
+                            LabeledContent("ID de Cliente", value: clientId)
+                            
+                            Picker("Tipo de Org", selection: $orgType) {
+                                ForEach(orgTypes, id: \.self) {
+                                    Text($0)
+                                }
+                            }
+                        }
+                        .padding() // Añade padding al Form mismo
+                        .tabItem {
+                            Label("Detalles", systemImage: "info.circle.fill")
+                        }
+                        .tag("Details")
+
+                        // Límites de la Organización
+                        Group {
+                            // No es necesario isLoadingLimits separado, isFetching lo cubre
+                            if orgLimits.isEmpty {
+                                Text("No se encontraron límites para la organización o hubo un error al cargarlos.")
+                                    .foregroundColor(.secondary)
+                                    .padding()
+                            } else {
+                                Table(orgLimits) {
+                                    TableColumn("Nombre") { item in
+                                        Text(item.name)
+                                    }
+                                    TableColumn("Máximo") { item in
+                                        Text("\(item.max)")
+                                    }
+                                    TableColumn("Restante") { item in
+                                        Text("\(item.remaining)")
+                                    }
+                                }
+                                .padding()
+                            }
+                        }
+                        .tabItem {
+                            Label("Límites", systemImage: "chart.bar.fill")
+                        }
+                        .tag("Limits")
                     }
-                )
-                .frame(width: 480, height: 520) // Match the parent size
-                .background(Color(NSColor.windowBackgroundColor))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity) // Permite que la TabView ocupe el espacio disponible
+                    // END MARK
+                    
+                    HStack() {
+                        Button("Cerrar") { // Renombrado de "Cancelar" a "Cerrar"
+                            close()
+                        }
+                    }
+                    .padding(.bottom) // Añade padding a los botones
+                }
+                .padding()
             }
         }
         .frame(width: 480, height: 520)
         .onAppear {
             self.thisWindow = NSApp.keyWindow
-            windowDelegate.isAuthenticating = self.isFetching
+            // Actualizar el delegado para que refleje el estado de carga de datos
+            windowDelegate.isDataLoading = self.isFetching
             windowDelegate.onCancel = {
-                self.authenticationCancelled = true
-                self.stopUITimer() // Stop the UI timer when user cancels via window close
+                // Aquí puedes agregar lógica si es necesario al cerrar la ventana durante la carga
+                // Por ejemplo, para cancelar una operación de red explícitamente, aunque las tareas de Swift Concurrency
+                // se cancelan automáticamente cuando su vista desaparece.
             }
             self.thisWindow?.delegate = windowDelegate
             hideWindowButtons()
             
-            // If we are already fetching (e.g., re-appearing after another view), start timer
-            if isFetching {
-                startUITimer()
-            }
-            
-            // If the view is meant to display details, it should start loading them
-            // This is especially important if the cli.orgDetails call in init() is slow or network-bound.
-            // For now, setting isFetching to false here if details were loaded in init()
-            // In a real scenario, you might want to call an async func here to fetch details.
-            if org != nil {
-                // If org was provided, assume details were loaded in init or will be loaded.
-                // For now, we'll assume `isFetching` will be managed by `authenticate()` if that's the intended path.
-                // If this view is purely for *displaying* already fetched org details,
-                // then `isFetching` should be `false` by default or set to `false` after `init` if data is available.
-                // Given the `authenticate` func, it seems like this view might also be part of an auth flow.
-                // I'm going to set `isFetching` to false if `org` is present, to show the form by default
-                // after the init block runs.
-                self.isFetching = false // Org details should be loaded by now or we show the form
+            // Si hay una organización para mostrar y estamos en estado de carga, iniciar la carga de datos
+            if self.org != nil && self.isFetching {
+                loadOrgData()
+            } else if self.org == nil {
+                // Si no hay org, aseguramos que no estamos cargando
+                self.isFetching = false
             }
         }
-        .onChange(of: isFetching) { newValue in
-            windowDelegate.isAuthenticating = newValue
-            if newValue {
-                startUITimer()
-            } else {
-                stopUITimer()
-            }
-        }
-        .onDisappear {
-            stopUITimer() // Ensure timer is stopped when the view is no longer active
-        }
+        // Eliminado onChange(of: isFetching) y onDisappear relacionados con el timer,
+        // ya que la lógica de timer/timeout se ha movido fuera de esta vista.
     }
     
-    // MARK: - UI Timer Logic
-    private func startUITimer() {
-        stopUITimer() // Ensure any existing timer is stopped
-        elapsedSeconds = 0
-        showEarlyTimeoutPrompt = false
-
-        uiTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if isFetching { // Only increment if we are still fetching
-                elapsedSeconds += 1
-                if elapsedSeconds >= 10 {
-                    // Trigger the prompt, but don't stop the underlying auth process yet
-                    showEarlyTimeoutPrompt = true
-                }
-            } else {
-                stopUITimer() // If isFetching became false, stop the timer
+    // MARK: - Función para cargar datos de la organización de forma asíncrona
+    private func loadOrgData() {
+        Task { @MainActor in
+            guard let currentOrgAlias = self.org?.alias else {
+                self.isFetching = false // No hay alias, no hay nada que cargar
+                return
             }
-        }
-        // Add timer to common run loop mode to ensure it fires even during other UI events
-        if let timer = uiTimer {
-            RunLoop.current.add(timer, forMode: .common)
-        }
-    }
 
-    private func stopUITimer() {
-        uiTimer?.invalidate()
-        uiTimer = nil
-        elapsedSeconds = 0
-        showEarlyTimeoutPrompt = false
-    }
-    
-    // MARK: - Authentication Logic with Timeout
-    func authenticate() {
-        authenticationCancelled = false
-        isFetching = true // Show progress UI
-
-        Task { @MainActor in // Use @MainActor to safely update UI-related @State
             let cli = SalesforceCLI()
-            let instanceUrl = orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL
-
-            var authResult: Bool? = nil // To store the result of the authentication attempt
-
-            do {
-                authResult = try await withThrowingTaskGroup(of: Bool?.self) { group in
-                    // Task for the actual authentication process
-                    group.addTask {
-                        // Perform the blocking CLI call on a background thread/queue using Task.detached.
-                        return await Task.detached {
-                            print("Calling cli.auth with alias: \(alias), instanceUrl: \(instanceUrl), orgType: \(orgType)")
-                            return await cli.auth(alias: alias, instanceUrl: instanceUrl, orgType: orgType)
-                        }.value
-                    }
-
-                    // Task for the timeout
-                    group.addTask {
-                        do {
-                            try await Task.sleep(for: .seconds(30))
-                            // If we reach here, the timeout occurred.
-                            // Signal cancellation and explicitly kill the CLI process.
-                            await MainActor.run { // Ensure state updates and CLI kill are handled safely
-                                self.authenticationCancelled = true // Mark cancellation
-                                cli.killProcess(port: 1717) // Ensure process is killed
-                                self.isFetching = false // Hide progress UI due to timeout
-                                // Show an alert for timeout
-                                let alert = NSAlert()
-                                alert.messageText = "Autenticación Cancelada"
-                                alert.informativeText = "El proceso de inicio de sesión ha tardado demasiado y se ha cancelado."
-                                alert.addButton(withTitle: "OK")
-                                alert.alertStyle = .warning
-                                alert.runModal()
-                            }
-                            return nil // Indicate that timeout occurred
-                        } catch is CancellationError {
-                            // The sleep task was cancelled by the authentication task finishing first.
-                            return nil
-                        }
-                    }
-
-                    var result: Bool? = nil
-                    // Wait for the first task to complete
-                    for try await outcome in group {
-                        result = outcome
-                        group.cancelAll() // Cancel the other task immediately
-                        break
-                    }
-                    return result
-                }
-
-                // Now evaluate the result on the MainActor after the TaskGroup completes
-                if authenticationCancelled {
-                    // This means either the user cancelled via the window delegate or the timeout occurred.
-                    // If timeout, an alert was already shown and isAuthenticating was set to false.
-                    // If user cancelled, isAuthenticating needs to be reset here.
-                    isFetching = false
-                    return // Exit early
-                }
-
-                if let authenticated = authResult, authenticated {
-                    print("Authenticated org with alias: \(alias)")
-                    
-                    // Fetch org details (also potentially blocking, run in detached task)
-                    let fetchedOrgDetails = await Task.detached {
-                        return cli.orgDetails(alias: alias)
-                    }.value
-
-                    let userInfo: [String: Any] = ["orgId": fetchedOrgDetails?.id ?? "", "instanceUrl": fetchedOrgDetails?.instanceUrl ?? "", "label": label, "alias": alias, "orgType": orgType]
-                    
-                    // Close the window on successful authentication ss
-                    close() // This will implicitly update `isAuthenticating` via `onChange`
-                    
-                    NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: userInfo)
-                    
-                    let content = UNMutableNotificationContent()
-                    content.title = "Autenticación exitosa"
-                    content.body = "Se ha autenticado correctamente con el alias \(alias)."
-                    content.sound = UNNotificationSound.default
-                    
-                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-                    try await UNUserNotificationCenter.current().add(request) // Await notification addition
-                    
-                } else if authResult == false {
-                    // Authentication explicitly failed by CLI, not timeout.
-                    isFetching = false // Hide progress UI
-                    let alert = NSAlert()
-                    alert.messageText = "Autenticación Fallida"
-                    alert.informativeText = "No se pudo autenticar con el alias \(alias). Por favor, inténtelo de nuevo."
-                    alert.addButton(withTitle: "OK")
-                    alert.alertStyle = .critical
-                    alert.runModal()
-                }
-                // If authResult is nil at this point, it means the timeout task returned nil,
-                // and that was already handled by setting `authenticationCancelled = true` and showing an alert.
-            } catch is CancellationError {
-                print("Authentication process Task was cancelled (e.g., parent task cancelled).")
-                isFetching = false // Reset state
-            } catch {
-                print("An unexpected error occurred during authentication: \(error.localizedDescription)")
-                isFetching = false // Reset state
-                let alert = NSAlert()
-                alert.messageText = "Error Inesperado"
-                alert.informativeText = "Ocurrió un error inesperado durante la autenticación: \(error.localizedDescription)"
-                alert.addButton(withTitle: "OK")
-                alert.alertStyle = .critical
-                alert.runModal()
+            
+            // Cargar Detalles de la Org
+            if let fetchedDetails = await Task.detached { cli.orgDetails(alias: currentOrgAlias) }.value {
+                self.alias = fetchedDetails.alias
+                self.apiVersion = fetchedDetails.apiVersion
+                self.clientId = fetchedDetails.clientId
+                self.connectedStatus = fetchedDetails.connectedStatus
+                self.orgId = fetchedDetails.id
+                self.instanceUrl = fetchedDetails.instanceUrl
+                self.username = fetchedDetails.username
+                // label y orgType ya fueron inicializados desde AuthenticatedOrg en el init
+            } else {
+                print("Error: No se pudieron cargar los detalles de la organización para el alias: \(currentOrgAlias)")
+                // Podrías mostrar una alerta aquí si la falla en la carga de detalles es crítica.
             }
+
+            // Cargar Límites de la Org
+            if let fetchedLimits = await Task.detached { cli.limits(alias: currentOrgAlias) }.value {
+                self.orgLimits = fetchedLimits.result
+            } else {
+                print("Error: No se pudieron cargar los límites de la organización para el alias: \(currentOrgAlias)")
+                // Podrías mostrar una alerta aquí si la falla en la carga de límites es crítica.
+            }
+
+            // Una vez que ambas operaciones (o intentos) han finalizado, ocultar el indicador de carga.
+            self.isFetching = false
         }
     }
-    
+    // END MARK - Eliminadas todas las funciones relacionadas con el timer y authenticate()
+
     func hideWindowButtons() {
         if let window = thisWindow { // Or iterate through NSApp.shared.windows
             window.standardWindowButton(.zoomButton)?.isHidden = true
@@ -389,19 +265,16 @@ struct OrgDetailsView: View {
     
     func close() {
         if let window = thisWindow {
-            print("Closing authenticacion window...")
+            print("Cerrando ventana de detalles de organización...")
             window.close()
-            // When window closes, `onChange(of: isAuthenticating)` and `windowDelegate.onCancel`
-            // should handle the necessary state cleanup if not already done.
         }
     }
 }
 
 struct OrgDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        // Provide a mock AuthenticatedOrg for the preview
+        // Proporcionar una AuthenticatedOrg de ejemplo para el preview
         OrgDetailsView(org: AuthenticatedOrg(alias: "mock-org", label: "Mock Org Label", orgId: "00DMock", instanceUrl: "https://mock.salesforce.com", orgType: "Desarrollo"))
-            .environmentObject(AuthenticatedOrgManager()) // Provide a manager for the preview
+            .environmentObject(AuthenticatedOrgManager()) // Proporcionar un manager para el preview
     }
 }
-
