@@ -33,7 +33,7 @@ struct OrgAuthenticationView: View {
     
     var orgToEdit: AuthenticatedOrg?
     
-    let timer = 30
+    let timer = 120 // seconds
     
     @State private var orgType: String
     @State private var label: String
@@ -48,6 +48,11 @@ struct OrgAuthenticationView: View {
     @State private var elapsedSeconds: Int = 0
     @State private var showEarlyTimeoutPrompt: Bool = false
     @State private var uiTimer: Timer?
+
+    // MARK: - Custom URL State
+    @State private var useCustomInstanceUrl: Bool
+    @State private var customInstanceUrl: String
+    // END MARK
     
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
     
@@ -61,11 +66,19 @@ struct OrgAuthenticationView: View {
             _label = State(initialValue: org.label)
             _alias = State(initialValue: org.alias)
             _isFavorite = State(initialValue: org.isFavorite ?? false)
+            // MARK: - Initialize custom URL states when editing an existing org
+            _useCustomInstanceUrl = State(initialValue: org.instanceUrl != nil && ![PRO_AUTH_URL, DEV_AUTH_URL].contains(org.instanceUrl!))
+            _customInstanceUrl = State(initialValue: org.instanceUrl ?? "")
+            // END MARK
         } else {
             _orgType = State(initialValue: "Producción")
             _label = State(initialValue: "")
             _alias = State(initialValue: "")
             _isFavorite = State(initialValue: false)
+            // MARK: - Initialize custom URL states for new org
+            _useCustomInstanceUrl = State(initialValue: false)
+            _customInstanceUrl = State(initialValue: "")
+            // END MARK
         }
     }
 
@@ -87,6 +100,28 @@ struct OrgAuthenticationView: View {
                                 Text($0)
                             }
                         }
+                        // MARK: - Custom URL Toggle
+                        Toggle(isOn: $useCustomInstanceUrl) {
+                            Text("Usar URL de Instancia Personalizada")
+                        }
+                        .onChange(of: useCustomInstanceUrl) { newValue in
+                            // Clear custom URL if toggle is switched off
+                            if !newValue {
+                                customInstanceUrl = ""
+                            }
+                        }
+
+                        // MARK: - Custom URL TextField
+                        if useCustomInstanceUrl {
+                            TextField("URL de Instancia:", text: $customInstanceUrl)
+                                .disableAutocorrection(true) // URLs generally don't need autocorrection
+                        } else {
+                            let standardInstanceUrl = orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL
+                            // Display selected standard URL for user info when custom is not used
+                            TextField("URL de Instancia:", text: .constant(standardInstanceUrl)) // FIX: Use .constant for a disabled TextField
+                                .disabled(true) // URLs generally don't need autocorrection
+                        }
+                        // END MARK
                         
                         TextField("Etiqueta", text: $label)
                             .onChange(of: label, perform: { value in
@@ -112,7 +147,7 @@ struct OrgAuthenticationView: View {
                             Text("Es favorita")
                         }
                     }
-                    .frame(width: 420, height: 440)
+                    .frame(width: 420, height: 440) // Adjust height as needed with new fields
                     
                     HStack() {
                         Button("Cancelar") {
@@ -127,6 +162,13 @@ struct OrgAuthenticationView: View {
                                 updatedOrg.alias = alias
                                 updatedOrg.orgType = orgType
                                 updatedOrg.isFavorite = isFavorite
+                                // MARK: - Save custom URL
+                                if useCustomInstanceUrl {
+                                    updatedOrg.instanceUrl = customInstanceUrl
+                                } else {
+                                    updatedOrg.instanceUrl = orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL
+                                }
+                                // END MARK
                                 
                                 authenticatedOrgManager.updateOrg(org: updatedOrg)
                                 
@@ -137,7 +179,7 @@ struct OrgAuthenticationView: View {
                                 authenticate()
                             }
                         }
-                        .disabled(label.trimmingCharacters(in: .whitespacesAndNewlines) == "" || alias.trimmingCharacters(in: .whitespacesAndNewlines) == "")
+                        .disabled(label.trimmingCharacters(in: .whitespacesAndNewlines) == "" || alias.trimmingCharacters(in: .whitespacesAndNewlines) == "" || (useCustomInstanceUrl && customInstanceUrl.trimmingCharacters(in: .whitespacesAndNewlines) == "")) // Disable if custom URL is empty when selected
                         .padding()
                     }
                 }
@@ -167,6 +209,7 @@ struct OrgAuthenticationView: View {
                         let cli = SalesforceCLI()
                         cli.killProcess(port: 1717) // Asegurarse de que cualquier proceso CLI anterior se detenga
                         isAuthenticating = false // Ocultar temporalmente todo el progreso para permitir un reinicio limpio de la UI
+                        
                         authenticate() // Reiniciar autenticación
                     },
                     onCancel: {
@@ -175,6 +218,7 @@ struct OrgAuthenticationView: View {
                         let cli = SalesforceCLI()
                         cli.killProcess(port: 1717) // Detener explícitamente el proceso CLI
                         isAuthenticating = false // Ocultar UI de progreso
+                        
                         close() // Cerrar la ventana
                     }
                 )
@@ -248,7 +292,9 @@ struct OrgAuthenticationView: View {
 
         Task { @MainActor in // Use @MainActor to safely update UI-related @State
             let cli = SalesforceCLI()
-            let instanceUrl = orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL
+            // MARK: - Determine instanceUrl based on custom URL toggle
+            let instanceUrl = useCustomInstanceUrl && !customInstanceUrl.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? customInstanceUrl : (orgType == "Producción" ? PRO_AUTH_URL : DEV_AUTH_URL)
+            // END MARK
 
             var authResult: Bool? = nil // To store the result of the authentication attempt
 
@@ -315,7 +361,9 @@ struct OrgAuthenticationView: View {
                         return cli.orgDetails(alias: alias)
                     }.value
 
-                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": org?.instanceUrl ?? "", "label": label, "alias": alias, "orgType": orgType]
+                    // MARK: - Pass the actual instanceUrl used for authentication
+                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": instanceUrl, "label": label, "alias": alias, "orgType": orgType]
+                    // END MARK
                     
                     // Close the window on successful authentication ss
                     close() // This will implicitly update `isAuthenticating` via `onChange`
@@ -380,3 +428,4 @@ struct AuthenticationView_Previews: PreviewProvider {
         OrgAuthenticationView()
     }
 }
+

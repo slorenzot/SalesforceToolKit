@@ -41,6 +41,12 @@ struct cliInfoResult: Codable {
 }
 
 class SalesforceCLI {
+    
+    private func getSfPath() -> String {
+        // Default to /usr/local/bin/sf if not set
+        return UserDefaults.standard.string(forKey: "sfPath") ?? "/usr/local/bin/sf"
+    }
+    
     func openUrl(url: String) -> Bool {
         // using OAuth token
         // http://[instance].salesforce.com/secur/frontdoor.jsp?sid=[access token]&retURL=[start page]
@@ -53,11 +59,6 @@ class SalesforceCLI {
         return true
     }
     
-    private func getSfPath() -> String {
-        // Default to /usr/local/bin/sf if not set
-        return UserDefaults.standard.string(forKey: "sfPath") ?? "/usr/local/bin/sf"
-    }
-
     private func execute(launchPath: String, arguments: [String]) -> (String?, Int32) {
         let task = Process()
         task.launchPath = launchPath
