@@ -91,6 +91,17 @@ struct OrgMenuItem: View {
             
             Menu {
                 Button() {
+                    authenticateIfRequired(NSLocalizedString("Authenticate to open show Org details window", comment: "")) {
+                        viewOrganizationDetailsWindow(org) // Corrected: Call the closure
+                    }
+                } label: {
+                    Image(systemName: "flag.fill")
+                    Text("Detalles y Límites...")
+                }
+                
+                Divider()
+                
+                Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Object Manager window", comment: "")) {
                         let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH)
                     }
@@ -153,14 +164,6 @@ struct OrgMenuItem: View {
             }
             
             if (!isFavorite) {
-                
-                Divider()
-                
-                Button("Mostrar detalles") {
-                    authenticateIfRequired(NSLocalizedString("Authenticate to open show Org details window", comment: "")) {
-                        viewOrganizationDetailsWindow(org) // Corrected: Call the closure
-                    }
-                }
                 
                 Divider()
                 
