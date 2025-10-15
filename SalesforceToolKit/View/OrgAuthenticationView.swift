@@ -362,7 +362,7 @@ struct OrgAuthenticationView: View {
                     }.value
 
                     // MARK: - Pass the actual instanceUrl used for authentication
-                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": instanceUrl, "label": label, "alias": alias, "orgType": orgType]
+                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": org?.instanceUrl, "label": label, "alias": org?.alias, "orgType": orgType]
                     // END MARK
                     
                     // Close the window on successful authentication ss
