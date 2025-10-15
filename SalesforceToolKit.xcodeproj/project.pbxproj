@@ -3,17 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		827E4AD32A66C70D0062977D /* SalesforceToolKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AD22A66C70D0062977D /* SalesforceToolKitApp.swift */; };
-		827E4AD52A66C70D0062977D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AD42A66C70D0062977D /* ContentView.swift */; };
 		827E4AD72A66C7110062977D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 827E4AD62A66C7110062977D /* Assets.xcassets */; };
 		827E4ADA2A66C7110062977D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 827E4AD92A66C7110062977D /* Preview Assets.xcassets */; };
 		827E4AE52A66C7110062977D /* SalesforceToolKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AE42A66C7110062977D /* SalesforceToolKitTests.swift */; };
 		827E4AEF2A66C7110062977D /* SalesforceToolKitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AEE2A66C7110062977D /* SalesforceToolKitUITests.swift */; };
 		827E4AF12A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827E4AF02A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift */; };
+		BC2B3BB92CBF0A8900C65391 /* ObjectSavable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */; };
+		BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */ = {isa = PBXBuildFile; fileRef = BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */; };
+		BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */; };
+		BC5926222E99461C007FDB68 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = BC5926212E99461C007FDB68 /* KeyboardShortcuts */; };
+		BC8821142A94595200B75DDA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC8821162A94595200B75DDA /* Localizable.strings */; };
+		BCA03D572E97525700C88E31 /* LocalAuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */; };
+		BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +42,6 @@
 /* Begin PBXFileReference section */
 		827E4ACF2A66C70D0062977D /* SalesforceToolKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SalesforceToolKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		827E4AD22A66C70D0062977D /* SalesforceToolKitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesforceToolKitApp.swift; sourceTree = "<group>"; };
-		827E4AD42A66C70D0062977D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		827E4AD62A66C7110062977D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		827E4AD92A66C7110062977D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		827E4ADB2A66C7110062977D /* SalesforceToolKit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SalesforceToolKit.entitlements; sourceTree = "<group>"; };
@@ -45,13 +50,26 @@
 		827E4AEA2A66C7110062977D /* SalesforceToolKitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SalesforceToolKitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		827E4AEE2A66C7110062977D /* SalesforceToolKitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesforceToolKitUITests.swift; sourceTree = "<group>"; };
 		827E4AF02A66C7110062977D /* SalesforceToolKitUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesforceToolKitUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSavable.swift; sourceTree = "<group>"; };
+		BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSavableError.swift; sourceTree = "<group>"; };
+		BC8821152A94595200B75DDA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAuthenticationManager.swift; sourceTree = "<group>"; };
+		BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Salesforce-logo.jpg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		BC2B3BC42CBF0F7E00C65391 /* View */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = View; sourceTree = "<group>"; };
+		BC2B3BCB2CBF0F9400C65391 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
+		BC2B3BCD2CBF123A00C65391 /* Controller */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Controller; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		827E4ACC2A66C70D0062977D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC5926222E99461C007FDB68 /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +96,7 @@
 				827E4AD12A66C70D0062977D /* SalesforceToolKit */,
 				827E4AE32A66C7110062977D /* SalesforceToolKitTests */,
 				827E4AED2A66C7110062977D /* SalesforceToolKitUITests */,
+				BC5926202E99461C007FDB68 /* Frameworks */,
 				827E4AD02A66C70D0062977D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,11 +114,13 @@
 		827E4AD12A66C70D0062977D /* SalesforceToolKit */ = {
 			isa = PBXGroup;
 			children = (
+				BCE27F4C2A944B000004DB9C /* Localizables */,
+				BC2FE0852A93B5D800A22137 /* Main Window */,
 				827E4AD22A66C70D0062977D /* SalesforceToolKitApp.swift */,
-				827E4AD42A66C70D0062977D /* ContentView.swift */,
 				827E4AD62A66C7110062977D /* Assets.xcassets */,
 				827E4ADB2A66C7110062977D /* SalesforceToolKit.entitlements */,
 				827E4AD82A66C7110062977D /* Preview Content */,
+				BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */,
 			);
 			path = SalesforceToolKit;
 			sourceTree = "<group>";
@@ -107,6 +128,7 @@
 		827E4AD82A66C7110062977D /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */,
 				827E4AD92A66C7110062977D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -129,6 +151,34 @@
 			path = SalesforceToolKitUITests;
 			sourceTree = "<group>";
 		};
+		BC2FE0852A93B5D800A22137 /* Main Window */ = {
+			isa = PBXGroup;
+			children = (
+				BC2B3BCD2CBF123A00C65391 /* Controller */,
+				BC2B3BC42CBF0F7E00C65391 /* View */,
+				BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */,
+				BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */,
+				BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */,
+				BC2B3BCB2CBF0F9400C65391 /* Model */,
+			);
+			name = "Main Window";
+			sourceTree = "<group>";
+		};
+		BC5926202E99461C007FDB68 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BCE27F4C2A944B000004DB9C /* Localizables */ = {
+			isa = PBXGroup;
+			children = (
+				BC8821162A94595200B75DDA /* Localizable.strings */,
+			);
+			path = Localizables;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +193,11 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BC2B3BC42CBF0F7E00C65391 /* View */,
+				BC2B3BCB2CBF0F9400C65391 /* Model */,
+				BC2B3BCD2CBF123A00C65391 /* Controller */,
 			);
 			name = SalesforceToolKit;
 			productName = SalesforceToolKit;
@@ -215,8 +270,12 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
 			);
 			mainGroup = 827E4AC62A66C70D0062977D;
+			packageReferences = (
+				BC59261F2E99451F007FDB68 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+			);
 			productRefGroup = 827E4AD02A66C70D0062977D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -234,7 +293,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				827E4ADA2A66C7110062977D /* Preview Assets.xcassets in Resources */,
+				BC8821142A94595200B75DDA /* Localizable.strings in Resources */,
+				BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */,
 				827E4AD72A66C7110062977D /* Assets.xcassets in Resources */,
+				BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,8 +321,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				827E4AD52A66C70D0062977D /* ContentView.swift in Sources */,
+				BC2B3BB92CBF0A8900C65391 /* ObjectSavable.swift in Sources */,
 				827E4AD32A66C70D0062977D /* SalesforceToolKitApp.swift in Sources */,
+				BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */,
+				BCA03D572E97525700C88E31 /* LocalAuthenticationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +359,17 @@
 			targetProxy = 827E4AEB2A66C7110062977D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BC8821162A94595200B75DDA /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC8821152A94595200B75DDA /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		827E4AF22A66C7110062977D /* Debug */ = {
@@ -415,6 +490,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = SalesforceToolKit/SalesforceToolKit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -422,6 +498,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SalesforceToolKit/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Keepe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -440,6 +519,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = SalesforceToolKit/SalesforceToolKit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -447,6 +527,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SalesforceToolKit/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Keepe;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -568,6 +651,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BC59261F2E99451F007FDB68 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BC5926212E99461C007FDB68 /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC59261F2E99451F007FDB68 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 827E4AC72A66C70D0062977D /* Project object */;
 }
