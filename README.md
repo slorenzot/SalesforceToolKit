@@ -2,6 +2,11 @@
 
 ![Salesforce ToolKit Logo](placeholder_logo.png) <!-- Reemplaza esto con el logo de tu aplicación -->
 
+[![Watch the video](https://i9.ytimg.com/vi/NFUTBLfhFT4/mq2.jpg?sqp=CLCTv8cG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLBwShry8m2--41O1mAH5xsQ35zztQ)](https://youtu.be/NFUTBLfhFT4)
+
+
+
+
 ## Descripción
 
 Salesforce ToolKit es una práctica aplicación para macOS que reside en tu barra de menú, diseñada para simplificar y acelerar tus interacciones diarias con Salesforce. Permite gestionar tus organizaciones autenticadas, acceder rápidamente a herramientas y enlaces útiles, y mantener tu Salesforce CLI actualizado, todo desde un lugar centralizado.
