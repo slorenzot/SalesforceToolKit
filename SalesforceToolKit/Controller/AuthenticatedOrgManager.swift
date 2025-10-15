@@ -128,8 +128,22 @@ class AuthenticatedOrgManager: ObservableObject {
             }
         }
     }
+
+    /// Checks if a given alias is already in use by another authenticated organization.
+    /// - Parameters:
+    ///   - newAlias: The alias to check.
+    ///   - currentOrgId: The ID of the organization currently being edited (optional).
+    ///                   If provided, the method will ignore the current organization's alias.
+    /// - Returns: `true` if the alias is in use by another organization, `false` otherwise.
+    func isAliasInUse(newAlias: String, forOrgId currentOrgId: UUID? = nil) -> Bool {
+        return authenticatedOrgs.contains { org in
+            // Check if the alias matches and if it's a *different* organization
+            org.alias == newAlias && (currentOrgId == nil || org.id != currentOrgId)
+        }
+    }
 }
 
 extension Notification.Name {
     static let didCompleteAuth = Notification.Name("didCompleteAuth")
 }
+
