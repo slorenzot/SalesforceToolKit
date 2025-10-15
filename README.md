@@ -1,7 +1,5 @@
 # Salesforce ToolKit
 
-![Salesforce ToolKit Logo](placeholder_logo.png) <!-- Reemplaza esto con el logo de tu aplicación -->
-
 ![Salesforce ToolKit](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/splash.png) <!-- Agrega una captura de pantalla del menú principal -->
 
 ## Videos en Youtube
@@ -24,7 +22,7 @@ Salesforce ToolKit es una práctica aplicación para macOS que reside en tu barr
 
 ## Capturas de Pantalla
 
-![Captura 1](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/spash.png)
+![Captura 1](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/splash.png)
 ![Captura 2](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/image1.png) <!-- Agrega una captura de pantalla del menú principal -->
 ![Captura 3](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/image2.png) <!-- Agrega una captura de pantalla de la ventana de preferencias -->
 
