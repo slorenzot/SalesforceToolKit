@@ -20,6 +20,7 @@ struct MenuBarContentView: View {
     var confirmDelete: (AuthenticatedOrg) -> Void
     var confirmLogout: (AuthenticatedOrg) -> Void
     var openPreferences: () -> Void
+    var exportPreference: () -> Void // The `exportPreference` function is already defined as a closure
     var confirmQuit: () -> Void
     
     // New properties for biometric authentication
@@ -181,10 +182,15 @@ struct MenuBarContentView: View {
             }
             .toggleStyle(.checkbox)
         
-        Button(NSLocalizedString("Preferences", comment: "")) {
+        Button(NSLocalizedString("Preferences...", comment: "")) {
             openPreferences()
         }
         .keyboardShortcut("p")
+        
+        Button(NSLocalizedString("Export preferences", comment: "")) {
+            exportPreference() // Call the passed-in closure
+        }
+        // Remove .disabled(true) so the button is active
         
         Divider()
         
@@ -217,4 +223,3 @@ struct MenuBarContentView: View {
         .keyboardShortcut("q")
     }
 }
-

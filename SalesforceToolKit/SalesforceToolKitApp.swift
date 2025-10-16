@@ -203,6 +203,50 @@ struct SalesforceToolKitApp: App {
         }
     }
     
+    func exportPreferences() {
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to export organization data", comment: "")) {
+            let savePanel = NSSavePanel()
+            savePanel.allowedFileTypes = ["json"]
+            savePanel.canCreateDirectories = true
+            savePanel.nameFieldStringValue = "sftk-organizations.json"
+            savePanel.prompt = NSLocalizedString("Export", comment: "")
+            savePanel.title = NSLocalizedString("Export Salesforce Organizations", comment: "")
+
+            savePanel.begin { response in
+                if response == .OK, let url = savePanel.url {
+                    do {
+                        // Assuming authenticatedOrgManager has an accessible array of AuthenticatedOrg
+                        // You need to ensure AuthenticatedOrgManager exposes this data,
+                        // for example, via a property like 'authenticatedOrgs'.
+                        let organizationsToExport = self.authenticatedOrgManager.authenticatedOrgs
+
+                        let encoder = JSONEncoder()
+                        encoder.outputFormatting = .prettyPrinted // For human-readable JSON
+
+                        let jsonData = try encoder.encode(organizationsToExport)
+                        try jsonData.write(to: url, options: .atomicWrite)
+
+                        let content = UNMutableNotificationContent()
+                        content.title = NSLocalizedString("Export Successful", comment: "")
+                        content.body = String(format: NSLocalizedString("Organization data exported to %@", comment: ""), url.lastPathComponent)
+                        content.sound = UNNotificationSound.default
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+
+                    } catch {
+                        print("Failed to export organization data: \(error)")
+                        let content = UNMutableNotificationContent()
+                        content.title = NSLocalizedString("Export Failed", comment: "")
+                        content.body = String(format: NSLocalizedString("Error exporting organization data: %@", comment: ""), error.localizedDescription)
+                        content.sound = UNNotificationSound.default
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+                    }
+                }
+            }
+        }
+    }
+    
     func openMainWindow() {
         if mainWindow == nil {
             let editView = MainView()
@@ -378,6 +422,7 @@ struct SalesforceToolKitApp: App {
                 confirmDelete: confirmDelete,
                 confirmLogout: confirmLogout,
                 openPreferences: openPreferences,
+                exportPreference: exportPreferences, // Changed from exportPreferences to exportPreference
                 confirmQuit: confirmQuit,
                 // Pass new biometric authentication parameters to MenuBarContentView
                 biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
