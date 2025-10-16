@@ -431,7 +431,7 @@ struct SalesforceToolKitApp: App {
     }
     
     var body: some Scene {
-        MenuBarExtra(currentOption, systemImage: "key.fill") {
+        MenuBarExtra(currentOption, systemImage: "cloud.fill") {
             MenuBarContentView(
                 keyMonitor: keyMonitor,
                 authenticatedOrgManager: authenticatedOrgManager,
