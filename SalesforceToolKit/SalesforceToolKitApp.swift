@@ -208,7 +208,7 @@ struct SalesforceToolKitApp: App {
             let savePanel = NSSavePanel()
             savePanel.allowedFileTypes = ["json"]
             savePanel.canCreateDirectories = true
-            savePanel.nameFieldStringValue = "sftk-organizations.json"
+            savePanel.nameFieldStringValue = "SalesforceOrganizations.json"
             savePanel.prompt = NSLocalizedString("Export", comment: "")
             savePanel.title = NSLocalizedString("Export Salesforce Organizations", comment: "")
 
@@ -238,6 +238,40 @@ struct SalesforceToolKitApp: App {
                         let content = UNMutableNotificationContent()
                         content.title = NSLocalizedString("Export Failed", comment: "")
                         content.body = String(format: NSLocalizedString("Error exporting organization data: %@", comment: ""), error.localizedDescription)
+                        content.sound = UNNotificationSound.default
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+                    }
+                }
+            }
+        }
+    }
+
+    func importPreferences() {
+        authenticateIfRequired(reason: NSLocalizedString("Authenticate to import organization data", comment: "")) {
+            let openPanel = NSOpenPanel()
+            openPanel.allowedFileTypes = ["json"]
+            openPanel.canChooseDirectories = false
+            openPanel.canChooseFiles = true
+            openPanel.allowsMultipleSelection = false
+            openPanel.prompt = NSLocalizedString("Importar", comment: "")
+            openPanel.title = NSLocalizedString("Importar Organizaciones de Salesforce", comment: "")
+
+            openPanel.begin { response in
+                if response == .OK, let url = openPanel.url {
+                    do {
+                        let jsonData = try Data(contentsOf: url)
+                        let decoder = JSONDecoder()
+                        let importedOrgs = try decoder.decode([AuthenticatedOrg].self, from: jsonData)
+                        
+                        // Use the new importOrgs method in AuthenticatedOrgManager
+                        self.authenticatedOrgManager.importOrgs(newOrgs: importedOrgs)
+
+                    } catch {
+                        print("Failed to import organization data: \(error)")
+                        let content = UNMutableNotificationContent()
+                        content.title = NSLocalizedString("Importación Fallida", comment: "")
+                        content.body = String(format: NSLocalizedString("Error al importar datos de la organización: %@", comment: ""), error.localizedDescription)
                         content.sound = UNNotificationSound.default
                         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                         UNUserNotificationCenter.current().add(request)
@@ -422,7 +456,8 @@ struct SalesforceToolKitApp: App {
                 confirmDelete: confirmDelete,
                 confirmLogout: confirmLogout,
                 openPreferences: openPreferences,
-                exportPreference: exportPreferences, // Changed from exportPreferences to exportPreference
+                exportPreference: exportPreferences,
+                importPreference: importPreferences, // Add this line
                 confirmQuit: confirmQuit,
                 // Pass new biometric authentication parameters to MenuBarContentView
                 biometricAuthenticationEnabled: $biometricAuthenticationEnabled,

@@ -20,7 +20,8 @@ struct MenuBarContentView: View {
     var confirmDelete: (AuthenticatedOrg) -> Void
     var confirmLogout: (AuthenticatedOrg) -> Void
     var openPreferences: () -> Void
-    var exportPreference: () -> Void // The `exportPreference` function is already defined as a closure
+    var exportPreference: () -> Void
+    var importPreference: () -> Void // Add this line
     var confirmQuit: () -> Void
     
     // New properties for biometric authentication
@@ -188,9 +189,12 @@ struct MenuBarContentView: View {
         .keyboardShortcut("p")
         
         Button(NSLocalizedString("Export preferences", comment: "")) {
-            exportPreference() // Call the passed-in closure
+            exportPreference()
         }
-        // Remove .disabled(true) so the button is active
+        
+        Button(NSLocalizedString("Import preferences", comment: "")) { // Add this button
+            importPreference()
+        }
         
         Divider()
         
