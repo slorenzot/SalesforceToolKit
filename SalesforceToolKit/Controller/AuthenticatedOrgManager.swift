@@ -117,9 +117,10 @@ class AuthenticatedOrgManager: ObservableObject {
            let orgId = userInfo["orgId"] as? String,
            let label = userInfo["label"] as? String,
            let alias = userInfo["alias"] as? String,
+           let username = userInfo["username"] as? String,
            let instanceUrl = userInfo["instanceUrl"] as? String,
            let orgType = userInfo["orgType"] as? String {
-            let newOrg = AuthenticatedOrg(alias: alias, label: label, orgId: orgId, instanceUrl: instanceUrl, orgType: orgType)
+            let newOrg = AuthenticatedOrg(alias: alias, label: label, orgId: orgId, username: username, instanceUrl: instanceUrl, orgType: orgType)
             if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
                 authenticatedOrgs.append(newOrg)
                 authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
