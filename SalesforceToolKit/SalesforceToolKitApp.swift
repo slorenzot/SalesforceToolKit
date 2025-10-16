@@ -208,7 +208,7 @@ struct SalesforceToolKitApp: App {
             let savePanel = NSSavePanel()
             savePanel.allowedFileTypes = ["json"]
             savePanel.canCreateDirectories = true
-            savePanel.nameFieldStringValue = "SalesforceOrganizations.json"
+            savePanel.nameFieldStringValue = "sftk-preferences.json"
             savePanel.prompt = NSLocalizedString("Export", comment: "")
             savePanel.title = NSLocalizedString("Export Salesforce Organizations", comment: "")
 

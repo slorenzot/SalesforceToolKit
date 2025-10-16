@@ -29,12 +29,12 @@ struct MenuBarContentView: View {
     var isTouchIDAvailable: Bool
     
     var body: some View {
+        let orgs = authenticatedOrgManager.authenticatedOrgs
         let cli = SalesforceCLI() // Instantiate CLI once here and pass it down
         
-        if (credentialManager.storedLinks.isEmpty) {
+        if (orgs.isEmpty) {
             Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
         } else {
-            let orgs = authenticatedOrgManager.authenticatedOrgs
             let favorites = authenticatedOrgManager.authenticatedOrgs.filter{ $0.isFavorite == true }
             let defaultOrg = orgs.filter{ $0.isDefault == true }.first
             
@@ -183,16 +183,20 @@ struct MenuBarContentView: View {
             }
             .toggleStyle(.checkbox)
         
+        Divider()
+        
         Button(NSLocalizedString("Preferences...", comment: "")) {
             openPreferences()
         }
         .keyboardShortcut("p")
         
-        Button(NSLocalizedString("Export preferences", comment: "")) {
-            exportPreference()
+        if (!orgs.isEmpty) {
+            Button(NSLocalizedString("Exportar...", comment: "")) {
+                exportPreference()
+            }
         }
         
-        Button(NSLocalizedString("Import preferences", comment: "")) { // Add this button
+        Button(NSLocalizedString("Importar...", comment: "")) {
             importPreference()
         }
         
