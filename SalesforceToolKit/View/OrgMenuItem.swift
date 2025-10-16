@@ -103,7 +103,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Object Manager window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH)
+                        let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH, browser: defaultBrowser)
                     }
                 } label: {
                     Image(systemName: "cube.fill")
@@ -112,7 +112,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Schema Builder window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH)
+                        let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH, browser: defaultBrowser)
                     }
                 } label: {
                     Image(systemName: "map.fill")
@@ -121,7 +121,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Code BUilder window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH)
+                        let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH, browser: defaultBrowser)
                     }
                 } label: {
                     Image(systemName: "display.and.screwdriver")
@@ -130,7 +130,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Flow Manager window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: FLOW_PATH)
+                        let _ = cli.open(alias: org.alias, path: FLOW_PATH, browser: defaultBrowser)
                     }
                 } label: {
                     Image(systemName: "wind")
@@ -141,7 +141,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Developer Console window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH)
+                        let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH, browser: defaultBrowser)
                     }
                 } label: {
                     Image(systemName: "terminal.fill")
@@ -156,7 +156,7 @@ struct OrgMenuItem: View {
             
             Button() {
                 authenticateIfRequired(NSLocalizedString("Authenticate to open Org window", comment: "")) {
-                    let _ = cli.open(alias: org.alias, path: SETUP_PATH)
+                    let _ = cli.open(alias: org.alias, path: SETUP_PATH, browser: defaultBrowser)
                 }
             } label: {
                 Image(systemName: "gearshape")
