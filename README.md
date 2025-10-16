@@ -1,6 +1,10 @@
 # Salesforce ToolKit
 
-![Salesforce ToolKit Logo](placeholder_logo.png) <!-- Reemplaza esto con el logo de tu aplicación -->
+![Salesforce ToolKit](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/splash.png) <!-- Agrega una captura de pantalla del menú principal -->
+
+## Videos en Youtube
+
+[![Watch the video](https://i9.ytimg.com/vi/NFUTBLfhFT4/mq2.jpg?sqp=CLCTv8cG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLBwShry8m2--41O1mAH5xsQ35zztQ)](https://youtu.be/NFUTBLfhFT4)
 
 ## Descripción
 
@@ -18,8 +22,9 @@ Salesforce ToolKit es una práctica aplicación para macOS que reside en tu barr
 
 ## Capturas de Pantalla
 
-![Menú Principal](placeholder_screenshot_menu.png) <!-- Agrega una captura de pantalla del menú principal -->
-![Preferencias](placeholder_screenshot_preferences.png) <!-- Agrega una captura de pantalla de la ventana de preferencias -->
+![Captura 1](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/splash.png)
+![Captura 2](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/image1.png) <!-- Agrega una captura de pantalla del menú principal -->
+![Captura 3](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/image2.png) <!-- Agrega una captura de pantalla de la ventana de preferencias -->
 
 ## Instalación
 
