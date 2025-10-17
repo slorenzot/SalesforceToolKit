@@ -27,6 +27,8 @@ struct MenuBarContentView: View {
     @Binding var biometricAuthenticationEnabled: Bool
     var isTouchIDAvailable: Bool
     
+    var appIsUpdated: Bool
+    
     var body: some View {
         let orgs = authenticatedOrgManager.authenticatedOrgs
         let cli = SalesforceCLI()
@@ -37,14 +39,25 @@ struct MenuBarContentView: View {
             let favorites = authenticatedOrgManager.authenticatedOrgs.filter{ $0.isFavorite == true }
             let defaultOrg = orgs.filter{ $0.isDefault == true }.first
             
-            Button("Salesforce Toolkit - v2.3.0"){
-                mainWindow()
-            }
-            .disabled(true)
-            
-            Button(){
-                
+            Button() {
+                if appIsUpdated {
+                    mainWindow()
+                } else {
+                    openUrl(url: "https://github.com/slorenzot/SalesforceToolKit/releases")
+                }
             } label: {
+                Image(systemName: "cloud.fill")
+                Text("Salesforce Toolkit")
+                if (!appIsUpdated) {
+                    Text(NSLocalizedString("New version is availabe, click to update now!", comment: "text"))
+                }
+                
+            }
+            .disabled(appIsUpdated)
+            
+            Divider()
+            
+            Button(){} label: {
                 Image(systemName: "star.fill")
                 Text("\(defaultOrg?.label ?? "Ninguna") (\(defaultOrg?.orgId ?? "Ninguna"))")
                 Text("\(defaultOrg?.instanceUrl ?? "Ninguna")")
@@ -210,7 +223,7 @@ struct MenuBarContentView: View {
             let _ = cli.openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
         } label: {
             Text(NSLocalizedString("Sponsor Salesforce ToolKit on Github", comment: ""))
-            Text("Your support matters")
+            Text(NSLocalizedString("Your support matters", comment: ""))
         }
         
         Divider()

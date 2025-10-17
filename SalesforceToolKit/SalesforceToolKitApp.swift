@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import ServiceManagement // Add this import for SMAppService
+import ServiceManagement
 import UserNotifications
-import LocalAuthentication // Add this import for Touch ID/Face ID
+import LocalAuthentication
 
 // https://medium.com/@ankit.bhana19/save-custom-objects-into-userdefaults-using-codable-in-swift-5-1-protocol-oriented-approach-ae36175180d8
 
@@ -59,6 +59,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         completionHandler([.banner, .sound])
     }
 
+    // MARK: - Handle notification actions (e.g., update available)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            // User tapped the notification body
+            if let updateURLString = response.notification.request.content.userInfo["updateURL"] as? String,
+               let url = URL(string: updateURLString) {
+                NSWorkspace.shared.open(url)
+            }
+        }
+        completionHandler()
+    }
+
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if !flag {
             for window in sender.windows {
@@ -73,10 +85,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     }
 }
 
+// MARK: - GitHub Release Model for Update Check
+struct GitHubRelease: Decodable {
+    let tagName: String
+    let htmlUrl: URL
+
+    enum CodingKeys: String, CodingKey {
+        case tagName = "tag_name"
+        case htmlUrl = "html_url"
+    }
+}
+
 @main
 struct SalesforceToolKitApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    @AppStorage("version") var appIsUpdated: Bool = true
     @AppStorage("settings") var settings: String = ""
     // New AppStorage for biometric authentication setting
     @AppStorage("biometricAuthenticationEnabled") var biometricAuthenticationEnabled: Bool = false
@@ -96,7 +120,7 @@ struct SalesforceToolKitApp: App {
 
     @State private var launchOnLogin = false
 
-    private func setLaunchOnLogin(enabled: Bool) async { // MARK: - Changed to async
+    private func setLaunchOnLogin(enabled: Bool) async {
         let serviceIdentifier = "com.nesponsoul.SalesforceToolKit-Launcher"
         let content = UNMutableNotificationContent()
         
@@ -125,11 +149,14 @@ struct SalesforceToolKitApp: App {
         do {
             try await UNUserNotificationCenter.current().add(request)
         } catch {
-            print("Error decoding org details: \(error)")
+            print("Error adding notification: \(error)") // Corrected print statement
         }
     }
     
-    var version = "2.3.0"
+    // Computed property to get the app version from Info.plist
+    var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
+    }
 
     init() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
@@ -138,6 +165,11 @@ struct SalesforceToolKitApp: App {
             } else if let error = error {
                 print("Notification authorization error: \(error.localizedDescription)")
             }
+        }
+        
+        // Start the update check task when the app initializes
+        Task { [self] in // Explicitly capture self
+            await checkForUpdates()
         }
     }
     
@@ -429,6 +461,48 @@ struct SalesforceToolKitApp: App {
             NSApp.activate(ignoringOtherApps: true)
         }
     }
+
+    // MARK: - Update Check Functionality
+    private func checkForUpdates() async {
+        guard let url = URL(string: "https://api.github.com/repos/slorenzot/SalesforceToolKit/releases/latest") else {
+            print("Invalid GitHub API URL for update check.")
+            return
+        }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoder = JSONDecoder()
+            let latestRelease = try decoder.decode(GitHubRelease.self, from: data)
+
+            // Get current app version from Info.plist
+            let currentAppVersion = self.appVersion
+            
+            print("current: \(currentAppVersion), latest: \(latestRelease.tagName)")
+
+            // Compare versions numerically
+            // .orderedDescending means latestRelease.tagName is newer than currentAppVersion
+            if latestRelease.tagName.compare(currentAppVersion, options: .numeric) == .orderedDescending {
+                appIsUpdated = false
+                
+                // New version available
+                let content = UNMutableNotificationContent()
+                content.title = NSLocalizedString("Nueva actualización disponible", comment: "Notification title for new app version")
+                content.body = String(format: NSLocalizedString("La versión %@ de la aplicación está disponible. Actualmente tienes la versión %@. Haz clic para descargar.", comment: "Notification body for new app version, with versions"), latestRelease.tagName, currentAppVersion)
+                content.sound = UNNotificationSound.default
+                content.userInfo = ["updateURL": latestRelease.htmlUrl.absoluteString] // Pass URL to notification delegate
+
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                try await UNUserNotificationCenter.current().add(request)
+            } else {
+                print("App is up to date: \(currentAppVersion)")
+            }
+
+        } catch {
+            print("Error checking for updates: \(error.localizedDescription)")
+            // Optionally, you might want to show a subtle in-app message or log the error,
+            // but not typically a critical alert for a failed update check.
+        }
+    }
     
     var body: some Scene {
         MenuBarExtra(currentOption, systemImage: "cloud.fill") {
@@ -443,7 +517,7 @@ struct SalesforceToolKitApp: App {
                     }
                 },
                 credentialManager: credentialManager,
-                version: version,
+                version: appVersion, // Use the computed property for consistency
                 mainWindow: openMainWindow,
                 // Fix for the error: explicitly wrap authenticateIfRequired in a closure
                 // to match the expected labeled parameter type.
@@ -461,7 +535,8 @@ struct SalesforceToolKitApp: App {
                 confirmQuit: confirmQuit,
                 // Pass new biometric authentication parameters to MenuBarContentView
                 biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
-                isTouchIDAvailable: authManager.isTouchIDAvailable
+                isTouchIDAvailable: authManager.isTouchIDAvailable,
+                appIsUpdated: appIsUpdated
             )
             .onReceive(NotificationCenter.default.publisher(for: AppDelegate.windowWillCloseNotification)) { notification in
                 self.onWindowWillClose(notification)
