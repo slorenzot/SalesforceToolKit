@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 
 class AuthenticatedOrgManager: ObservableObject {
     @Published var authenticatedOrgs: [AuthenticatedOrg] = []
@@ -116,9 +117,10 @@ class AuthenticatedOrgManager: ObservableObject {
            let orgId = userInfo["orgId"] as? String,
            let label = userInfo["label"] as? String,
            let alias = userInfo["alias"] as? String,
+           let username = userInfo["username"] as? String,
            let instanceUrl = userInfo["instanceUrl"] as? String,
            let orgType = userInfo["orgType"] as? String {
-            let newOrg = AuthenticatedOrg(alias: alias, label: label, orgId: orgId, instanceUrl: instanceUrl, orgType: orgType)
+            let newOrg = AuthenticatedOrg(alias: alias, label: label, orgId: orgId, username: username, instanceUrl: instanceUrl, orgType: orgType)
             if !authenticatedOrgs.contains(where: { $0.alias == alias }) {
                 authenticatedOrgs.append(newOrg)
                 authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
@@ -127,6 +129,61 @@ class AuthenticatedOrgManager: ObservableObject {
                 saveOrgs()
             }
         }
+    }
+
+    /// Checks if a given alias is already in use by another authenticated organization.
+    /// - Parameters:
+    ///   - newAlias: The alias to check.
+    ///   - currentOrgId: The ID of the organization currently being edited (optional).
+    ///                   If provided, the method will ignore the current organization's alias.
+    /// - Returns: `true` if the alias is in use by another organization, `false` otherwise.
+    func isAliasInUse(newAlias: String, forOrgId currentOrgId: UUID? = nil) -> Bool {
+        return authenticatedOrgs.contains { org in
+            // Check if the alias matches and if it's a *different* organization
+            org.alias == newAlias && (currentOrgId == nil || org.id != currentOrgId)
+        }
+    }
+}
+
+extension AuthenticatedOrgManager {
+    /// Imports a list of organizations, adding new ones and skipping duplicates by alias.
+    /// - Parameter newOrgs: An array of `AuthenticatedOrg` objects to import.
+    func importOrgs(newOrgs: [AuthenticatedOrg]) {
+        var addedCount = 0
+        var skippedCount = 0
+
+        for newOrg in newOrgs {
+            // Check if an organization with the same alias already exists
+            if !authenticatedOrgs.contains(where: { $0.alias == newOrg.alias }) {
+                authenticatedOrgs.append(newOrg)
+                addedCount += 1
+            } else {
+                skippedCount += 1
+            }
+        }
+        authenticatedOrgs.sort { $0.label.lowercased() < $1.label.lowercased() }
+        saveOrgs()
+        
+        print("Imported \(addedCount) new orgs, skipped \(skippedCount) duplicates.")
+        
+        // You might want to send a notification here about the import result
+        let content = UNMutableNotificationContent()
+        if addedCount > 0 || skippedCount > 0 {
+            content.title = NSLocalizedString("Importación de Organizaciones Finalizada", comment: "")
+            if addedCount > 0 && skippedCount == 0 {
+                content.body = String(format: NSLocalizedString("Se importaron %d nuevas organizaciones correctamente.", comment: ""), addedCount)
+            } else if addedCount == 0 && skippedCount > 0 {
+                content.body = String(format: NSLocalizedString("Se omitieron %d organizaciones ya existentes.", comment: ""), skippedCount)
+            } else {
+                content.body = String(format: NSLocalizedString("Se importaron %d organizaciones nuevas y se omitieron %d organizaciones existentes.", comment: ""), addedCount, skippedCount)
+            }
+        } else {
+            content.title = NSLocalizedString("Importación de Organizaciones", comment: "")
+            content.body = NSLocalizedString("No se encontraron organizaciones válidas para importar en el archivo.", comment: "")
+        }
+        content.sound = UNNotificationSound.default
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
     }
 }
 

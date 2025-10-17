@@ -53,12 +53,18 @@ struct OrgAuthenticationView: View {
     @State private var useCustomInstanceUrl: Bool
     @State private var customInstanceUrl: String
     // END MARK
+
+    // MARK: - Alias in use state
+    @State private var aliasAlreadyInUse: Bool = false
+    // END MARK
     
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
     
     let orgTypes = ["Producción", "Desarrollo"]
 
     init(org: AuthenticatedOrg? = nil) { // Corrected type here
+        self.isAuthenticating = false
+        
         self.orgToEdit = org
         
         if let org = org {
@@ -128,6 +134,8 @@ struct OrgAuthenticationView: View {
                                 if orgToEdit == nil { // Only generate alias in create mode
                                     alias = generateAlias(from: value)
                                 }
+                                // Re-check alias usage when label changes (which can update alias)
+                                self.aliasAlreadyInUse = authenticatedOrgManager.isAliasInUse(newAlias: alias, forOrgId: orgToEdit?.id)
                             })
                         
                         Text("La etiqueta es el nombre que se mostrará en Salesforce Toolkit para identificar fácilmente las instancias de su organización y puede contener espacios y caracteres especiales")
@@ -135,8 +143,22 @@ struct OrgAuthenticationView: View {
                         
                         TextField("Alias", text: $alias)
                             .disabled(true)
+                            .onChange(of: alias) { newValue in
+                                // Check alias usage whenever alias changes
+                                self.aliasAlreadyInUse = authenticatedOrgManager.isAliasInUse(newAlias: newValue, forOrgId: orgToEdit?.id)
+                            }
+                        
+                        // MARK: - Styled "Alias already in use" message
+                        if aliasAlreadyInUse {
+                            Text("El alias suministrado ya esta en uso por otra instancia")
+                                .font(.system(size: 10))
+                                .foregroundColor(.red)
+                        }
+                        // END MARK
+                        
                         Text("El alias es usado por Salesforce CLI para ejecutar los comandos, no puede contener espacios ni caracteres especiales.")
                             .font(.system(size: 10))
+                            .padding(.top, 10)
                         
                         Toggle(isOn: Binding<Bool>(
                             get: { isFavorite },
@@ -145,6 +167,7 @@ struct OrgAuthenticationView: View {
                             }
                         )) {
                             Text("Es favorita")
+                                .padding(.top, 20)
                         }
                     }
                     .frame(width: 420, height: 440) // Adjust height as needed with new fields
@@ -179,7 +202,9 @@ struct OrgAuthenticationView: View {
                                 authenticate()
                             }
                         }
-                        .disabled(label.trimmingCharacters(in: .whitespacesAndNewlines) == "" || alias.trimmingCharacters(in: .whitespacesAndNewlines) == "" || (useCustomInstanceUrl && customInstanceUrl.trimmingCharacters(in: .whitespacesAndNewlines) == "")) // Disable if custom URL is empty when selected
+                        // MARK: - Disable button if alias is already in use
+                        .disabled(label.trimmingCharacters(in: .whitespacesAndNewlines) == "" || alias.trimmingCharacters(in: .whitespacesAndNewlines) == "" || (useCustomInstanceUrl && customInstanceUrl.trimmingCharacters(in: .whitespacesAndNewlines) == "") || aliasAlreadyInUse)
+                        // END MARK
                         .padding()
                     }
                 }
@@ -241,6 +266,9 @@ struct OrgAuthenticationView: View {
             if isAuthenticating {
                 startUITimer()
             }
+            // MARK: - Initial alias check on appear
+            self.aliasAlreadyInUse = authenticatedOrgManager.isAliasInUse(newAlias: alias, forOrgId: orgToEdit?.id)
+            // END MARK
         }
         .onChange(of: isAuthenticating) { newValue in
             windowDelegate.isAuthenticating = newValue
@@ -362,7 +390,7 @@ struct OrgAuthenticationView: View {
                     }.value
 
                     // MARK: - Pass the actual instanceUrl used for authentication
-                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": instanceUrl, "label": label, "alias": alias, "orgType": orgType]
+                    let userInfo: [String: Any] = ["orgId": org?.id ?? "", "instanceUrl": instanceUrl, "label": label, "alias": alias, "username": org?.username, "orgType": orgType]
                     // END MARK
                     
                     // Close the window on successful authentication ss
