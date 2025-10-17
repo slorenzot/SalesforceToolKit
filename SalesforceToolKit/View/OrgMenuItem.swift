@@ -4,7 +4,6 @@ import AppKit // Import AppKit for NSPasteboard
 
 struct OrgMenuItem: View {
     let org: AuthenticatedOrg
-    let defaultBrowser: String
     let authenticateIfRequired: (_ reason: String, _ action: @escaping () -> Void) -> Void
     let cli: SalesforceCLI // Use this passed-down CLI instance
     let isFavorite: Bool
@@ -21,7 +20,6 @@ struct OrgMenuItem: View {
     let SCHEMA_BUILDER_PATH = "/lightning/setup/SchemaBuilder/home"
     let CODE_BUILDER_PATH = "/runtime_developerplatform_codebuilder/codebuilder.app?launch=true"
     let FLOW_PATH = "/lightning/setup/Flows/home"
-    
     let OBJECT_PATH = "/lightning/o/<ObjectName>/home"
 
     var body: some View {
@@ -50,7 +48,7 @@ struct OrgMenuItem: View {
             
             Button() {
                 authenticateIfRequired(NSLocalizedString("Authenticate to open Org window", comment: "")) {
-                    let _ = cli.open(alias: org.alias,browser: defaultBrowser)
+                    let _ = cli.open(alias: org.alias, browser: org.useBrowser ?? "default")
                 }
             } label: {
                Image(systemName: "network")
@@ -59,7 +57,7 @@ struct OrgMenuItem: View {
            
             Button("Abrir instancia en navegación privada...") {
                 authenticateIfRequired(NSLocalizedString("Authenticate to open Org Private window", comment: "")) {
-                    let success = cli.open(alias: org.alias, incognito: true, browser: defaultBrowser)
+                    let success = cli.open(alias: org.alias, incognito: true, browser: org.useBrowser ?? "default")
                     
                     if (!success) {
                         let content = UNMutableNotificationContent()
@@ -75,7 +73,7 @@ struct OrgMenuItem: View {
             
             Button("Abrir instancia como...") {
                 authenticateIfRequired(NSLocalizedString("Authenticate to open Org Private window", comment: "")) {
-                    let success = cli.openAsUser(userId: "005Hs00000BVy3m", alias: org.alias, incognito: false, browser: defaultBrowser)
+                    let success = cli.openAsUser(userId: "005Hs00000BVy3m", alias: org.alias, incognito: false, browser: org.useBrowser ?? "default")
                     
                     if (!success) {
                         let content = UNMutableNotificationContent()
@@ -103,7 +101,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Object Manager window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH, browser: defaultBrowser)
+                        let _ = cli.open(alias: org.alias, path: OBJECT_MANAGER_PATH, browser: org.useBrowser ?? "default")
                     }
                 } label: {
                     Image(systemName: "cube.fill")
@@ -112,7 +110,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Schema Builder window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH, browser: defaultBrowser)
+                        let _ = cli.open(alias: org.alias, path: SCHEMA_BUILDER_PATH, browser: org.useBrowser ?? "default")
                     }
                 } label: {
                     Image(systemName: "map.fill")
@@ -121,7 +119,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Code BUilder window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH, browser: defaultBrowser)
+                        let _ = cli.open(alias: org.alias, path: CODE_BUILDER_PATH, browser: org.useBrowser ?? "default")
                     }
                 } label: {
                     Image(systemName: "display.and.screwdriver")
@@ -130,7 +128,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Flow Manager window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: FLOW_PATH, browser: defaultBrowser)
+                        let _ = cli.open(alias: org.alias, path: FLOW_PATH, browser: org.useBrowser ?? "default")
                     }
                 } label: {
                     Image(systemName: "wind")
@@ -141,7 +139,7 @@ struct OrgMenuItem: View {
                 
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open Org Developer Console window", comment: "")) {
-                        let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH, browser: defaultBrowser)
+                        let _ = cli.open(alias: org.alias, path: DEVELOPER_CONSOLE_PATH, browser: org.useBrowser ?? "default")
                     }
                 } label: {
                     Image(systemName: "terminal.fill")
@@ -156,7 +154,7 @@ struct OrgMenuItem: View {
             
             Button() {
                 authenticateIfRequired(NSLocalizedString("Authenticate to open Org window", comment: "")) {
-                    let _ = cli.open(alias: org.alias, path: SETUP_PATH, browser: defaultBrowser)
+                    let _ = cli.open(alias: org.alias, path: SETUP_PATH, browser: org.useBrowser ?? "default")
                 }
             } label: {
                 Image(systemName: "gearshape")
@@ -181,7 +179,7 @@ struct OrgMenuItem: View {
                         authenticatedOrgManager.updateOrg(org: mutableOrg)
                     }
                 )) {
-                    Text("Es favorita")
+                    Text(NSLocalizedString("Es favorito", comment: ""))
                 }
                 
                 Toggle(isOn: Binding<Bool>(
@@ -192,7 +190,34 @@ struct OrgMenuItem: View {
                         authenticatedOrgManager.setDefaultOrg(org: mutableOrg)
                     }
                 )) {
-                    Text("Por defecto")
+                    Text(NSLocalizedString("Por defecto", comment: ""))
+                }
+                
+                Divider()
+                
+                Menu("Use navegador") {
+                    let browsers: [String] = ["default", "chrome", "firefox", "edge"]
+                    
+                    // Fixed: Use ForEach SwiftUI view instead of Sequence.forEach method
+                    ForEach(browsers, id: \.self) { browserName in
+                        Button {
+                            authenticateIfRequired(NSLocalizedString("Authenticate to set preferred browser for org", comment: "")) {
+                                var mutableOrg = org
+                                mutableOrg.useBrowser = NSLocalizedString(browserName, comment: "") // Use the existing 'useBrowser' property
+                                authenticatedOrgManager.updateOrg(org: mutableOrg)
+                            }
+                        } label: {
+                            HStack {
+                                if org.useBrowser == browserName { // Check against 'useBrowser'
+                                    Image(systemName: "checkmark")
+                                } else {
+                                    // Hidden image for alignment when not selected
+                                    Image(systemName: "checkmark").hidden()
+                                }
+                                Text(browserName.capitalized)
+                            }
+                        }
+                    }
                 }
                 
                 Divider()
@@ -223,3 +248,4 @@ struct OrgMenuItem: View {
         }
     }
 }
+

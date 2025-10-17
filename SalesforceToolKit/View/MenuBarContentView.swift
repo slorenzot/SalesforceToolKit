@@ -64,7 +64,6 @@ struct MenuBarContentView: View {
                     ForEach(favorites) { org in
                         OrgMenuItem(
                             org: org,
-                            defaultBrowser: defaultBrowser,
                             authenticateIfRequired: authenticateIfRequired,
                             cli: cli, // Pass the shared cli instance
                             isFavorite: true,
@@ -93,7 +92,6 @@ struct MenuBarContentView: View {
                     ForEach(orgs) { org in
                         OrgMenuItem(
                             org: org,
-                            defaultBrowser: defaultBrowser,
                             authenticateIfRequired: authenticateIfRequired,
                             cli: cli, // Pass the shared cli instance
                             isFavorite: false,
