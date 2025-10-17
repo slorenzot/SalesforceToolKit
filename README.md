@@ -1,5 +1,7 @@
 # Salesforce ToolKit
 
+![Logo](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/logo.png)
+
 ![Salesforce ToolKit](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/splash.png) <!-- Agrega una captura de pantalla del menú principal -->
 
 ## Videos en Youtube
