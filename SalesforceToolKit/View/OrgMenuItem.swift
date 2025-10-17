@@ -2,6 +2,43 @@ import SwiftUI
 import UserNotifications
 import AppKit // Import AppKit for NSPasteboard
 
+// MARK: - Browser Detection Helpers
+
+/// Una estructura para representar un navegador web instalado.
+struct Browser: Identifiable, Hashable {
+    let id = UUID() // Conforme a Identifiable para su uso en ForEach
+    let name: String // Nombre amigable para el usuario, ej., "Google Chrome"
+    let label: String
+    let bundleIdentifier: String // Identificador de paquete único, ej., "com.google.Chrome"
+    // Propiedad para el icono del sistema, opcional
+}
+
+/// Detecta navegadores web comunes instalados en el sistema macOS.
+/// - Returns: Un array de estructuras `Browser` para cada navegador detectado.
+func detectInstalledBrowsers() -> [Browser] {
+    var detectedBrowsers: [Browser] = []
+
+    // Define una lista de navegadores comunes y sus identificadores de paquete conocidos.
+    // Esta lista se puede extender según sea necesario.
+    let potentialBrowsers: [Browser] = [
+        Browser(name: "chrome", label: "Google Chrome", bundleIdentifier: "com.google.Chrome"),
+        Browser(name: "firefox", label: "Firefox", bundleIdentifier: "org.mozilla.firefox"),
+        Browser(name: "edge", label: "Microsoft Edge", bundleIdentifier: "com.microsoft.Edge"), // Corregido el nombre a "edge" para coincidir con el uso anterior
+        // Agrega más navegadores aquí si lo deseas
+    ]
+
+    for browser in potentialBrowsers {
+        // Usa NSWorkspace para encontrar la URL de la aplicación basándose en su identificador de paquete.
+        if let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: browser.bundleIdentifier) {
+            // Verifica que el paquete de la aplicación realmente exista en la ruta resuelta.
+            if FileManager.default.fileExists(atPath: appURL.path) {
+                detectedBrowsers.append(browser)
+            }
+        }
+    }
+    return detectedBrowsers
+}
+
 struct OrgMenuItem: View {
     let org: AuthenticatedOrg
     let authenticateIfRequired: (_ reason: String, _ action: @escaping () -> Void) -> Void
@@ -14,6 +51,7 @@ struct OrgMenuItem: View {
 
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
 
+
     let SETUP_PATH = "/lightning/setup/SetupOneHome/home"
     let OBJECT_MANAGER_PATH = "/lightning/setup/ObjectManager/home"
     let DEVELOPER_CONSOLE_PATH = "/_ui/common/apex/debug/ApexCSIPage"
@@ -23,6 +61,9 @@ struct OrgMenuItem: View {
     let OBJECT_PATH = "/lightning/o/<ObjectName>/home"
 
     var body: some View {
+        
+        let availableBrowsers = detectInstalledBrowsers()
+        
         Menu {
             Text("\(org.label)")
             
@@ -195,7 +236,7 @@ struct OrgMenuItem: View {
                 
                 Divider()
                 
-                Menu("Use navegador") {
+                Menu("Usar navegador") {
                     let browsers: [String] = ["default", "chrome", "firefox", "edge"]
                     
                     // Fixed: Use ForEach SwiftUI view instead of Sequence.forEach method
