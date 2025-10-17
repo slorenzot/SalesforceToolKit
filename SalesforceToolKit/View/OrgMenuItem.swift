@@ -5,13 +5,7 @@ import AppKit // Import AppKit for NSPasteboard
 // MARK: - Browser Detection Helpers
 
 /// Una estructura para representar un navegador web instalado.
-struct Browser: Identifiable, Hashable {
-    let id = UUID() // Conforme a Identifiable para su uso en ForEach
-    let name: String // Nombre amigable para el usuario, ej., "Google Chrome"
-    let label: String
-    let bundleIdentifier: String // Identificador de paquete único, ej., "com.google.Chrome"
-    // Propiedad para el icono del sistema, opcional
-}
+
 
 /// Detecta navegadores web comunes instalados en el sistema macOS.
 /// - Returns: Un array de estructuras `Browser` para cada navegador detectado.
@@ -241,21 +235,23 @@ struct OrgMenuItem: View {
                     
                     // Fixed: Use ForEach SwiftUI view instead of Sequence.forEach method
                     ForEach(browsers, id: \.self) { browserName in
-                        Button {
-                            authenticateIfRequired(NSLocalizedString("Authenticate to set preferred browser for org", comment: "")) {
-                                var mutableOrg = org
-                                mutableOrg.useBrowser = NSLocalizedString(browserName, comment: "") // Use the existing 'useBrowser' property
-                                authenticatedOrgManager.updateOrg(org: mutableOrg)
-                            }
-                        } label: {
-                            HStack {
-                                if org.useBrowser == browserName { // Check against 'useBrowser'
-                                    Image(systemName: "checkmark")
-                                } else {
-                                    // Hidden image for alignment when not selected
-                                    Image(systemName: "checkmark").hidden()
+                        if availableBrowsers.contains(where: { $0.name == browserName || browserName == "default"}) {
+                            Button {
+                                authenticateIfRequired(NSLocalizedString("Authenticate to set preferred browser for org", comment: "")) {
+                                    var mutableOrg = org
+                                    mutableOrg.useBrowser = NSLocalizedString(browserName, comment: "") // Use the existing 'useBrowser' property
+                                    authenticatedOrgManager.updateOrg(org: mutableOrg)
                                 }
-                                Text(browserName.capitalized)
+                            } label: {
+                                HStack {
+                                    if org.useBrowser == browserName { // Check against 'useBrowser'
+                                        Image(systemName: "checkmark")
+                                    } else {
+                                        // Hidden image for alignment when not selected
+                                        Image(systemName: "checkmark").hidden()
+                                    }
+                                    Text(NSLocalizedString(browserName,  comment: "").capitalized)
+                                }
                             }
                         }
                     }
