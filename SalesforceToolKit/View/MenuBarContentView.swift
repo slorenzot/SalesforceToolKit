@@ -1,18 +1,18 @@
 import SwiftUI
 import UserNotifications
+import AppKit // Required for NSWorkspace
 
-struct MenuBarContentView: View {
-    @AppStorage("defaultBrowser") private var defaultBrowser: String = "chrome"
-    
+// MARK: - MenuBarContentView
+
+struct MenuBarContentView: View {    
     @ObservedObject var keyMonitor: KeyMonitor
     @ObservedObject var authenticatedOrgManager: AuthenticatedOrgManager
     @Binding var launchOnLogin: Bool
-    var setLaunchOnLogin: (Bool) async -> Void // MARK: - Changed closure type to async
+    var setLaunchOnLogin: (Bool) async -> Void
     var credentialManager: LinkManager
     var version: String
     
     var mainWindow: () -> Void
-    // FIX: Changed from a tuple type to a function type with labeled parameters.
     var authenticateIfRequired: (_ reason: String, _ action: @escaping () -> Void) -> Void
     var openAuthenticationWindow: () -> Void
     var openEditAuthenticationWindow: (AuthenticatedOrg) -> Void
@@ -21,16 +21,15 @@ struct MenuBarContentView: View {
     var confirmLogout: (AuthenticatedOrg) -> Void
     var openPreferences: () -> Void
     var exportPreference: () -> Void
-    var importPreference: () -> Void // Add this line
+    var importPreference: () -> Void
     var confirmQuit: () -> Void
     
-    // New properties for biometric authentication
     @Binding var biometricAuthenticationEnabled: Bool
     var isTouchIDAvailable: Bool
     
     var body: some View {
         let orgs = authenticatedOrgManager.authenticatedOrgs
-        let cli = SalesforceCLI() // Instantiate CLI once here and pass it down
+        let cli = SalesforceCLI()
         
         if (orgs.isEmpty) {
             Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
@@ -54,37 +53,29 @@ struct MenuBarContentView: View {
             
             Divider()
             
-            //Menu() {
-                if favorites.isEmpty {
-                    Button(){} label: {
-                        Image(systemName: "heart.fill")
-                        Text("No hay favoritos")
-                    }.disabled(true)
-                } else {
-                    ForEach(favorites) { org in
-                        OrgMenuItem(
-                            org: org,
-                            authenticateIfRequired: authenticateIfRequired,
-                            cli: cli, // Pass the shared cli instance
-                            isFavorite: true,
-                            viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
-                            openEditAuthenticationWindow: openEditAuthenticationWindow,
-                            confirmLogout: confirmLogout,
-                            confirmDelete: confirmDelete
-                        )
-                        .environmentObject(authenticatedOrgManager) // Provide environment object
-                    }
+            if favorites.isEmpty {
+                Button(){} label: {
+                    Image(systemName: "heart.fill")
+                    Text("No hay favoritos")
+                }.disabled(true)
+            } else {
+                ForEach(favorites) { org in
+                    OrgMenuItem(
+                        org: org,
+                        authenticateIfRequired: authenticateIfRequired,
+                        cli: cli,
+                        isFavorite: true,
+                        viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
+                        openEditAuthenticationWindow: openEditAuthenticationWindow,
+                        confirmLogout: confirmLogout,
+                        confirmDelete: confirmDelete
+                    )
+                    .environmentObject(authenticatedOrgManager)
                 }
-            /*
-             } label: {
-                Image(systemName: "heart.fill")
-                Text("Favoritas (\(favorites.count))")
             }
-             */
             
             Divider()
             
-            // REFACTOR: Use OrgMenuItem for authenticated orgs to avoid code duplication
             Menu("Organizaciones autenticadas (\(orgs.count))") {
                 if orgs.isEmpty {
                     Button("No organizaciones autenticadas"){}.disabled(true)
@@ -93,14 +84,14 @@ struct MenuBarContentView: View {
                         OrgMenuItem(
                             org: org,
                             authenticateIfRequired: authenticateIfRequired,
-                            cli: cli, // Pass the shared cli instance
+                            cli: cli,
                             isFavorite: false,
                             viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
                             openEditAuthenticationWindow: openEditAuthenticationWindow,
                             confirmLogout: confirmLogout,
                             confirmDelete: confirmDelete
                         )
-                        .environmentObject(authenticatedOrgManager) // Provide environment object
+                        .environmentObject(authenticatedOrgManager)
                     }
                 }
                 
@@ -117,7 +108,8 @@ struct MenuBarContentView: View {
             
             ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Org}) { link in
                 Button(NSLocalizedString("Open", comment: "") + " \(link.label)"){
-                    let _ = openUrl(url: link.url)
+                    // Ahora se usa el nuevo openUrl que permite especificar el navegador
+                    let _ = cli.openUrl(url: link.url)
                 }
             }
             
@@ -126,7 +118,7 @@ struct MenuBarContentView: View {
             Menu("Request new org") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Specialized}) { link in
                     Button(){
-                        let _ = openUrl(url: link.url)
+                        let _ = cli.openUrl(url: link.url)
                     } label: {
                         Image(systemName: "network")
                         Text(link.label)
@@ -139,7 +131,7 @@ struct MenuBarContentView: View {
             Menu("Tools"){
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
                     Button() {
-                        let _ = openUrl(url: link.url)
+                        let _ = cli.openUrl(url: link.url)
                     } label: {
                         Image(systemName: "network")
                         Text(link.label)
@@ -152,7 +144,7 @@ struct MenuBarContentView: View {
             Menu("DevOp Tools") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
                     Button() {
-                        let _ = openUrl(url: link.url)
+                        let _ = cli.openUrl(url: link.url)
                     } label: {
                         Image(systemName: "network")
                         Text(link.label)
@@ -165,7 +157,7 @@ struct MenuBarContentView: View {
             Menu("Help") {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Help}) { link in
                     Button(link.label) {
-                        let _ = openUrl(url: link.url)
+                        let _ = cli.openUrl(url: link.url)
                     }
                 }
             }
@@ -207,7 +199,7 @@ struct MenuBarContentView: View {
             content.title = "Actualización exitosa"
             content.body = "Se ha actualizado correctamente la versión de Salesforce CLI en su sistema."
             content.sound = UNNotificationSound.default
-
+            
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
             UNUserNotificationCenter.current().add(request)
         }
@@ -215,7 +207,7 @@ struct MenuBarContentView: View {
         Divider()
         
         Button() {
-            let _ = openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
+            let _ = cli.openUrl(url: "https://github.com/slorenzot/SalesforceToolKit")
         } label: {
             Text(NSLocalizedString("Sponsor Salesforce ToolKit on Github", comment: ""))
             Text("Your support matters")
@@ -229,3 +221,4 @@ struct MenuBarContentView: View {
         .keyboardShortcut("q")
     }
 }
+
