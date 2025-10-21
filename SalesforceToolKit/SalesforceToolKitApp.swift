@@ -121,10 +121,10 @@ struct SalesforceToolKitApp: App {
     @State private var launchOnLogin = false
 
     private func setLaunchOnLogin(enabled: Bool) async {
-        // Para registrar la aplicación principal como un elemento de inicio,
-        // debes usar SMAppService.mainApp en lugar de SMAppService.loginItem(identifier:).
-        let service = SMAppService.mainApp
+        let serviceIdentifier = "com.nesponsoul.SalesforceToolKit-Launcher"
         let content = UNMutableNotificationContent()
+        
+        let service = SMAppService.loginItem(identifier: serviceIdentifier)
         
         do {
             if enabled {
@@ -494,7 +494,6 @@ struct SalesforceToolKitApp: App {
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 try await UNUserNotificationCenter.current().add(request)
             } else {
-                appIsUpdated = true
                 print("App is up to date: \(currentAppVersion)")
             }
 
