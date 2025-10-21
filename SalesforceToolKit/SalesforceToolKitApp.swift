@@ -494,6 +494,7 @@ struct SalesforceToolKitApp: App {
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
                 try await UNUserNotificationCenter.current().add(request)
             } else {
+                appIsUpdated = true
                 print("App is up to date: \(currentAppVersion)")
             }
 

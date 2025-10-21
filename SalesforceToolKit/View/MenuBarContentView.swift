@@ -50,6 +50,8 @@ struct MenuBarContentView: View {
                 Text("Salesforce Toolkit")
                 if (!appIsUpdated) {
                     Text(NSLocalizedString("New version is availabe, click to update now!", comment: "text"))
+                } else {
+                    Text(NSLocalizedString("Great, you hava last version!", comment: "text"))
                 }
                 
             }
