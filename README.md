@@ -1,4 +1,3 @@
-```markdown
 # Salesforce ToolKit
 
 ![Logo](https://raw.githubusercontent.com/slorenzot/SalesforceToolKit/refs/heads/main/images/logo.png)
@@ -118,4 +117,3 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para má
 ## Contacto
 
 Si tienes dudas, problemas o sugerencias, abre un *issue* en este repositorio o contacta al desarrollador: [slorenzot@github.com](mailto:slorenzot@github.com).
-```
