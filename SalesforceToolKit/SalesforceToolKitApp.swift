@@ -121,10 +121,10 @@ struct SalesforceToolKitApp: App {
     @State private var launchOnLogin = false
 
     private func setLaunchOnLogin(enabled: Bool) async {
-        let serviceIdentifier = "com.nesponsoul.SalesforceToolKit-Launcher"
+        // Para registrar la aplicación principal como un elemento de inicio,
+        // debes usar SMAppService.mainApp en lugar de SMAppService.loginItem(identifier:).
+        let service = SMAppService.mainApp
         let content = UNMutableNotificationContent()
-        
-        let service = SMAppService.loginItem(identifier: serviceIdentifier)
         
         do {
             if enabled {
