@@ -1,8 +1,24 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@" : {
+
+    },
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
     "About" : {
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -12,8 +28,106 @@
         }
       }
     },
+    "Abrir instancia como..." : {
+
+    },
+    "Abrir instancia en navegación privada..." : {
+
+    },
+    "Abrir instancia..." : {
+
+    },
+    "Acceder" : {
+
+    },
+    "Actualizar Salesforce CLI" : {
+
+    },
+    "Actualmente usa: %@" : {
+
+    },
+    "Alias" : {
+
+    },
+    "Alias: %@" : {
+
+    },
+    "Autenticación biométrica no disponible en este dispositivo." : {
+
+    },
+    "Autenticar nueva organización..." : {
+      "comment" : "text"
+    },
+    "Authenticate to delete an organization" : {
+
+    },
+    "Authenticate to Delete Org" : {
+
+    },
+    "Authenticate to edit organization details" : {
+
+    },
+    "Authenticate to export organization data" : {
+
+    },
+    "Authenticate to import organization data" : {
+
+    },
+    "Authenticate to logout from an organization" : {
+
+    },
+    "Authenticate to Logout Org" : {
+
+    },
+    "Authenticate to open authentication window" : {
+
+    },
+    "Authenticate to open Org Code BUilder window" : {
+
+    },
+    "Authenticate to open Org Developer Console window" : {
+
+    },
+    "Authenticate to open Org Flow Manager window" : {
+
+    },
+    "Authenticate to open Org Object Manager window" : {
+
+    },
+    "Authenticate to open Org Private window" : {
+
+    },
+    "Authenticate to open Org Schema Builder window" : {
+
+    },
+    "Authenticate to open Org settings window" : {
+
+    },
+    "Authenticate to open Org window" : {
+
+    },
+    "Authenticate to open preference window" : {
+
+    },
+    "Authenticate to open show Org details window" : {
+
+    },
+    "Authenticate to open show Settings window" : {
+
+    },
+    "Authenticate to set preferred browser for org" : {
+
+    },
+    "Authenticate to view organization details" : {
+
+    },
+    "Authentication Failed" : {
+
+    },
+    "Cambiar navegador" : {
+
+    },
     "Cancel" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -23,8 +137,14 @@
         }
       }
     },
+    "Cancelar" : {
+
+    },
+    "Cerrar" : {
+
+    },
     "chrome" : {
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -36,7 +156,7 @@
     },
     "comment" : {
       "comment" : "Localizable.strings\n  SalesforceToolKit\n\n  Created by Soulberto Lorenzo on 21/08/23.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -46,8 +166,13 @@
         }
       }
     },
+    "Configuración..." : {
+
+    },
+    "Configuraciones..." : {
+
+    },
     "Confirm exit" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -57,8 +182,23 @@
         }
       }
     },
+    "Consola de desarrollador" : {
+
+    },
+    "Copiar al portapapeles" : {
+
+    },
+    "Could not verify your identity. Access denied." : {
+
+    },
+    "Credits to:" : {
+
+    },
+    "Deberá autenticarse cada vez que requiera abrir, modificar la configuración, cerrar la sesión o eliminar alguna instancia o módulo" : {
+
+    },
     "default" : {
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -68,8 +208,16 @@
         }
       }
     },
+    "Delete" : {
+
+    },
+    "Detalles" : {
+
+    },
+    "Detalles y Límites..." : {
+
+    },
     "DevOp Tools" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -79,8 +227,90 @@
         }
       }
     },
+    "El alias es usado por Salesforce CLI para ejecutar los comandos, no puede contener espacios ni caracteres especiales." : {
+
+    },
+    "El alias suministrado ya esta en uso por otra instancia" : {
+
+    },
+    "El proceso de exploración de su organización está tardando más de 10 segundos. ¿Desea reintentar o cancelar?" : {
+
+    },
+    "Eliminar..." : {
+
+    },
+    "Enlace: %@" : {
+
+    },
+    "Error al importar datos de la organización: %@" : {
+
+    },
+    "Error exporting organization data: %@" : {
+
+    },
+    "Es favorita" : {
+
+    },
+    "Es favorito" : {
+
+    },
+    "Espere mientras exploramos su organización de Salesforce y organizamos la información." : {
+
+    },
+    "Estado de Conexión" : {
+
+    },
+    "Esto está tardando más de lo esperado" : {
+
+    },
+    "Etiqueta" : {
+
+    },
+    "Export" : {
+
+    },
+    "Export Failed" : {
+
+    },
+    "Export Salesforce Organizations" : {
+
+    },
+    "Export Successful" : {
+
+    },
+    "Exportar..." : {
+
+    },
+    "Flujos" : {
+
+    },
+    "Generador de código" : {
+
+    },
+    "Generador de esquemas" : {
+
+    },
+    "Gestor de objetos" : {
+
+    },
+    "Great, you hava latest version!" : {
+      "comment" : "text",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genial, tienes la versión mas reciente!"
+          }
+        }
+      }
+    },
+    "Guardar" : {
+
+    },
+    "Habilitar autenticación biométrica" : {
+
+    },
     "Help" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -90,8 +320,57 @@
         }
       }
     },
+    "Herramientas de Desarrollo" : {
+
+    },
+    "ID de Cliente" : {
+
+    },
+    "ID de Org" : {
+
+    },
+    "Importación de Organizaciones" : {
+
+    },
+    "Importación de Organizaciones Finalizada" : {
+
+    },
+    "Importación Fallida" : {
+
+    },
+    "Importar" : {
+
+    },
+    "Importar Organizaciones de Salesforce" : {
+
+    },
+    "Importar..." : {
+
+    },
+    "Iniciando sesión..." : {
+
+    },
+    "JSON2Apex" : {
+
+    },
+    "La etiqueta es el nombre que se mostrará en Salesforce Toolkit para identificar fácilmente las instancias de su organización y puede contener espacios y caracteres especiales" : {
+
+    },
+    "La ventana se cerrará automáticamente al finalizar." : {
+
+    },
+    "La versión %@ de la aplicación está disponible. Actualmente tienes la versión %@. Haz clic para descargar." : {
+      "comment" : "Notification body for new app version, with versions",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "La versión %1$@ de la aplicación está disponible. Actualmente tienes la versión %2$@. Haz clic para descargar."
+          }
+        }
+      }
+    },
     "Launch at Startup" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -101,8 +380,23 @@
         }
       }
     },
+    "Límites" : {
+
+    },
+    "Máximo" : {
+
+    },
+    "My Custom Window" : {
+
+    },
+    "Navegador personalizado (ej: /Applications/Chrome.app)" : {
+
+    },
+    "Navegador por defecto" : {
+
+    },
     "New version is availabe, click to update now!" : {
-      "extractionState" : "migrated",
+      "comment" : "text",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -112,8 +406,34 @@
         }
       }
     },
+    "No hay favoritos" : {
+
+    },
+    "No organizaciones autenticadas" : {
+
+    },
+    "No se encontraron límites para la organización o hubo un error al cargarlos." : {
+
+    },
+    "No se encontraron organizaciones válidas para importar en el archivo." : {
+
+    },
+    "No tienes instancias almacenadas" : {
+      "comment" : "text"
+    },
+    "No tienes instancias almacenadas..." : {
+      "comment" : "text"
+    },
+    "Nombre" : {
+
+    },
+    "Nueva actualización disponible" : {
+      "comment" : "Notification title for new app version"
+    },
+    "Obteniendo información de la organización y límites..." : {
+
+    },
     "Open" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -123,8 +443,17 @@
         }
       }
     },
+    "Org ID: %@" : {
+
+    },
+    "Organizaciones autenticadas (%lld)" : {
+
+    },
+    "Organization data exported to %@" : {
+
+    },
     "Others" : {
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -134,8 +463,17 @@
         }
       }
     },
+    "Por defecto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default"
+          }
+        }
+      }
+    },
     "Preferences" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -145,8 +483,13 @@
         }
       }
     },
+    "Preferences..." : {
+
+    },
+    "Preferencias..." : {
+
+    },
     "Quit" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -156,8 +499,18 @@
         }
       }
     },
+    "Reintentar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
+          }
+        }
+      }
+    },
     "Request" : {
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -168,7 +521,6 @@
       }
     },
     "Request new org" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -178,8 +530,47 @@
         }
       }
     },
+    "Restante" : {
+
+    },
+    "Ruta de Salesforce CLI" : {
+
+    },
+    "Salesforce" : {
+
+    },
+    "Salesforce Toolkit" : {
+
+    },
+    "Salir..." : {
+
+    },
+    "Se importaron %d nuevas organizaciones correctamente." : {
+
+    },
+    "Se importaron %d organizaciones nuevas y se omitieron %d organizaciones existentes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Se importaron %1$d organizaciones nuevas y se omitieron %2$d organizaciones existentes."
+          }
+        }
+      }
+    },
+    "Se omitieron %d organizaciones ya existentes." : {
+
+    },
+    "Settings" : {
+
+    },
+    "Si, cerrar sesión" : {
+
+    },
+    "Some of this websites or online tools are  from theirs owner and ths credits are for themselves" : {
+
+    },
     "Sponsor Salesforce ToolKit on Github" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -189,8 +580,10 @@
         }
       }
     },
+    "Start Hidden Bar when I log in" : {
+
+    },
     "Sure?" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -200,8 +593,17 @@
         }
       }
     },
+    "Tipo de Org" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de Org"
+          }
+        }
+      }
+    },
     "Tools" : {
-      "extractionState" : "migrated",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -211,9 +613,115 @@
         }
       }
     },
-    "Your support matters" : {
-      "extractionState" : "migrated",
+    "URL de Instancia" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instance Url"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL de Instancia"
+          }
+        }
+      }
+    },
+    "URL de Instancia:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instance Url:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL de Instancia:"
+          }
+        }
+      }
+    },
+    "Usar navegador" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use browser"
+          }
+        }
+      }
+    },
+    "Usar URL de Instancia Personalizada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use custom Url"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar URL de Instancia Personalizada"
+          }
+        }
+      }
+    },
+    "Usuario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuario"
+          }
+        }
+      }
+    },
+    "Versión de API" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Version"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión de API"
+          }
+        }
+      }
+    },
+    "Workbench" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Workbench"
+          }
+        }
+      }
+    },
+    "Your support matters" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your support matters"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
