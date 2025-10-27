@@ -1,0 +1,227 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "About" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
+    "chrome" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Chrome"
+          }
+        }
+      }
+    },
+    "comment" : {
+      "comment" : "Localizable.strings\n  SalesforceToolKit\n\n  Created by Soulberto Lorenzo on 21/08/23.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hola a todos"
+          }
+        }
+      }
+    },
+    "Confirm exit" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar salir"
+          }
+        }
+      }
+    },
+    "default" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por defecto"
+          }
+        }
+      }
+    },
+    "DevOp Tools" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herramientas de DevOp"
+          }
+        }
+      }
+    },
+    "Help" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda"
+          }
+        }
+      }
+    },
+    "Launch at Startup" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lanzar al iniciar sesión"
+          }
+        }
+      }
+    },
+    "New version is availabe, click to update now!" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva versión disponible, haga clic para descargar ahora!"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir"
+          }
+        }
+      }
+    },
+    "Others" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otros"
+          }
+        }
+      }
+    },
+    "Preferences" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias"
+          }
+        }
+      }
+    },
+    "Quit" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir"
+          }
+        }
+      }
+    },
+    "Request" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitar"
+          }
+        }
+      }
+    },
+    "Request new org" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitar una nueva organización"
+          }
+        }
+      }
+    },
+    "Sponsor Salesforce ToolKit on Github" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrocina Salesforce Toolkit en Github"
+          }
+        }
+      }
+    },
+    "Sure?" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguro?"
+          }
+        }
+      }
+    },
+    "Tools" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herramientas"
+          }
+        }
+      }
+    },
+    "Your support matters" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu apoyo es importante"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

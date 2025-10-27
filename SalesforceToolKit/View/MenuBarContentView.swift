@@ -33,31 +33,42 @@ struct MenuBarContentView: View {
         let orgs = authenticatedOrgManager.authenticatedOrgs
         let cli = SalesforceCLI()
         
+        Button() {
+            if appIsUpdated {
+                mainWindow()
+            } else {
+                openUrl(url: "https://github.com/slorenzot/SalesforceToolKit/releases")
+            }
+        } label: {
+            Image(systemName: "cloud.fill")
+            Text("Salesforce Toolkit")
+            if (!appIsUpdated) {
+                Text(NSLocalizedString("New version is availabe, click to update now!", comment: "text"))
+            } else {
+                Text(NSLocalizedString("Great, you hava latest version!", comment: "text"))
+            }
+            
+        }
+        .disabled(appIsUpdated)
+        
+        Divider()
+        
         if (orgs.isEmpty) {
-            Button(NSLocalizedString("No stored credentials...", comment: "text")){}.disabled(true)
+            Button(NSLocalizedString("No tienes instancias almacenadas...", comment: "text")){}.disabled(true)
+            
+            Divider()
+            
+            Button(){
+                openAuthenticationWindow()
+            } label: {
+                Image(systemName: "plus.circle")
+                Text(NSLocalizedString("Autenticar nueva organización...", comment: "text"))
+                Text(NSLocalizedString("No tienes instancias almacenadas", comment: "text"))
+            }
+            
         } else {
             let favorites = authenticatedOrgManager.authenticatedOrgs.filter{ $0.isFavorite == true }
             let defaultOrg = orgs.filter{ $0.isDefault == true }.first
-            
-            Button() {
-                if appIsUpdated {
-                    mainWindow()
-                } else {
-                    openUrl(url: "https://github.com/slorenzot/SalesforceToolKit/releases")
-                }
-            } label: {
-                Image(systemName: "cloud.fill")
-                Text("Salesforce Toolkit")
-                if (!appIsUpdated) {
-                    Text(NSLocalizedString("New version is availabe, click to update now!", comment: "text"))
-                } else {
-                    Text(NSLocalizedString("Great, you hava last version!", comment: "text"))
-                }
-                
-            }
-            .disabled(appIsUpdated)
-            
-            Divider()
             
             Button(){} label: {
                 Image(systemName: "star.fill")
@@ -111,6 +122,7 @@ struct MenuBarContentView: View {
                 }
                 
                 Divider()
+                
                 Button(){
                     openAuthenticationWindow()
                 } label: {

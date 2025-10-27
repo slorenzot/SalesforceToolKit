@@ -63,20 +63,29 @@ struct OrgMenuItem: View {
             
             Divider()
             
-            Button("Org ID: \(org.orgId ?? "--")") {
+            Button() {
                 // Copy Org ID to pasteboard
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(org.orgId ?? "", forType: .string)
+            } label: {
+                Text("Org ID: \(org.orgId ?? "--")")
+                Text("Copiar al portapapeles")
             }
-            Button("Enlace: \(org.instanceUrl ?? "--")") {
+            Button() {
                 // Copy Instance URL to pasteboard
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(org.instanceUrl ?? "", forType: .string)
+            } label: {
+                Text("Enlace: \(org.instanceUrl ?? "--")")
+                Text("Copiar al portapapeles")
             }
-            Button("Alias: \(org.alias)") {
+            Button() {
                 // Copy Alias to pasteboard
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(org.alias, forType: .string)
+            } label: {
+                Text("Alias: \(org.alias)")
+                Text("Copiar al portapapeles")
             }
 
             Divider()
@@ -123,6 +132,15 @@ struct OrgMenuItem: View {
             }.disabled(true)
             
             Menu {
+                Button() {
+                    authenticateIfRequired(NSLocalizedString("Authenticate to open show Settings window", comment: "")) {
+                        let _ = cli.open(alias: org.alias, path: SETUP_PATH, browser: org.useBrowser ?? "default")
+                    }
+                } label: {
+                    Image(systemName: "gearshape.fill")
+                    Text("Configuraciones...")
+                }
+                
                 Button() {
                     authenticateIfRequired(NSLocalizedString("Authenticate to open show Org details window", comment: "")) {
                         viewOrganizationDetailsWindow(org) // Corrected: Call the closure
@@ -230,12 +248,12 @@ struct OrgMenuItem: View {
                 
                 Divider()
                 
-                Menu("Usar navegador") {
+                Menu() {
                     let browsers: [String] = ["default", "chrome", "firefox", "edge"]
                     
                     // Fixed: Use ForEach SwiftUI view instead of Sequence.forEach method
                     ForEach(browsers, id: \.self) { browserName in
-                        if availableBrowsers.contains(where: { $0.name == browserName || browserName == "default"}) {
+                        if availableBrowsers.contains(where: { $0.name == browserName }) || browserName == "default" {
                             Button {
                                 authenticateIfRequired(NSLocalizedString("Authenticate to set preferred browser for org", comment: "")) {
                                     var mutableOrg = org
@@ -255,6 +273,9 @@ struct OrgMenuItem: View {
                             }
                         }
                     }
+                } label: {
+                    Text("Cambiar navegador")
+                    Text("Actualmente usa: \(NSLocalizedString(org.useBrowser ?? "default", comment: ""))")
                 }
                 
                 Divider()
@@ -285,4 +306,3 @@ struct OrgMenuItem: View {
         }
     }
 }
-
