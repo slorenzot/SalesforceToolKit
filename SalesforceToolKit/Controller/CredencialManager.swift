@@ -212,6 +212,100 @@ class LinkManager: ObservableObject {
                 password: "pass",
                 type: LinkType.Specialized,
                 shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Automotive Cloud Org (Learning Trial)",
+                url: "https://www.salesforce.com/form/signup/automotive-cloud-learning-trial/",
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Automotive Cloud Org (Base Trial)",
+                url: "https://www.salesforce.com/form/signup/automotive-cloud-trial/",
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        // Salesforce publishes these industry trial forms from the
+        // Developer Free Trials page, under the Industry-Based Trials tab.
+        let industryTrialsURL = "https://developer.salesforce.com/signup"
+
+        self.add(
+            credencial: Link(
+                label: "Manufacturing Cloud Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Loyalty Management Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Media Cloud Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Life Sciences Cloud Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Public Sector Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Nonprofit Cloud Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Net Zero Cloud Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
+
+        self.add(
+            credencial: Link(
+                label: "Education Cloud Org (Trial)",
+                url: industryTrialsURL,
+                username: "user",
+                password: "pass",
+                type: LinkType.Specialized,
+                shortcut: "e"))
         
         self.add(credencial: Link(
             label: "Partner Org (Using PLC - Require login)",
