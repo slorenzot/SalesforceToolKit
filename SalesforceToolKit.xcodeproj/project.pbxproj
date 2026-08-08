@@ -17,9 +17,10 @@
 		BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */ = {isa = PBXBuildFile; fileRef = BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */; };
 		BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */; };
 		BC5926222E99461C007FDB68 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = BC5926212E99461C007FDB68 /* KeyboardShortcuts */; };
-		BC8821142A94595200B75DDA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC8821162A94595200B75DDA /* Localizable.strings */; };
 		BCA03D572E97525700C88E31 /* LocalAuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */; };
 		BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */; };
+		BCEF68DC2EA85329003D61C7 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BCEF68DB2EA85329003D61C7 /* Localizable.xcstrings */; };
+		D1A10C7D2F00000100000001 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A10C7C2F00000100000001 /* Localization.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,9 +54,10 @@
 		BC2B3BB82CBF0A8900C65391 /* ObjectSavable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSavable.swift; sourceTree = "<group>"; };
 		BC2B3BBA2CBF0CFC00C65391 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		BC2B3BBC2CBF0DA200C65391 /* ObjectSavableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSavableError.swift; sourceTree = "<group>"; };
-		BC8821152A94595200B75DDA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BCA03D562E97525700C88E31 /* LocalAuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAuthenticationManager.swift; sourceTree = "<group>"; };
 		BCA99A4F2A926A61001F1DB4 /* Salesforce-logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Salesforce-logo.jpg"; sourceTree = "<group>"; };
+		BCEF68DB2EA85329003D61C7 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		D1A10C7C2F00000100000001 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -117,6 +119,7 @@
 				BCE27F4C2A944B000004DB9C /* Localizables */,
 				BC2FE0852A93B5D800A22137 /* Main Window */,
 				827E4AD22A66C70D0062977D /* SalesforceToolKitApp.swift */,
+				D1A10C7C2F00000100000001 /* Localization.swift */,
 				827E4AD62A66C7110062977D /* Assets.xcassets */,
 				827E4ADB2A66C7110062977D /* SalesforceToolKit.entitlements */,
 				827E4AD82A66C7110062977D /* Preview Content */,
@@ -174,7 +177,7 @@
 		BCE27F4C2A944B000004DB9C /* Localizables */ = {
 			isa = PBXGroup;
 			children = (
-				BC8821162A94595200B75DDA /* Localizable.strings */,
+				BCEF68DB2EA85329003D61C7 /* Localizable.xcstrings */,
 			);
 			path = Localizables;
 			sourceTree = "<group>";
@@ -293,7 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				827E4ADA2A66C7110062977D /* Preview Assets.xcassets in Resources */,
-				BC8821142A94595200B75DDA /* Localizable.strings in Resources */,
+				BCEF68DC2EA85329003D61C7 /* Localizable.xcstrings in Resources */,
 				BCA99A502A926A61001F1DB4 /* Salesforce-logo.jpg in Resources */,
 				827E4AD72A66C7110062977D /* Assets.xcassets in Resources */,
 				BC2B3BBB2CBF0CFC00C65391 /* UserDefaults.swift in Resources */,
@@ -325,6 +328,7 @@
 				827E4AD32A66C70D0062977D /* SalesforceToolKitApp.swift in Sources */,
 				BC2B3BBD2CBF0DA600C65391 /* ObjectSavableError.swift in Sources */,
 				BCA03D572E97525700C88E31 /* LocalAuthenticationManager.swift in Sources */,
+				D1A10C7D2F00000100000001 /* Localization.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,17 +363,6 @@
 			targetProxy = 827E4AEB2A66C7110062977D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		BC8821162A94595200B75DDA /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BC8821152A94595200B75DDA /* es */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		827E4AF22A66C7110062977D /* Debug */ = {
@@ -422,12 +415,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -476,11 +471,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
@@ -507,7 +504,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = v2.3;
+				MARKETING_VERSION = v2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.intendeapp.SalesforceToolKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -537,7 +534,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = v2.3;
+				MARKETING_VERSION = v2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.intendeapp.SalesforceToolKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -28,35 +28,222 @@
         }
       }
     },
-    "Abrir instancia como..." : {
-
-    },
-    "Abrir instancia en navegación privada..." : {
-
-    },
-    "Abrir instancia..." : {
-
-    },
     "Acceder" : {
 
     },
     "Actualizar Salesforce CLI" : {
 
     },
-    "Actualmente usa: %@" : {
-
+    "add" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "añadir"
+          }
+        }
+      }
+    },
+    "Administration" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administración"
+          }
+        }
+      }
     },
     "Alias" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias"
+          }
+        }
+      }
     },
     "Alias: %@" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alias: %@"
+          }
+        }
+      }
     },
-    "Autenticación biométrica no disponible en este dispositivo." : {
-
+    "An unexpected error occurred during authentication: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocurrió un error inesperado durante la autenticación: %@"
+          }
+        }
+      }
+    },
+    "Apex Classes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clases Apex"
+          }
+        }
+      }
+    },
+    "Apex Jobs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajos Apex"
+          }
+        }
+      }
+    },
+    "Apex Test Execution" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecución de pruebas Apex"
+          }
+        }
+      }
+    },
+    "Apex Triggers" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Triggers Apex"
+          }
+        }
+      }
+    },
+    "API version" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión de API"
+          }
+        }
+      }
+    },
+    "App Manager" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestor de aplicación"
+          }
+        }
+      }
+    },
+    "Approval Processes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procesos de aprobación"
+          }
+        }
+      }
+    },
+    "Are you sure you want to cancel the sign-in process?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Está seguro de que desea cancelar el proceso de inicio de sesión?"
+          }
+        }
+      }
+    },
+    "Are you sure you want to close the window while organization information is loading?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Está seguro de que desea cerrar la ventana mientras se carga la información de la organización?"
+          }
+        }
+      }
+    },
+    "Are you sure you want to delete %@ (%@)?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Está seguro de que desea eliminar %@ (%@)?"
+          }
+        }
+      }
+    },
+    "Are you sure you want to sign out of %@ (%@)?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Está seguro de que desea cerrar sesión en %@ (%@)?"
+          }
+        }
+      }
+    },
+    "Assignment Rules" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reglas de asignación"
+          }
+        }
+      }
     },
     "Autenticar nueva organización..." : {
       "comment" : "text"
+    },
+    "Authenticate and open organization" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar y abrir organización"
+          }
+        }
+      }
+    },
+    "Authenticate new organization..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar nueva organización..."
+          }
+        }
+      }
     },
     "Authenticate to delete an organization" : {
 
@@ -82,23 +269,74 @@
     "Authenticate to open authentication window" : {
 
     },
-    "Authenticate to open Org Code BUilder window" : {
-
+    "Authenticate to open object" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar para abrir el objeto"
+          }
+        }
+      }
     },
-    "Authenticate to open Org Developer Console window" : {
-
+    "Authenticate to open Org App Manager window" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar para abrir el gestor de aplicación"
+          }
+        }
+      }
     },
-    "Authenticate to open Org Flow Manager window" : {
-
+    "Authenticate to open Org Custom Permissions window" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar para abrir la ventana de permisos personalizados"
+          }
+        }
+      }
     },
-    "Authenticate to open Org Object Manager window" : {
-
+    "Authenticate to open Org Permission Set Groups window" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar para abrir la ventana de grupos de conjuntos de permisos"
+          }
+        }
+      }
+    },
+    "Authenticate to open Org Permission Sets window" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar para abrir la ventana de conjuntos de permisos"
+          }
+        }
+      }
     },
     "Authenticate to open Org Private window" : {
 
     },
-    "Authenticate to open Org Schema Builder window" : {
-
+    "Authenticate to open Org Profiles window" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticar para abrir la ventana de perfiles"
+          }
+        }
+      }
     },
     "Authenticate to open Org settings window" : {
 
@@ -112,20 +350,113 @@
     "Authenticate to open show Org details window" : {
 
     },
-    "Authenticate to open show Settings window" : {
-
-    },
     "Authenticate to set preferred browser for org" : {
 
     },
     "Authenticate to view organization details" : {
 
     },
+    "Authenticated organizations (%lld)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizaciones autenticadas (%lld)"
+          }
+        }
+      }
+    },
+    "Authentication canceled" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticación cancelada"
+          }
+        }
+      }
+    },
+    "Authentication failed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticación fallida"
+          }
+        }
+      }
+    },
     "Authentication Failed" : {
 
     },
-    "Cambiar navegador" : {
-
+    "Authentication is required to open, modify, log out of, or delete an organization" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debe autenticarse para abrir, modificar, cerrar sesión o eliminar una organización"
+          }
+        }
+      }
+    },
+    "Authentication successful" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticación exitosa"
+          }
+        }
+      }
+    },
+    "Automation" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatización"
+          }
+        }
+      }
+    },
+    "Automotive Cloud Org (Base Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba base de Automotive Cloud"
+          }
+        }
+      }
+    },
+    "Automotive Cloud Org (Learning Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de aprendizaje de Automotive Cloud"
+          }
+        }
+      }
+    },
+    "Biometric authentication is not available on this device." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La autenticación biométrica no está disponible en este dispositivo."
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
@@ -137,11 +468,38 @@
         }
       }
     },
-    "Cancelar" : {
-
+    "Cancel authentication" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar autenticación"
+          }
+        }
+      }
     },
-    "Cerrar" : {
-
+    "Cancel loading" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar carga"
+          }
+        }
+      }
+    },
+    "Change browser" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar navegador"
+          }
+        }
+      }
     },
     "chrome" : {
       "extractionState" : "manual",
@@ -150,6 +508,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Google Chrome"
+          }
+        }
+      }
+    },
+    "Client ID" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID de cliente"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        }
+      }
+    },
+    "Code builder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generador de código"
           }
         }
       }
@@ -166,11 +557,27 @@
         }
       }
     },
-    "Configuración..." : {
-
+    "Communications Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Communications Cloud"
+          }
+        }
+      }
     },
-    "Configuraciones..." : {
-
+    "Confirm deletion" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar eliminación"
+          }
+        }
+      }
     },
     "Confirm exit" : {
       "localizations" : {
@@ -182,20 +589,184 @@
         }
       }
     },
-    "Consola de desarrollador" : {
-
+    "Confirm sign out" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar cierre de sesión"
+          }
+        }
+      }
     },
-    "Copiar al portapapeles" : {
-
+    "Connected Apps" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicaciones conectadas"
+          }
+        }
+      }
+    },
+    "Connection status" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado de conexión"
+          }
+        }
+      }
+    },
+    "Copy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar"
+          }
+        }
+      }
+    },
+    "Copy to clipboard" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar al portapapeles"
+          }
+        }
+      }
+    },
+    "Could not %@ the application as a login item: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo %@ la aplicación como elemento de inicio: %@"
+          }
+        }
+      }
+    },
+    "Could not authenticate with alias %@. Please try again." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo autenticar con el alias %@. Inténtelo nuevamente."
+          }
+        }
+      }
+    },
+    "Could not open %@. Your default browser may not support this Salesforce feature." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo abrir %@. Es posible que el navegador predeterminado no admita esta función de Salesforce."
+          }
+        }
+      }
     },
     "Could not verify your identity. Access denied." : {
 
     },
     "Credits to:" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créditos:"
+          }
+        }
+      }
     },
-    "Deberá autenticarse cada vez que requiera abrir, modificar la configuración, cerrar la sesión o eliminar alguna instancia o módulo" : {
-
+    "Currently using: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualmente usa: %@"
+          }
+        }
+      }
+    },
+    "Custom browser (e.g. /Applications/Chrome.app)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navegador personalizado (ej.: /Applications/Chrome.app)"
+          }
+        }
+      }
+    },
+    "Custom Metadata Types" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipos de metadatos personalizados"
+          }
+        }
+      }
+    },
+    "Custom Permissions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permisos personalizados"
+          }
+        }
+      }
+    },
+    "Custom Settings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuraciones personalizadas"
+          }
+        }
+      }
+    },
+    "Data and model" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos y modelo"
+          }
+        }
+      }
+    },
+    "Debug Logs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros de depuración"
+          }
+        }
+      }
     },
     "default" : {
       "extractionState" : "manual",
@@ -208,16 +779,113 @@
         }
       }
     },
+    "Default browser" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navegador predeterminado"
+          }
+        }
+      }
+    },
     "Delete" : {
 
+    },
+    "Delete..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar..."
+          }
+        }
+      }
+    },
+    "Deletion successful" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminación exitosa"
+          }
+        }
+      }
+    },
+    "Deployment Status" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado del despliegue"
+          }
+        }
+      }
+    },
+    "Details and limits..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles y límites..."
+          }
+        }
+      }
     },
     "Detalles" : {
 
     },
-    "Detalles y Límites..." : {
-
+    "Developer console" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consola de desarrollador"
+          }
+        }
+      }
+    },
+    "Developer Edition Org" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edición Developer"
+          }
+        }
+      }
+    },
+    "Developer tools" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herramientas de desarrollo"
+          }
+        }
+      }
+    },
+    "Development" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desarrollo"
+          }
+        }
+      }
     },
     "DevOp Tools" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -227,20 +895,93 @@
         }
       }
     },
-    "El alias es usado por Salesforce CLI para ejecutar los comandos, no puede contener espacios ni caracteres especiales." : {
-
+    "DevOps tools" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herramientas DevOps"
+          }
+        }
+      }
     },
-    "El alias suministrado ya esta en uso por otra instancia" : {
-
+    "Edit %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar %@"
+          }
+        }
+      }
     },
-    "El proceso de exploración de su organización está tardando más de 10 segundos. ¿Desea reintentar o cancelar?" : {
-
+    "Edit organization" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar organización"
+          }
+        }
+      }
     },
-    "Eliminar..." : {
-
+    "Education Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Education Cloud"
+          }
+        }
+      }
     },
-    "Enlace: %@" : {
-
+    "Enable biometric authentication" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habilitar autenticación biométrica"
+          }
+        }
+      }
+    },
+    "Energy & Utilities Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Energy & Utilities Cloud"
+          }
+        }
+      }
+    },
+    "Enter a valid Salesforce ID with 15 or 18 alphanumeric characters." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingrese un ID Salesforce válido de 15 o 18 caracteres alfanuméricos."
+          }
+        }
+      }
+    },
+    "Enter the Salesforce record ID to open." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingrese el ID del registro Salesforce que desea abrir."
+          }
+        }
+      }
     },
     "Error al importar datos de la organización: %@" : {
 
@@ -248,19 +989,7 @@
     "Error exporting organization data: %@" : {
 
     },
-    "Es favorita" : {
-
-    },
     "Es favorito" : {
-
-    },
-    "Espere mientras exploramos su organización de Salesforce y organizamos la información." : {
-
-    },
-    "Estado de Conexión" : {
-
-    },
-    "Esto está tardando más de lo esperado" : {
 
     },
     "Etiqueta" : {
@@ -281,17 +1010,49 @@
     "Exportar..." : {
 
     },
-    "Flujos" : {
-
+    "External Credentials" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credenciales externas"
+          }
+        }
+      }
     },
-    "Generador de código" : {
-
+    "Favorite" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorito"
+          }
+        }
+      }
     },
-    "Generador de esquemas" : {
-
+    "Financial Services Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Financial Services Cloud"
+          }
+        }
+      }
     },
-    "Gestor de objetos" : {
-
+    "Flows" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flujos"
+          }
+        }
+      }
     },
     "Great, you hava latest version!" : {
       "comment" : "text",
@@ -307,10 +1068,19 @@
     "Guardar" : {
 
     },
-    "Habilitar autenticación biométrica" : {
-
+    "Health Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Health Cloud"
+          }
+        }
+      }
     },
     "Help" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -319,15 +1089,6 @@
           }
         }
       }
-    },
-    "Herramientas de Desarrollo" : {
-
-    },
-    "ID de Cliente" : {
-
-    },
-    "ID de Org" : {
-
     },
     "Importación de Organizaciones" : {
 
@@ -347,16 +1108,40 @@
     "Importar..." : {
 
     },
-    "Iniciando sesión..." : {
-
+    "Instance URL" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL de instancia"
+          }
+        }
+      }
+    },
+    "Instance URL: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL de instancia: %@"
+          }
+        }
+      }
+    },
+    "Integrations" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integraciones"
+          }
+        }
+      }
     },
     "JSON2Apex" : {
-
-    },
-    "La etiqueta es el nombre que se mostrará en Salesforce Toolkit para identificar fácilmente las instancias de su organización y puede contener espacios y caracteres especiales" : {
-
-    },
-    "La ventana se cerrará automáticamente al finalizar." : {
 
     },
     "La versión %@ de la aplicación está disponible. Actualmente tienes la versión %@. Haz clic para descargar." : {
@@ -366,6 +1151,17 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "La versión %1$@ de la aplicación está disponible. Actualmente tienes la versión %2$@. Haz clic para descargar."
+          }
+        }
+      }
+    },
+    "Label" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiqueta"
           }
         }
       }
@@ -380,20 +1176,129 @@
         }
       }
     },
+    "Life Sciences Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Life Sciences Cloud"
+          }
+        }
+      }
+    },
     "Límites" : {
 
     },
-    "Máximo" : {
-
+    "Loading organization information and limits..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obteniendo información de la organización y sus límites..."
+          }
+        }
+      }
     },
-    "My Custom Window" : {
-
+    "Loading your organization has taken more than 10 seconds. Would you like to retry or cancel?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El proceso de exploración de su organización está tardando más de 10 segundos. ¿Desea reintentar o cancelar?"
+          }
+        }
+      }
     },
-    "Navegador personalizado (ej: /Applications/Chrome.app)" : {
-
+    "Loyalty Management Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organización Loyalty Management (prueba)"
+          }
+        }
+      }
     },
-    "Navegador por defecto" : {
-
+    "Manufacturing Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Manufacturing Cloud"
+          }
+        }
+      }
+    },
+    "Maximum" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máximo"
+          }
+        }
+      }
+    },
+    "Media Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Media Cloud"
+          }
+        }
+      }
+    },
+    "Monitoring and deployment" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitoreo y despliegue"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
+    "Named Credentials" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credenciales con nombre"
+          }
+        }
+      }
+    },
+    "Net Zero Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Net Zero Cloud"
+          }
+        }
+      }
     },
     "New version is availabe, click to update now!" : {
       "comment" : "text",
@@ -406,14 +1311,60 @@
         }
       }
     },
-    "No hay favoritos" : {
-
+    "No" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        }
+      }
     },
-    "No organizaciones autenticadas" : {
-
+    "No authenticated organizations" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay organizaciones autenticadas"
+          }
+        }
+      }
     },
-    "No se encontraron límites para la organización o hubo un error al cargarlos." : {
-
+    "No favorites" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay favoritos"
+          }
+        }
+      }
+    },
+    "No organization limits were found, or they could not be loaded." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron límites o no pudieron cargarse."
+          }
+        }
+      }
+    },
+    "No organization selected" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay una organización seleccionada"
+          }
+        }
+      }
     },
     "No se encontraron organizaciones válidas para importar en el archivo." : {
 
@@ -424,14 +1375,63 @@
     "No tienes instancias almacenadas..." : {
       "comment" : "text"
     },
-    "Nombre" : {
-
+    "None" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna"
+          }
+        }
+      }
+    },
+    "Nonprofit Cloud Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Nonprofit Cloud"
+          }
+        }
+      }
     },
     "Nueva actualización disponible" : {
       "comment" : "Notification title for new app version"
     },
-    "Obteniendo información de la organización y límites..." : {
-
+    "Object ID" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID de objeto"
+          }
+        }
+      }
+    },
+    "Object manager" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestor de objetos"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceptar"
+          }
+        }
+      }
     },
     "Open" : {
       "localizations" : {
@@ -443,14 +1443,140 @@
         }
       }
     },
-    "Org ID: %@" : {
-
+    "Open object" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir objeto"
+          }
+        }
+      }
     },
-    "Organizaciones autenticadas (%lld)" : {
-
+    "Open organization as..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir organización como..."
+          }
+        }
+      }
+    },
+    "Open organization in private browsing..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir organización en navegación privada..."
+          }
+        }
+      }
+    },
+    "Open organization..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir organización..."
+          }
+        }
+      }
+    },
+    "Opening object failed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al abrir el objeto"
+          }
+        }
+      }
+    },
+    "Opening object, please wait..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abriendo objeto en la instancia, espere..."
+          }
+        }
+      }
+    },
+    "Opening organization failed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo abrir la organización"
+          }
+        }
+      }
+    },
+    "Org ID" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID de organización"
+          }
+        }
+      }
+    },
+    "Org ID: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID de organización: %@"
+          }
+        }
+      }
     },
     "Organization data exported to %@" : {
 
+    },
+    "Organization details" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles de la organización"
+          }
+        }
+      }
+    },
+    "Organization preferences..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias de la organización..."
+          }
+        }
+      }
+    },
+    "Organization type" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de organización"
+          }
+        }
+      }
     },
     "Others" : {
       "extractionState" : "manual",
@@ -459,6 +1585,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Otros"
+          }
+        }
+      }
+    },
+    "Partner Org (Using PLC - Require login)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partner (usa PLC; requiere iniciar sesión)"
+          }
+        }
+      }
+    },
+    "Permission Set Groups" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupos de conjuntos de permisos"
+          }
+        }
+      }
+    },
+    "Permission Sets" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conjuntos de permisos"
+          }
+        }
+      }
+    },
+    "Please wait while we inspect your Salesforce organization and organize its information." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espere mientras exploramos su organización de Salesforce y organizamos la información."
           }
         }
       }
@@ -474,6 +1644,7 @@
       }
     },
     "Preferences" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -486,8 +1657,49 @@
     "Preferences..." : {
 
     },
-    "Preferencias..." : {
-
+    "Production" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Producción"
+          }
+        }
+      }
+    },
+    "Profiles" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfiles"
+          }
+        }
+      }
+    },
+    "Public Groups" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupos públicos"
+          }
+        }
+      }
+    },
+    "Public Sector Org (Trial)" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba de Public Sector"
+          }
+        }
+      }
     },
     "Quit" : {
       "localizations" : {
@@ -500,11 +1712,45 @@
       }
     },
     "Reintentar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Retry"
+          }
+        }
+      }
+    },
+    "Remaining" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restante"
+          }
+        }
+      }
+    },
+    "Remote Site Settings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de sitios remotos"
+          }
+        }
+      }
+    },
+    "remove" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "remover"
           }
         }
       }
@@ -521,6 +1767,7 @@
       }
     },
     "Request new org" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -530,20 +1777,140 @@
         }
       }
     },
-    "Restante" : {
-
+    "Request new organization" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitar una nueva organización"
+          }
+        }
+      }
     },
-    "Ruta de Salesforce CLI" : {
-
+    "Retry" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar"
+          }
+        }
+      }
+    },
+    "Roles" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roles"
+          }
+        }
+      }
     },
     "Salesforce" : {
 
     },
-    "Salesforce Toolkit" : {
-
+    "Salesforce CLI could not be updated." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo actualizar Salesforce CLI."
+          }
+        }
+      }
     },
-    "Salir..." : {
-
+    "Salesforce CLI could not open the requested object." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salesforce CLI no pudo abrir el objeto solicitado."
+          }
+        }
+      }
+    },
+    "Salesforce CLI is outdated" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salesforce CLI está desactualizado"
+          }
+        }
+      }
+    },
+    "Salesforce CLI path" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruta de Salesforce CLI"
+          }
+        }
+      }
+    },
+    "Salesforce CLI uses the alias to run commands. It cannot contain spaces or special characters." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salesforce CLI usa el alias para ejecutar comandos. No puede contener espacios ni caracteres especiales."
+          }
+        }
+      }
+    },
+    "Salesforce CLI was successfully updated on your system." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salesforce CLI se actualizó correctamente en el sistema."
+          }
+        }
+      }
+    },
+    "Salesforce Toolkit" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salesforce Toolkit"
+          }
+        }
+      }
+    },
+    "Scheduled Jobs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajos programados"
+          }
+        }
+      }
+    },
+    "Schema builder" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generador de esquemas"
+          }
+        }
+      }
     },
     "Se importaron %d nuevas organizaciones correctamente." : {
 
@@ -561,14 +1928,104 @@
     "Se omitieron %d organizaciones ya existentes." : {
 
     },
+    "Security and access" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguridad y acceso"
+          }
+        }
+      }
+    },
     "Settings" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración"
+          }
+        }
+      }
     },
-    "Si, cerrar sesión" : {
-
+    "Settings..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuraciones..."
+          }
+        }
+      }
     },
-    "Some of this websites or online tools are  from theirs owner and ths credits are for themselves" : {
-
+    "Setup..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración..."
+          }
+        }
+      }
+    },
+    "Sign out" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar sesión"
+          }
+        }
+      }
+    },
+    "Sign out successful" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierre de sesión exitoso"
+          }
+        }
+      }
+    },
+    "Sign out..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar sesión..."
+          }
+        }
+      }
+    },
+    "Signing in..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciando sesión..."
+          }
+        }
+      }
+    },
+    "Some websites and online tools belong to their respective owners; these credits are for them." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunos sitios web y herramientas en línea pertenecen a sus respectivos propietarios; estos créditos son para ellos."
+          }
+        }
+      }
     },
     "Sponsor Salesforce ToolKit on Github" : {
       "localizations" : {
@@ -580,8 +2037,60 @@
         }
       }
     },
-    "Start Hidden Bar when I log in" : {
-
+    "Start Salesforce Toolkit when I log in" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar Salesforce Toolkit al iniciar sesión"
+          }
+        }
+      }
+    },
+    "Startup configuration failed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al configurar el inicio"
+          }
+        }
+      }
+    },
+    "Startup item added" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicación añadida al inicio"
+          }
+        }
+      }
+    },
+    "Startup item removed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicación eliminada del inicio"
+          }
+        }
+      }
+    },
+    "Successfully authenticated with alias %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autenticación exitosa con el alias %@."
+          }
+        }
+      }
     },
     "Sure?" : {
       "localizations" : {
@@ -593,7 +2102,96 @@
         }
       }
     },
+    "The application was added to your login items." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación se añadió a los elementos de inicio."
+          }
+        }
+      }
+    },
+    "The application was removed from your login items." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación se eliminó de los elementos de inicio."
+          }
+        }
+      }
+    },
+    "The label identifies this organization in Salesforce Toolkit and may contain spaces and special characters." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La etiqueta identifica esta organización en Salesforce Toolkit y puede contener espacios y caracteres especiales."
+          }
+        }
+      }
+    },
+    "The organization %@ (%@) was deleted successfully." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La organización %@ (%@) se eliminó correctamente."
+          }
+        }
+      }
+    },
+    "The sign-in process took too long and was canceled." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El proceso de inicio de sesión tardó demasiado y se canceló."
+          }
+        }
+      }
+    },
+    "This alias is already used by another organization." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este alias ya está utilizado por otra organización."
+          }
+        }
+      }
+    },
+    "This is taking longer than expected" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto está tardando más de lo esperado"
+          }
+        }
+      }
+    },
+    "This window will close automatically when finished." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta ventana se cerrará automáticamente al finalizar."
+          }
+        }
+      }
+    },
     "Tipo de Org" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -604,6 +2202,7 @@
       }
     },
     "Tools" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -613,7 +2212,63 @@
         }
       }
     },
+    "Unexpected error" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error inesperado"
+          }
+        }
+      }
+    },
+    "Update failed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualización fallida"
+          }
+        }
+      }
+    },
+    "Update Salesforce CLI from the menu bar before opening an organization." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualice Salesforce CLI desde la barra de menú antes de abrir una organización."
+          }
+        }
+      }
+    },
+    "Update successful" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualización exitosa"
+          }
+        }
+      }
+    },
+    "Updating Salesforce CLI..." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizando Salesforce CLI..."
+          }
+        }
+      }
+    },
     "URL de Instancia" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -657,6 +2312,7 @@
       }
     },
     "Usar URL de Instancia Personalizada" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -672,7 +2328,41 @@
         }
       }
     },
+    "Use custom instance URL" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar URL de instancia personalizada"
+          }
+        }
+      }
+    },
+    "User" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuario"
+          }
+        }
+      }
+    },
+    "Users" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuarios"
+          }
+        }
+      }
+    },
     "Usuario" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -689,6 +2379,7 @@
       }
     },
     "Versión de API" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -710,6 +2401,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Workbench"
+          }
+        }
+      }
+    },
+    "Workflow Rules" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reglas de flujo de trabajo"
+          }
+        }
+      }
+    },
+    "Yes, cancel" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sí, cancelar"
+          }
+        }
+      }
+    },
+    "Yes, close" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sí, cerrar"
+          }
+        }
+      }
+    },
+    "You successfully signed out of %@ (%@)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerró sesión correctamente en %@ (%@)."
           }
         }
       }

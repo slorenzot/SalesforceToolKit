@@ -10,9 +10,9 @@ import SwiftUI
 struct CreditsView: View {
     var body: some View {
         VStack {
-            Text("Credits to:")
+            Text(localized("Credits to:"))
                 .font(.title2)
-            Text("Some of this websites or online tools are  from theirs owner and ths credits are for themselves")
+            Text(localized("Some websites and online tools belong to their respective owners; these credits are for them."))
                 .padding()
             Text("Salesforce")
                 .font(.title2)

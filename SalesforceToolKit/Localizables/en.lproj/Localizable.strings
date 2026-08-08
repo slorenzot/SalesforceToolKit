@@ -6,3 +6,7 @@
   
 */
 "comment" = "Hola a todos";
+"Update failed" = "Update Failed";
+"Updating Salesforce CLI..." = "Updating Salesforce CLI...";
+"Salesforce CLI could not be updated." = "Salesforce CLI could not be updated.";
+"Close" = "Close";

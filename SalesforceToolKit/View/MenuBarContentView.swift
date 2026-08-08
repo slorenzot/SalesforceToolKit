@@ -15,6 +15,7 @@ struct MenuBarContentView: View {
     var mainWindow: () -> Void
     var authenticateIfRequired: (_ reason: String, _ action: @escaping () -> Void) -> Void
     var openAuthenticationWindow: () -> Void
+    var openObjectPromptWindow: (AuthenticatedOrg) -> Void
     var openEditAuthenticationWindow: (AuthenticatedOrg) -> Void
     var viewOrganizationDetailsWindow: (AuthenticatedOrg) -> Void
     var confirmDelete: (AuthenticatedOrg) -> Void
@@ -23,11 +24,13 @@ struct MenuBarContentView: View {
     var exportPreference: () -> Void
     var importPreference: () -> Void
     var confirmQuit: () -> Void
+    var openCLIUpdateWindow: () -> Void
     
     @Binding var biometricAuthenticationEnabled: Bool
     var isTouchIDAvailable: Bool
     
     var appIsUpdated: Bool
+
     
     var body: some View {
         let orgs = authenticatedOrgManager.authenticatedOrgs
@@ -41,7 +44,7 @@ struct MenuBarContentView: View {
             }
         } label: {
             Image(systemName: "cloud.fill")
-            Text("Salesforce Toolkit")
+            Text(localized("Salesforce Toolkit"))
             if (!appIsUpdated) {
                 Text(NSLocalizedString("New version is availabe, click to update now!", comment: "text"))
             } else {
@@ -72,8 +75,8 @@ struct MenuBarContentView: View {
             
             Button(){} label: {
                 Image(systemName: "star.fill")
-                Text("\(defaultOrg?.label ?? "Ninguna") (\(defaultOrg?.orgId ?? "Ninguna"))")
-                Text("\(defaultOrg?.instanceUrl ?? "Ninguna")")
+                Text("\(defaultOrg?.label ?? localized("None")) (\(defaultOrg?.orgId ?? localized("None")))")
+                Text("\(defaultOrg?.instanceUrl ?? localized("None"))")
                     .font(.system(size: 10))
             }
             
@@ -82,7 +85,7 @@ struct MenuBarContentView: View {
             if favorites.isEmpty {
                 Button(){} label: {
                     Image(systemName: "heart.fill")
-                    Text("No hay favoritos")
+                    Text(localized("No favorites"))
                 }.disabled(true)
             } else {
                 ForEach(favorites) { org in
@@ -93,6 +96,7 @@ struct MenuBarContentView: View {
                         isFavorite: true,
                         viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
                         openEditAuthenticationWindow: openEditAuthenticationWindow,
+                        openObjectPromptWindow: openObjectPromptWindow,
                         confirmLogout: confirmLogout,
                         confirmDelete: confirmDelete
                     )
@@ -102,9 +106,9 @@ struct MenuBarContentView: View {
             
             Divider()
             
-            Menu("Organizaciones autenticadas (\(orgs.count))") {
+            Menu(localized("Authenticated organizations (%lld)", orgs.count)) {
                 if orgs.isEmpty {
-                    Button("No organizaciones autenticadas"){}.disabled(true)
+                    Button(localized("No authenticated organizations")){}.disabled(true)
                 } else {
                     ForEach(orgs) { org in
                         OrgMenuItem(
@@ -114,6 +118,7 @@ struct MenuBarContentView: View {
                             isFavorite: false,
                             viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
                             openEditAuthenticationWindow: openEditAuthenticationWindow,
+                            openObjectPromptWindow: openObjectPromptWindow,
                             confirmLogout: confirmLogout,
                             confirmDelete: confirmDelete
                         )
@@ -127,7 +132,7 @@ struct MenuBarContentView: View {
                     openAuthenticationWindow()
                 } label: {
                     Image(systemName: "plus.circle")
-                    Text("Autenticar nueva organización...")
+                    Text(localized("Authenticate new organization..."))
                 }
             }
             
@@ -142,20 +147,20 @@ struct MenuBarContentView: View {
             
             Divider()
             
-            Menu("Request new org") {
+            Menu(localized("Request new organization")) {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Specialized}) { link in
                     Button(){
                         let _ = cli.openUrl(url: link.url)
                     } label: {
                         Image(systemName: "network")
-                        Text(link.label)
+                        Text(localized(link.label))
                     }
                 }
             }
             
             Divider()
             
-            Menu("Tools"){
+            Menu(localized("Tools")){
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Toolbox}) { link in
                     Button() {
                         let _ = cli.openUrl(url: link.url)
@@ -168,7 +173,7 @@ struct MenuBarContentView: View {
             
             Divider()
             
-            Menu("DevOp Tools") {
+            Menu(localized("DevOps tools")) {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.DevOp}) { link in
                     Button() {
                         let _ = cli.openUrl(url: link.url)
@@ -181,7 +186,7 @@ struct MenuBarContentView: View {
             
             Divider()
             
-            Menu("Help") {
+            Menu(localized("Help")) {
                 ForEach(credentialManager.storedLinks.filter{$0.type == LinkType.Help}) { link in
                     Button(link.label) {
                         let _ = cli.openUrl(url: link.url)
@@ -220,15 +225,7 @@ struct MenuBarContentView: View {
         Divider()
         
         Button(NSLocalizedString("Actualizar Salesforce CLI", comment: "")){
-            let _ = cli.update()
-            
-            let content = UNMutableNotificationContent()
-            content.title = "Actualización exitosa"
-            content.body = "Se ha actualizado correctamente la versión de Salesforce CLI en su sistema."
-            content.sound = UNNotificationSound.default
-            
-            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-            UNUserNotificationCenter.current().add(request)
+            openCLIUpdateWindow()
         }
         
         Divider()
@@ -249,3 +246,74 @@ struct MenuBarContentView: View {
     }
 }
 
+/// Window displayed while Salesforce CLI is being updated.
+struct CLIUpdateView: View {
+    private enum UpdateState: Equatable {
+        case updating
+        case succeeded
+        case failed
+    }
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var state: UpdateState = .updating
+
+    var body: some View {
+        VStack(spacing: 18) {
+            Group {
+                switch state {
+                case .updating:
+                    ProgressView()
+                        .controlSize(.large)
+                    Text(localized("Updating Salesforce CLI..."))
+                case .succeeded:
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 42))
+                        .foregroundStyle(.green)
+                    Text(localized("Salesforce CLI was successfully updated on your system."))
+                        .multilineTextAlignment(.center)
+                case .failed:
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 42))
+                        .foregroundStyle(.red)
+                    Text(localized("Salesforce CLI could not be updated."))
+                        .multilineTextAlignment(.center)
+                }
+            }
+
+            if state != .updating {
+                Button(localized("Close")) {
+                    dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(32)
+        .frame(width: 360, height: 190)
+        .task {
+            let didUpdate = await Task.detached(priority: .userInitiated) {
+                SalesforceCLI().update()
+            }.value
+
+            state = didUpdate ? .succeeded : .failed
+            postCLIUpdateNotification(succeeded: didUpdate)
+        }
+    }
+
+    private func postCLIUpdateNotification(succeeded: Bool) {
+        let content = UNMutableNotificationContent()
+        content.title = localized(succeeded ? "Update successful" : "Update failed")
+        content.body = localized(
+            succeeded
+                ? "Salesforce CLI was successfully updated on your system."
+                : "Salesforce CLI could not be updated."
+        )
+        content.sound = UNNotificationSound.default
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+}

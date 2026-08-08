@@ -17,30 +17,30 @@ struct AppPreferencesView: View {
     var body: some View {
         Form {
             VStack(alignment: .leading) { // Changed to VStack for better layout of multiple controls
-                Picker("Navegador por defecto", selection: $defaultBrowser) { // Changed string to Spanish
+                Picker(localized("Default browser"), selection: $defaultBrowser) {
                     ForEach(["default", "chrome", "edge", "firefox"], id: \.self) {
                         Text($0.capitalized) // Capitalize browser names for display
                     }
                 }
                 .padding(.bottom, 5) // Add some spacing
                 
-                TextField("Navegador personalizado (ej: /Applications/Chrome.app)", text: $defaultBrowser) // Changed string to Spanish
+                TextField(localized("Custom browser (e.g. /Applications/Chrome.app)"), text: $defaultBrowser)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.bottom, 10)
                 
-                TextField("Ruta de Salesforce CLI", text: $sfPath) // Changed string to Spanish
+                TextField(localized("Salesforce CLI path"), text: $sfPath)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.bottom, 10)
                 
                 // New: Toggle for biometric authentication
                 if isTouchIDAvailable {
-                    Toggle("Habilitar autenticación biométrica", isOn: $biometricAuthenticationEnabled)
+                    Toggle(localized("Enable biometric authentication"), isOn: $biometricAuthenticationEnabled)
                         .toggleStyle(.switch)
                         .padding(.top, 5)
-                    Text("Deberá autenticarse cada vez que requiera abrir, modificar la configuración, cerrar la sesión o eliminar alguna instancia o módulo")
+                    Text(localized("Authentication is required to open, modify, log out of, or delete an organization"))
                         .font(.system(size: 11))
                 } else {
-                    Text("Autenticación biométrica no disponible en este dispositivo.")
+                    Text(localized("Biometric authentication is not available on this device."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.top, 5)

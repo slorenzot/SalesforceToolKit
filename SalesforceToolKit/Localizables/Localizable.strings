@@ -74,3 +74,7 @@
 "CURRENT_VERSION_LABEL" = "Current version: 1.0.0";
 "SALESFORCE_TOOLKIT_VERSION_BUTTON_TITLE" = "Salesforce ToolKit (v%@)";
 "QUIT_BUTTON_TITLE_MENU_BAR" = "Quit";
+"Update failed" = "Actualización fallida";
+"Updating Salesforce CLI..." = "Actualizando Salesforce CLI...";
+"Salesforce CLI could not be updated." = "No se pudo actualizar Salesforce CLI.";
+"Close" = "Cerrar";

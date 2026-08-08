@@ -8,33 +8,6 @@
 import SwiftUI
 import UserNotifications
 
-fileprivate class OrgDetailsWindowDelegate: NSObject, NSWindowDelegate {
-    // Renombrado de isAuthenticating a isDataLoading para reflejar mejor el propósito de la vista
-    var isDataLoading: Bool = false
-    var onCancel: (() -> Void)? // Mantener onCancel si es necesario para alguna acción al cerrar ventana durante carga.
-
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        if isDataLoading { // Usar isDataLoading
-            let alert = NSAlert()
-            alert.messageText = "Cancelar carga de información"
-            alert.informativeText = "¿Estás seguro de que quieres cerrar la ventana mientras se carga la información de la organización?"
-            alert.addButton(withTitle: "Sí, cerrar")
-            alert.addButton(withTitle: "No")
-            alert.alertStyle = .warning
-            
-            if alert.runModal() == .alertFirstButtonReturn {
-                // Aquí podrías agregar lógica para detener cualquier tarea de carga activa si fuera necesario.
-                // Sin embargo, para Task en Swift Concurrency, simplemente la tarea se cancela al destruir la vista.
-                onCancel?() 
-                return true
-            } else {
-                return false
-            }
-        }
-        return true
-    }
-}
-
 struct OrgDetailsView: View {
     let PRO_AUTH_URL = "https://login.salesforce.com"
     let DEV_AUTH_URL = "https://test.salesforce.com"
@@ -70,10 +43,8 @@ struct OrgDetailsView: View {
     @State private var label: String // From AuthenticatedOrg
     
     // Eliminadas las propiedades relacionadas con la autenticación interactiva (timer, prompt, cancellation)
-    @State private var windowDelegate = OrgDetailsWindowDelegate()
-    @State private var thisWindow: NSWindow?
-    
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
+    @Environment(\.dismiss) private var dismiss
     
     let orgTypes = ["Producción", "Desarrollo"]
 
@@ -117,9 +88,9 @@ struct OrgDetailsView: View {
             if isFetching { // Mostrar ProgressView si isFetching es true
                 VStack {
                     ProgressView()
-                    Text("Obteniendo información de la organización y límites...")
+                    Text(localized("Loading organization information and limits..."))
                         .padding(.top, 10)
-                    Text("Espere mientras exploramos su organización de Salesforce y organizamos la información.")
+                    Text(localized("Please wait while we inspect your Salesforce organization and organize its information."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -131,18 +102,18 @@ struct OrgDetailsView: View {
                     TabView(selection: $selectedTab) {
                         // Detalles de la Organización
                         Form {
-                            LabeledContent("Etiqueta", value: label)
-                            LabeledContent("Alias", value: alias)
-                            LabeledContent("ID de Org", value: orgId)
-                            LabeledContent("Estado de Conexión", value: connectedStatus)
-                            LabeledContent("Usuario", value: username)
-                            LabeledContent("URL de Instancia", value: instanceUrl)
-                            LabeledContent("Versión de API", value: apiVersion)
-                            LabeledContent("ID de Cliente", value: clientId)
+                            LabeledContent(localized("Label"), value: label)
+                            LabeledContent(localized("Alias"), value: alias)
+                            LabeledContent(localized("Org ID"), value: orgId)
+                            LabeledContent(localized("Connection status"), value: connectedStatus)
+                            LabeledContent(localized("User"), value: username)
+                            LabeledContent(localized("Instance URL"), value: instanceUrl)
+                            LabeledContent(localized("API version"), value: apiVersion)
+                            LabeledContent(localized("Client ID"), value: clientId)
                             
-                            Picker("Tipo de Org", selection: $orgType) {
+                            Picker(localized("Organization type"), selection: $orgType) {
                                 ForEach(orgTypes, id: \.self) {
-                                    Text($0)
+                                    Text(localizedOrganizationType($0))
                                 }
                             }
                         }
@@ -156,18 +127,18 @@ struct OrgDetailsView: View {
                         Group {
                             // No es necesario isLoadingLimits separado, isFetching lo cubre
                             if orgLimits.isEmpty {
-                                Text("No se encontraron límites para la organización o hubo un error al cargarlos.")
+                                Text(localized("No organization limits were found, or they could not be loaded."))
                                     .foregroundColor(.secondary)
                                     .padding()
                             } else {
                                 Table(orgLimits) {
-                                    TableColumn("Nombre") { item in
+                                    TableColumn(localized("Name")) { item in
                                         Text(item.name)
                                     }
-                                    TableColumn("Máximo") { item in
+                                    TableColumn(localized("Maximum")) { item in
                                         Text("\(item.max)")
                                     }
-                                    TableColumn("Restante") { item in
+                                    TableColumn(localized("Remaining")) { item in
                                         Text("\(item.remaining)")
                                     }
                                 }
@@ -183,7 +154,7 @@ struct OrgDetailsView: View {
                     // END MARK
                     
                     HStack() {
-                        Button("Cerrar") { // Renombrado de "Cancelar" a "Cerrar"
+                        Button(localized("Close")) {
                             close()
                         }
                     }
@@ -194,17 +165,6 @@ struct OrgDetailsView: View {
         }
         .frame(width: 480, height: 520)
         .onAppear {
-            self.thisWindow = NSApp.keyWindow
-            // Actualizar el delegado para que refleje el estado de carga de datos
-            windowDelegate.isDataLoading = self.isFetching
-            windowDelegate.onCancel = {
-                // Aquí puedes agregar lógica si es necesario al cerrar la ventana durante la carga
-                // Por ejemplo, para cancelar una operación de red explícitamente, aunque las tareas de Swift Concurrency
-                // se cancelan automáticamente cuando su vista desaparece.
-            }
-            self.thisWindow?.delegate = windowDelegate
-            hideWindowButtons()
-            
             // Si hay una organización para mostrar y estamos en estado de carga, iniciar la carga de datos
             if self.org != nil && self.isFetching {
                 loadOrgData()
@@ -213,6 +173,7 @@ struct OrgDetailsView: View {
                 self.isFetching = false
             }
         }
+        .interactiveDismissDisabled(isFetching)
         // Eliminado onChange(of: isFetching) y onDisappear relacionados con el timer,
         // ya que la lógica de timer/timeout se ha movido fuera de esta vista.
     }
@@ -257,18 +218,8 @@ struct OrgDetailsView: View {
     }
     // END MARK - Eliminadas todas las funciones relacionadas con el timer y authenticate()
 
-    func hideWindowButtons() {
-        if let window = thisWindow { // Or iterate through NSApp.shared.windows
-            window.standardWindowButton(.zoomButton)?.isHidden = true
-            window.standardWindowButton(.miniaturizeButton)?.isHidden = true
-        }
-    }
-    
     func close() {
-        if let window = thisWindow {
-            print("Cerrando ventana de detalles de organización...")
-            window.close()
-        }
+        dismiss()
     }
 }
 

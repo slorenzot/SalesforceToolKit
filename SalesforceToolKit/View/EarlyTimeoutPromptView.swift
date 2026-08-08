@@ -18,23 +18,23 @@ struct EarlyTimeoutPromptView: View {
                 .foregroundColor(.orange)
                 .padding(.bottom, 10)
 
-            Text("Esto está tardando más de lo esperado")
+            Text(localized("This is taking longer than expected"))
                 .font(.title2)
                 .padding(.bottom, 5)
 
-            Text("El proceso de exploración de su organización está tardando más de 10 segundos. ¿Desea reintentar o cancelar?")
+            Text(localized("Loading your organization has taken more than 10 seconds. Would you like to retry or cancel?"))
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
                 .foregroundColor(.secondary)
 
             HStack {
-                Button("Cancelar") {
+                Button(localized("Cancel")) {
                     onCancel()
                 }
                 .keyboardShortcut(.cancelAction) // Para el comportamiento estándar de cancelar
 
-                Button("Reintentar") {
+                Button(localized("Retry")) {
                     onRetry()
                 }
                 .keyboardShortcut(.defaultAction) // Para el comportamiento estándar de acción predeterminada

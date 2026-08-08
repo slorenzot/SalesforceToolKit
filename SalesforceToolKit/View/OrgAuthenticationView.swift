@@ -1,32 +1,6 @@
 import SwiftUI
 import UserNotifications
 
-fileprivate class AuthenticationWindowDelegate: NSObject, NSWindowDelegate {
-    var isAuthenticating: Bool = false
-    var onCancel: (() -> Void)?
-
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        if isAuthenticating {
-            let alert = NSAlert()
-            alert.messageText = "Cancelar Autenticación"
-            alert.informativeText = "¿Estás seguro de que quieres cancelar el proceso de inicio de sesión?"
-            alert.addButton(withTitle: "Sí, cancelar")
-            alert.addButton(withTitle: "No")
-            alert.alertStyle = .warning
-            
-            if alert.runModal() == .alertFirstButtonReturn {
-                let cli = SalesforceCLI()
-                cli.killProcess(port: 1717)
-                onCancel?() // This will set `authenticationCancelled = true` in AuthenticationView and stop UI timer
-                return true
-            } else {
-                return false
-            }
-        }
-        return true
-    }
-}
-
 struct OrgAuthenticationView: View {
     let PRO_AUTH_URL = "https://login.salesforce.com"
     let DEV_AUTH_URL = "https://test.salesforce.com"
@@ -41,8 +15,6 @@ struct OrgAuthenticationView: View {
     @State private var isFavorite: Bool = false
     @State private var isAuthenticating = false
     @State private var authenticationCancelled = false // Tracks if user or timeout cancelled
-    @State private var windowDelegate = AuthenticationWindowDelegate()
-    @State private var thisWindow: NSWindow?
     
     // Timer specific states
     @State private var elapsedSeconds: Int = 0
@@ -59,6 +31,7 @@ struct OrgAuthenticationView: View {
     // END MARK
     
     @EnvironmentObject var authenticatedOrgManager: AuthenticatedOrgManager
+    @Environment(\.dismiss) private var dismiss
     
     let orgTypes = ["Producción", "Desarrollo"]
 
@@ -101,14 +74,14 @@ struct OrgAuthenticationView: View {
             if !isAuthenticating {
                 VStack {
                     Form {
-                        Picker("Tipo de Org", selection: $orgType) {
+                        Picker(localized("Organization type"), selection: $orgType) {
                             ForEach(orgTypes, id: \.self) {
-                                Text($0)
+                                Text(localizedOrganizationType($0))
                             }
                         }
                         // MARK: - Custom URL Toggle
                         Toggle(isOn: $useCustomInstanceUrl) {
-                            Text("Usar URL de Instancia Personalizada")
+                            Text(localized("Use custom instance URL"))
                         }
                         .onChange(of: useCustomInstanceUrl) { newValue in
                             // Clear custom URL if toggle is switched off
@@ -138,7 +111,7 @@ struct OrgAuthenticationView: View {
                                 self.aliasAlreadyInUse = authenticatedOrgManager.isAliasInUse(newAlias: alias, forOrgId: orgToEdit?.id)
                             })
                         
-                        Text("La etiqueta es el nombre que se mostrará en Salesforce Toolkit para identificar fácilmente las instancias de su organización y puede contener espacios y caracteres especiales")
+                            Text(localized("The label identifies this organization in Salesforce Toolkit and may contain spaces and special characters."))
                             .font(.system(size: 10))
                         
                         TextField("Alias", text: $alias)
@@ -150,13 +123,13 @@ struct OrgAuthenticationView: View {
                         
                         // MARK: - Styled "Alias already in use" message
                         if aliasAlreadyInUse {
-                            Text("El alias suministrado ya esta en uso por otra instancia")
+                        Text(localized("This alias is already used by another organization."))
                                 .font(.system(size: 10))
                                 .foregroundColor(.red)
                         }
                         // END MARK
                         
-                        Text("El alias es usado por Salesforce CLI para ejecutar los comandos, no puede contener espacios ni caracteres especiales.")
+                    Text(localized("Salesforce CLI uses the alias to run commands. It cannot contain spaces or special characters."))
                             .font(.system(size: 10))
                             .padding(.top, 10)
                         
@@ -166,14 +139,14 @@ struct OrgAuthenticationView: View {
                                 isFavorite = newValue
                             }
                         )) {
-                            Text("Es favorita")
+                            Text(localized("Favorite"))
                                 .padding(.top, 20)
                         }
                     }
                     .frame(width: 420, height: 440) // Adjust height as needed with new fields
                     
                     HStack() {
-                        Button("Cancelar") {
+                        Button(localized("Cancel")) {
                             close()
                         }
                         
@@ -215,9 +188,9 @@ struct OrgAuthenticationView: View {
             if isAuthenticating && !showEarlyTimeoutPrompt {
                 VStack {
                     ProgressView()
-                    Text("Iniciando sesión...")
+                    Text(localized("Signing in..."))
                         .padding(.top, 10)
-                    Text("La ventana se cerrará automáticamente al finalizar.")
+                    Text(localized("This window will close automatically when finished."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -253,15 +226,6 @@ struct OrgAuthenticationView: View {
         }
         .frame(width: 480, height: 520)
         .onAppear {
-            self.thisWindow = NSApp.keyWindow
-            windowDelegate.isAuthenticating = self.isAuthenticating
-            windowDelegate.onCancel = {
-                self.authenticationCancelled = true
-                self.stopUITimer() // Detener el temporizador de la UI cuando el usuario cancela a través del cierre de la ventana
-            }
-            self.thisWindow?.delegate = windowDelegate
-            hideWindowButtons()
-            
             // If we are already authenticating (e.g., re-appearing after another view), start timer
             if isAuthenticating {
                 startUITimer()
@@ -271,7 +235,6 @@ struct OrgAuthenticationView: View {
             // END MARK
         }
         .onChange(of: isAuthenticating) { newValue in
-            windowDelegate.isAuthenticating = newValue
             if newValue {
                 startUITimer()
             } else {
@@ -281,6 +244,7 @@ struct OrgAuthenticationView: View {
         .onDisappear {
             stopUITimer() // Ensure timer is stopped when the view is no longer active
         }
+        .interactiveDismissDisabled(isAuthenticating)
     }
     
     // MARK: - UI Timer Logic
@@ -349,9 +313,9 @@ struct OrgAuthenticationView: View {
                                 self.isAuthenticating = false // Hide progress UI due to timeout
                                 // Show an alert for timeout
                                 let alert = NSAlert()
-                                alert.messageText = "Autenticación Cancelada"
-                                alert.informativeText = "El proceso de inicio de sesión ha tardado demasiado y se ha cancelado."
-                                alert.addButton(withTitle: "OK")
+                                alert.messageText = localized("Authentication canceled")
+                                alert.informativeText = localized("The sign-in process took too long and was canceled.")
+                                alert.addButton(withTitle: localized("OK"))
                                 alert.alertStyle = .warning
                                 alert.runModal()
                             }
@@ -399,8 +363,8 @@ struct OrgAuthenticationView: View {
                     NotificationCenter.default.post(name: .didCompleteAuth, object: nil, userInfo: userInfo)
                     
                     let content = UNMutableNotificationContent()
-                    content.title = "Autenticación exitosa"
-                    content.body = "Se ha autenticado correctamente con el alias \(alias)."
+                    content.title = localized("Authentication successful")
+                    content.body = localized("Successfully authenticated with alias %@.", alias)
                     content.sound = UNNotificationSound.default
                     
                     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
@@ -410,9 +374,9 @@ struct OrgAuthenticationView: View {
                     // Authentication explicitly failed by CLI, not timeout.
                     isAuthenticating = false // Hide progress UI
                     let alert = NSAlert()
-                    alert.messageText = "Autenticación Fallida"
-                    alert.informativeText = "No se pudo autenticar con el alias \(alias). Por favor, inténtelo de nuevo."
-                    alert.addButton(withTitle: "OK")
+                    alert.messageText = localized("Authentication failed")
+                    alert.informativeText = localized("Could not authenticate with alias %@. Please try again.", alias)
+                    alert.addButton(withTitle: localized("OK"))
                     alert.alertStyle = .critical
                     alert.runModal()
                 }
@@ -425,29 +389,17 @@ struct OrgAuthenticationView: View {
                 print("An unexpected error occurred during authentication: \(error.localizedDescription)")
                 isAuthenticating = false // Reset state
                 let alert = NSAlert()
-                alert.messageText = "Error Inesperado"
-                alert.informativeText = "Ocurrió un error inesperado durante la autenticación: \(error.localizedDescription)"
-                alert.addButton(withTitle: "OK")
+                alert.messageText = localized("Unexpected error")
+                alert.informativeText = localized("An unexpected error occurred during authentication: %@", error.localizedDescription)
+                alert.addButton(withTitle: localized("OK"))
                 alert.alertStyle = .critical
                 alert.runModal()
             }
         }
     }
     
-    func hideWindowButtons() {
-        if let window = thisWindow { // Or iterate through NSApp.shared.windows
-            window.standardWindowButton(.zoomButton)?.isHidden = true
-            window.standardWindowButton(.miniaturizeButton)?.isHidden = true
-        }
-    }
-    
     func close() {
-        if let window = thisWindow {
-            print("Closing authenticacion window...")
-            window.close()
-            // When window closes, `onChange(of: isAuthenticating)` and `windowDelegate.onCancel`
-            // should handle the necessary state cleanup if not already done.
-        }
+        dismiss()
     }
 }
 
@@ -456,4 +408,3 @@ struct AuthenticationView_Previews: PreviewProvider {
         OrgAuthenticationView()
     }
 }
-

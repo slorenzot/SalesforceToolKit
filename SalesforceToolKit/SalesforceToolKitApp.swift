@@ -38,10 +38,7 @@ func confirmQuit() {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate, NSWindowDelegate {
-    var window: NSWindow!
-    
-    static let windowWillCloseNotification = Notification.Name("windowWillCloseNotification")
+class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         UNUserNotificationCenter.current().delegate = self
@@ -80,9 +77,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         return true
     }
     
-    func windowWillClose(_ notification: Notification) {
-        NotificationCenter.default.post(name: AppDelegate.windowWillCloseNotification, object: notification.object)
-    }
 }
 
 // MARK: - GitHub Release Model for Update Check
@@ -96,9 +90,20 @@ struct GitHubRelease: Decodable {
     }
 }
 
+private enum WindowID {
+    static let main = "main"
+    static let preferences = "preferences"
+    static let authentication = "authentication"
+    static let editAuthentication = "edit-authentication"
+    static let organizationDetails = "organization-details"
+    static let objectPrompt = "object-prompt"
+    static let cliUpdate = "cli-update"
+}
+
 @main
 struct SalesforceToolKitApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.openWindow) private var openWindow
     
     @AppStorage("version") var appIsUpdated: Bool = true
     @AppStorage("settings") var settings: String = ""
@@ -112,11 +117,10 @@ struct SalesforceToolKitApp: App {
     @StateObject private var authManager = LocalAuthenticationManager()
     @State var currentOption: String  = "1"
     
-    @State var preferencesWindow: NSWindow?
-    @State var authenticationWindow: NSWindow?
-    @State var mainWindow: NSWindow?
-    @State var editAuthenticationWindow: NSWindow?
-    @State var viewOrganizationDetailsWindow: NSWindow?
+    @State private var organizationForEditing: AuthenticatedOrg?
+    @State private var organizationForDetails: AuthenticatedOrg?
+    @State private var organizationForObjectPrompt: AuthenticatedOrg?
+    @AppStorage("defaultBrowser") private var defaultBrowser: String = "chrome"
 
     @State private var launchOnLogin = false
 
@@ -129,19 +133,19 @@ struct SalesforceToolKitApp: App {
         do {
             if enabled {
                 try service.register()
-                content.title = "Agregado al inicio exitoso"
-                content.body = "Se ha añadido como elemento en el inicio."
+                content.title = localized("Startup item added")
+                content.body = localized("The application was added to your login items.")
                 content.sound = UNNotificationSound.default
             } else {
                 try await service.unregister()
-                content.title = "Eliminado en el inicio exitoso"
-                content.body = "Se ha removido de los elemento en el inicio."
+                content.title = localized("Startup item removed")
+                content.body = localized("The application was removed from your login items.")
                 content.sound = UNNotificationSound.default
             }
         } catch {
             print("Failed to set login item: \(error)")
-            content.title = "Error al configurar inicio"
-            content.body = "Hubo un error al \(enabled ? "añadir" : "remover") como elemento de inicio: \(error.localizedDescription)"
+            content.title = localized("Startup configuration failed")
+            content.body = localized("Could not %@ the application as a login item: %@", enabled ? localized("add") : localized("remove"), error.localizedDescription)
             content.sound = UNNotificationSound.default
         }
         
@@ -173,22 +177,6 @@ struct SalesforceToolKitApp: App {
         }
     }
     
-    private func onWindowWillClose(_ notification: Notification) {
-        guard let window = notification.object as? NSWindow else { return }
-        
-        if window == mainWindow {
-            mainWindow = nil
-        } else if window == preferencesWindow {
-            preferencesWindow = nil
-        } else if window == authenticationWindow {
-            authenticationWindow = nil
-        } else if window == editAuthenticationWindow {
-            editAuthenticationWindow = nil
-        } else if window == viewOrganizationDetailsWindow {
-            viewOrganizationDetailsWindow = nil
-        }
-    }
-    
     // MARK: - Biometric Authentication Helper
     /// Authenticates the user with biometrics if enabled and available, then executes the action.
     /// If authentication fails or is not required, an alert is shown or the action is executed directly.
@@ -213,25 +201,7 @@ struct SalesforceToolKitApp: App {
     
     func openPreferences() {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to open preference window", comment: "")) {
-            if preferencesWindow == nil {
-                let window = NSWindow(
-                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 120),
-                    styleMask: [.titled, .closable],
-                    backing: .buffered,
-                    defer: false)
-                window.center()
-                window.title = NSLocalizedString("Preferences", comment: "")
-                // Pass the biometric settings to AppPreferencesView
-                window.contentView = NSHostingView(rootView: AppPreferencesView(
-                    biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
-                    isTouchIDAvailable: authManager.isTouchIDAvailable
-                ))
-                window.isReleasedWhenClosed = false
-                preferencesWindow = window
-                window.delegate = appDelegate
-            }
-            preferencesWindow?.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+            openWindow(id: WindowID.preferences)
         }
     }
     
@@ -314,53 +284,24 @@ struct SalesforceToolKitApp: App {
     }
     
     func openMainWindow() {
-        if mainWindow == nil {
-            let editView = MainView()
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 700, height: 450),
-                styleMask: [.titled, .closable],
-                backing: .buffered,
-                defer: false)
-            window.center()
-            window.title = "Salesforce Toolkit"
-            window.contentView = NSHostingView(rootView: editView)
-            window.isReleasedWhenClosed = false
-            mainWindow = window
-            window.delegate = appDelegate
-        }
-        mainWindow?.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+        openWindow(id: WindowID.main)
     }
     
     func openAuthenticationWindow() {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to open authentication window", comment: "")) {
-            if authenticationWindow == nil {
-                let window = NSWindow(
-                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
-                    styleMask: [.titled, .closable],
-                    backing: .buffered,
-                    defer: false)
-                window.center()
-                window.title = "Autenticar y Abrir Organización"
-                window.contentView = NSHostingView(rootView: OrgAuthenticationView().environmentObject(authenticatedOrgManager))
-                window.isReleasedWhenClosed = false
-                authenticationWindow = window
-                window.delegate = appDelegate
-            }
-            authenticationWindow?.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+            openWindow(id: WindowID.authentication)
         }
     }
     
     func confirmLogout(org: AuthenticatedOrg) {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to logout from an organization", comment: "")) {
             let alert = NSAlert()
-            alert.messageText = "Confirmar cerrar sesión"
-            alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label))?"
+            alert.messageText = localized("Confirm sign out")
+            alert.informativeText = localized("Are you sure you want to sign out of %@ (%@)?", org.label, org.alias)
                 + "\n\n"
                 + "Se cerrarán todas las conexiones con la instancia."
-            alert.addButton(withTitle: NSLocalizedString("Si, cerrar sesión", comment: ""))
-            alert.addButton(withTitle: NSLocalizedString("Cancelar", comment: ""))
+            alert.addButton(withTitle: localized("Sign out"))
+            alert.addButton(withTitle: localized("Cancel"))
             alert.alertStyle = .warning
 
             if alert.runModal() == .alertFirstButtonReturn {
@@ -371,8 +312,8 @@ struct SalesforceToolKitApp: App {
                 if (logout) {
                     if (deleted) {
                         let content = UNMutableNotificationContent()
-                        content.title = "Cierre de sesión exitoso"
-                        content.body = "Se ha cerrado existosamente la sesión en la instancia \(org.label) (\(org.alias))."
+                        content.title = localized("Sign out successful")
+                        content.body = localized("You successfully signed out of %@ (%@).", org.label, org.alias)
                         content.sound = UNNotificationSound.default
 
                         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
@@ -386,12 +327,12 @@ struct SalesforceToolKitApp: App {
     func confirmDelete(org: AuthenticatedOrg) {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to delete an organization", comment: "")) {
             let alert = NSAlert()
-            alert.messageText = "Confirmar borrado"
-            alert.informativeText = "¿Esta seguro que desea cerrar la sesión con la instancia \(org.label) (\(org.label)?"
+            alert.messageText = localized("Confirm deletion")
+            alert.informativeText = localized("Are you sure you want to delete %@ (%@)?", org.label, org.alias)
             + "\n\n"
             + "Antes de eliminar la sesión se cerrarán todas las conexiones con la instancia."
             alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
-            alert.addButton(withTitle: NSLocalizedString("Cancelar", comment: ""))
+            alert.addButton(withTitle: localized("Cancel"))
             alert.alertStyle = .warning
 
             if alert.runModal() == .alertFirstButtonReturn {
@@ -402,8 +343,8 @@ struct SalesforceToolKitApp: App {
                 if (logout) {
                     if (deleted) {
                         let content = UNMutableNotificationContent()
-                        content.title = "Eliminación exitosa"
-                        content.body = "Se ha eliminado exitosamente la organización \(org.label) (\(org.alias))."
+                        content.title = localized("Deletion successful")
+                        content.body = localized("The organization %@ (%@) was deleted successfully.", org.label, org.alias)
                         content.sound = UNNotificationSound.default
 
                         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
@@ -416,49 +357,52 @@ struct SalesforceToolKitApp: App {
 
     func openEditAuthenticationWindow(org: AuthenticatedOrg) {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to edit organization details", comment: "")) {
-            if editAuthenticationWindow == nil {
-                let window = NSWindow(
-                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
-                    styleMask: [.titled, .closable],
-                    backing: .buffered,
-                    defer: false)
-                window.center()
-                window.title = "Editar \(org.label)"
-                window.isReleasedWhenClosed = false
-                editAuthenticationWindow = window
-                window.delegate = appDelegate
-            }
-            
-            let editView = OrgAuthenticationView(org: org)
-            editAuthenticationWindow?.contentView = NSHostingView(rootView: editView.environmentObject(authenticatedOrgManager))
-            editAuthenticationWindow?.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+            organizationForEditing = org
+            openWindow(id: WindowID.editAuthentication)
         }
     }
     
     func viewOrganizationDetailsWindow(org: AuthenticatedOrg) {
         authenticateIfRequired(reason: NSLocalizedString("Authenticate to view organization details", comment: "")) {
-            if viewOrganizationDetailsWindow == nil {
-                let window = NSWindow(
-                    contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
-                    styleMask: [.titled, .closable],
-                    backing: .buffered,
-                    defer: false)
-                window.center()
-                // The title "Edit Org" here seems like a typo if this is for viewing details.
-                // You might want to change it to "View \(org.label) Details" or similar.
-                window.title = "Detalles de la Organización"
-                window.isReleasedWhenClosed = false
-                viewOrganizationDetailsWindow = window
-                window.delegate = appDelegate
+            organizationForDetails = org
+            openWindow(id: WindowID.organizationDetails)
+        }
+    }
+
+    func openObjectPromptWindow(org: AuthenticatedOrg) {
+        organizationForObjectPrompt = org
+        openWindow(id: WindowID.objectPrompt)
+    }
+
+    private func openObject(organization: AuthenticatedOrg, objectId: String) {
+        authenticateIfRequired(reason: localized("Authenticate to open object")) {
+            let currentCLI = SalesforceCLI()
+            let alias = organization.alias
+            let browser = organization.useBrowser ?? defaultBrowser
+            let path = "/lightning/r/\(objectId)/view"
+
+            Task.detached {
+                if currentCLI.isOutdated() {
+                    await MainActor.run {
+                        notifySalesforceNotOutdated()
+                    }
+                    return
+                }
+
+                let success = currentCLI.open(alias: alias, path: path, browser: browser)
+
+                if !success {
+                    await MainActor.run {
+                        let content = UNMutableNotificationContent()
+                        content.title = localized("Opening object failed")
+                        content.body = localized("Salesforce CLI could not open the requested object.")
+                        content.sound = UNNotificationSound.default
+
+                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+                        UNUserNotificationCenter.current().add(request)
+                    }
+                }
             }
-            
-            // Reusing AuthenticationView for viewing might not be ideal if it allows editing.
-            // Consider creating a dedicated `ViewOrganizationDetailsView` if you only want to display.
-            let detailsView = OrgDetailsView(org: org)
-            viewOrganizationDetailsWindow?.contentView = NSHostingView(rootView: detailsView.environmentObject(authenticatedOrgManager))
-            viewOrganizationDetailsWindow?.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
         }
     }
 
@@ -526,6 +470,7 @@ struct SalesforceToolKitApp: App {
                     self.authenticateIfRequired(reason: reason, action: action)
                 },
                 openAuthenticationWindow: openAuthenticationWindow,
+                openObjectPromptWindow: openObjectPromptWindow,
                 openEditAuthenticationWindow: openEditAuthenticationWindow,
                 viewOrganizationDetailsWindow: viewOrganizationDetailsWindow,
                 confirmDelete: confirmDelete,
@@ -534,22 +479,69 @@ struct SalesforceToolKitApp: App {
                 exportPreference: exportPreferences,
                 importPreference: importPreferences, // Add this line
                 confirmQuit: confirmQuit,
+                openCLIUpdateWindow: { openWindow(id: WindowID.cliUpdate) },
                 // Pass new biometric authentication parameters to MenuBarContentView
                 biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
                 isTouchIDAvailable: authManager.isTouchIDAvailable,
                 appIsUpdated: appIsUpdated
             )
-            .onReceive(NotificationCenter.default.publisher(for: AppDelegate.windowWillCloseNotification)) { notification in
-                self.onWindowWillClose(notification)
-            }
         }
         
-        // Define the window that will be shown on icon click
-        WindowGroup("My Custom Window", id: "myCustomWindow") {
+        WindowGroup(Text(localized("Salesforce Toolkit")), id: WindowID.main) {
             MainView()
+                .environmentObject(authenticatedOrgManager)
         }
-        .handlesExternalEvents(matching: Set(arrayLiteral: "openMyWindow")) // For programmatic opening
+        .defaultSize(width: 700, height: 450)
+
+        Window(Text(localized("Preferences")), id: WindowID.preferences) {
+            AppPreferencesView(
+                biometricAuthenticationEnabled: $biometricAuthenticationEnabled,
+                isTouchIDAvailable: authManager.isTouchIDAvailable
+            )
+        }
+        .defaultSize(width: 520, height: 480)
+
+        Window(Text(localized("Update Salesforce CLI")), id: WindowID.cliUpdate) {
+            CLIUpdateView()
+        }
+        .defaultSize(width: 360, height: 190)
+
+        Window(Text(localized("Authenticate and open organization")), id: WindowID.authentication) {
+            OrgAuthenticationView()
+                .environmentObject(authenticatedOrgManager)
+        }
+        .defaultSize(width: 480, height: 520)
+
+        Window(Text(localized("Edit organization")), id: WindowID.editAuthentication) {
+            if let organizationForEditing {
+                OrgAuthenticationView(org: organizationForEditing)
+                    .environmentObject(authenticatedOrgManager)
+            } else {
+                Text(localized("No organization selected"))
+            }
+        }
+        .defaultSize(width: 480, height: 520)
+
+        Window(Text(localized("Organization details")), id: WindowID.organizationDetails) {
+            if let organizationForDetails {
+                OrgDetailsView(org: organizationForDetails)
+                    .environmentObject(authenticatedOrgManager)
+            } else {
+                Text(localized("No organization selected"))
+            }
+        }
+        .defaultSize(width: 480, height: 520)
+
+        Window(Text(localized("Open object")), id: WindowID.objectPrompt) {
+            if let organizationForObjectPrompt {
+                ObjectIdPromptView { objectId in
+                    openObject(organization: organizationForObjectPrompt, objectId: objectId)
+                }
+            } else {
+                Text(localized("No organization selected"))
+            }
+        }
+        .defaultSize(width: 380, height: 190)
         
     }
 }
-
